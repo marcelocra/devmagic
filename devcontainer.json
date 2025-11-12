@@ -22,17 +22,15 @@
   "postCreateCommand": "curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | bash",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      // Skip package updates to speed up builds.
-      "upgradePackages": "false",
-      // Set your preferred shell.
+      "upgradePackages": "false", // Skip package updates to speed up builds.
       "configureZshAsDefaultShell": "true",
-      // Install additional utilities.
       "installOhMyZsh": "true"
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": true,
       "dockerDashComposeVersion": "v2"
-    }
+    },
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
   },
   "mounts": [
     // SSH credentials for Git operations and SSH-based authentication/signing.
