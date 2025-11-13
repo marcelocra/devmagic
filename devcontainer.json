@@ -1,6 +1,4 @@
 {
-  "name": "🚀 DevMagic",
-
   // IMPORTANT: Each image might have a different default user.
   // Be sure to set `remoteUser` appropriately.
 
@@ -8,7 +6,7 @@
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
   "remoteUser": "node",
 
-  // Universal, with lots of things (~10GB) on Ubuntu 24 (Noble).
+  // // Universal, with lots of things (~10GB) on Ubuntu 24 (Noble).
   // "image": "mcr.microsoft.com/devcontainers/universal:3-noble",
   // "remoteUser": "codespace",
 
@@ -52,9 +50,8 @@
   ],
 
   // Port forwarding for development services.
-  "forwardPorts": [
-    11434 // Ollama API server for local LLM development.
-  ],
+  // Ex.: 11434 - Ollama API server for local LLM development.
+  "forwardPorts": [],
 
   // Set custom hostname for the container.
   "runArgs": ["--hostname=automaton"],
