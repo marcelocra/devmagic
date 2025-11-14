@@ -1,6 +1,9 @@
 {
-  // IMPORTANT: Each image might have a different default user.
-  // Be sure to set `remoteUser` appropriately.
+  // ------------------------------------***------------------------------------
+  // IMPORTANT: Each image might have a different default user. Be sure to set
+  // `remoteUser` appropriately and to adjust any paths that depend on the user,
+  // such as many of the `mounts` below.
+  // ------------------------------------***------------------------------------
 
   // Node.js with TypeScript (~2GB) on Debian 12 (Bookworm).
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
@@ -11,10 +14,23 @@
   // "remoteUser": "codespace",
 
   "containerEnv": {
-    "TZ": "America/Sao_Paulo",
-    "LC_ALL": "en_US.UTF-8",
-    "LANG": "en_US.UTF-8",
-    "MCRA_USE_MISE": "${localEnv:MCRA_USE_MISE:false}",
+    // Essential locale and timezone settings. Without these, you WILL get
+    // really weird encoding issues and date/time problems.
+    "TZ": "${localEnv:TZ:America/Sao_Paulo}",
+    "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
+    "LANG": "${localEnv:LANG:en_US.UTF-8}",
+    // -----------------------------------***-----------------------------------
+    // Options commented out, showing their default values. Use environment
+    // variables from the host machine to override or uncomment and modify here.
+    // -----------------------------------***-----------------------------------
+    // "MCRA_SETUP_ZSH_PLUGINS": "${localEnv:MCRA_SETUP_ZSH_PLUGINS:true}",
+    // "MCRA_SETUP_DOTFILES": "${localEnv:MCRA_SETUP_DOTFILES:true}",
+    // "MCRA_USE_MISE": "${localEnv:MCRA_USE_MISE:false}",
+    // "MCRA_SETUP_EDITOR_LAUNCHER": "${localEnv:MCRA_SETUP_EDITOR_LAUNCHER:true}",
+    // "MCRA_SETUP_SYSTEM_PACKAGES": "${localEnv:MCRA_SETUP_SYSTEM_PACKAGES:true}",
+    // "MCRA_SETUP_PNPM": "${localEnv:MCRA_SETUP_PNPM:true}",
+    // -----------------------------------***-----------------------------------
+    // Ollama host URL for local LLM development. Kept here for convenience.
     "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
   },
   "postCreateCommand": "curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | bash",
