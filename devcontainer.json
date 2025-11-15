@@ -70,8 +70,9 @@
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
 
     // Shell history shared across all containers and WSL.
-    // Falls back to ~/.shell_histories if OneDrive path doesn't exist.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/OneDrive/shell_histories,target=/home/node/.shell_histories,type=bind,consistency=cached"
+    // In WSL: ln -s /mnt/c/Users/{username}/OneDrive/shell_histories ~/.shell_histories
+    // In Windows: mklink /J %USERPROFILE%\.shell_histories "%USERPROFILE%\OneDrive\shell_histories"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.shell_histories,target=/home/node/.shell_histories,type=bind,consistency=cached"
   ],
 
   // Port forwarding for development services.
