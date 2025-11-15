@@ -30,6 +30,11 @@
     // "MCRA_SETUP_SYSTEM_PACKAGES": "${localEnv:MCRA_SETUP_SYSTEM_PACKAGES:true}",
     // "MCRA_SETUP_PNPM": "${localEnv:MCRA_SETUP_PNPM:true}",
     // -----------------------------------***-----------------------------------
+    // Shell history directory (automatically mounted from OneDrive).
+    "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
+    // Workspace folder for history file naming (auto-set by VS Code).
+    "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
+    // -----------------------------------***-----------------------------------
     // Ollama host URL for local LLM development. Kept here for convenience.
     "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
   },
@@ -62,7 +67,11 @@
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
 
     // Share Ollama models with host.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
+
+    // Shell history shared across all containers and WSL.
+    // Falls back to ~/.shell_histories if OneDrive path doesn't exist.
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/OneDrive/shell_histories,target=/home/node/.shell_histories,type=bind,consistency=cached"
   ],
 
   // Port forwarding for development services.
