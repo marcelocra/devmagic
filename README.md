@@ -13,11 +13,11 @@
 
 DevMagic can be used in **three different ways**:
 
-1. **Standalone (recommended for most users)** — use this repo directly as a portable dev environment (no need to install Node, Python, Git, etc. on your host; just Podman/Docker + VS Code).
+1. **Standalone (recommended for most users)** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
 2. **Consumer** — embed it as a `.devcontainer` submodule inside your own projects.
-3. **Maintainer** — work on `devmagic.run` itself, using its wrapper `.devcontainer`.
+3. **Maintainer** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
 
-It also supports optional auxiliary services (Ollama, Postgres, Redis, etc.).
+It also supports optional auxiliary services (see `docker-compose.yml` for available options).
 
 ## Table of Contents
 
@@ -38,14 +38,14 @@ It also supports optional auxiliary services (Ollama, Postgres, Redis, etc.).
 
 This repository contains the core configuration for the DevMagic development environment.
 You can use it as a **standalone workspace**, as a **submodule in other projects**, or to
-**develop DevMagic itself**.
+**develop DevMagic itself** (including the website hosted at devmagic.run).
 
 ## 💻 Standalone Usage (Portable Dev Environment) <a id="standalone"></a>
 
 You can use this repository **directly as your dev environment**. This is useful if:
 
 - You are on a fresh OS installation,
-- You don’t want to install development tools (Git, Node, Python, etc.) on your host,
+- You don't want to install development tools on your host,
 - You just want a temporary throw‑away workspace to hack on code.
 
 ### Requirements
@@ -58,35 +58,20 @@ You can use this repository **directly as your dev environment**. This is useful
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/marcelocra/devmagic.run.git
-   cd devmagic.run
+   git clone https://github.com/marcelocra/devmagic.git
+   cd devmagic
    ```
 
-   > 💡 If you don't have `git` installed locally, you can even use GitHub Desktop
-   > or download the repo as a zip, since this environment itself provides Git.
+   > 💡 If you don't have `git` installed locally, you can download the repo as a zip from GitHub, since this environment itself provides Git.
 
-2. Copy the `./devcontainer.json` to the `.devcontainer` folder:
+2. Open the folder in VS Code and choose **"Reopen in Container."**
 
-   ```bash
-   cp ./devcontainer.json ./.devcontainer
-   ```
+3. You now have a fully featured dev environment **without installing anything else** on the host system.
 
-   > [!NOTE]
-   > Once it is possible to [extend a devcontainer](https://github.com/devcontainers/spec/issues/22), this step won't be necessary anymore and we'll be able to simply:
-   >
-   > ```json
-   > {
-   >   "name": "DevMagic (self-hosted)",
-   >   "extends": "../devcontainer.json"
-   > }
-   > ```
-   >
-   > But don't hold your breath... the issue is from 2022.
+   > [!IMPORTANT]
+   > Each image might have a different default user. Be sure to check the `remoteUser` setting in `.devcontainer/devcontainer.json` and adjust any paths that depend on the user, such as volume mounts.
 
-3. Open the folder in VS Code and choose **“Reopen in Container.”**
-
-4. You now have a fully featured dev environment with Git, Node, Python,
-   and all other supported tools, **without installing anything else** on the host system.
+   See `.devcontainer/devcontainer.json` for the current image and available configuration options. You can switch to different base images by editing this file.
 
 ### Temporary Workspace Workflow
 
@@ -101,7 +86,7 @@ You can use this repository **directly as your dev environment**. This is useful
 
 - Each cloned repo automatically uses the same dev container setup.
 
-This makes `devmagic.run` a **portable coding box** you can carry
+This makes DevMagic a **portable coding box** you can carry
 between machines or use on a fresh OS in minutes.
 
 ## 📦 Consumer Usage (for other repositories) <a id="consumer"></a>
@@ -109,7 +94,7 @@ between machines or use on a fresh OS in minutes.
 This repository is also designed to be used as a **submodule** inside your projects, specifically mounted at `.devcontainer/`:
 
 ```bash
-git submodule add https://github.com/marcelocra/devmagic.run.git .devcontainer
+git submodule add https://github.com/marcelocra/devmagic.git .devcontainer
 ```
 
 After adding, your project will have:
@@ -119,15 +104,28 @@ your-project/
 └── .devcontainer/        ← submodule
     ├── devcontainer.json
     ├── docker-compose.yml
-    ├── Dockerfile
-    └── README.md
+    └── ...
 ```
 
 From here, open the project in VS Code and "Reopen in Container."
 
-## Using Auxiliary Services (Ollama, Postgres, etc.) <a id="aux"></a>
+> [!NOTE]
+> Once it is possible to [extend a devcontainer](https://github.com/devcontainers/spec/issues/22), this step won't be necessary anymore and we'll be able to simply:
+>
+> ```json
+> {
+>   "name": "My Project",
+>   "extends": ".devcontainer/devcontainer.json"
+> }
+> ```
+>
+> But don't hold your breath... the issue is from 2022.
 
-This environment is designed to be modular. The main dev container starts by default, and you can bring up additional services like `ollama` or `postgres` on demand.
+## Using Auxiliary Services <a id="aux"></a>
+
+This environment is designed to be modular. The main dev container starts by default, and you can bring up additional services on demand.
+
+See `docker-compose.yml` for the full list of available services and their configuration. Below are some examples of how to use them.
 
 This process starts **after** you have already opened your project in the dev container.
 
@@ -137,22 +135,20 @@ Open a new terminal inside VS Code (`Terminal > New Terminal`). You will be runn
 
 ### Step 2: Start an Auxiliary Service
 
-Your `docker-compose.yml` file is in your workspace, and because you have Docker installed in your container (via the `docker-in-docker` feature), you can use the `docker compose` command.
+Your `docker-compose.yml` file is in your workspace, and because you have Docker installed in your container, you can use the `docker compose` command.
 
-To start the `ollama` service, for example, run:
+Services are organized by profiles. Check `docker-compose.yml` to see available profiles. Examples:
 
 ```bash
+# Start AI services (e.g., Ollama)
 docker compose --profile ai up -d
-```
 
-To start `postgres`, run:
-
-```bash
+# Start database services (e.g., PostgreSQL)
 docker compose --profile postgres up -d
 ```
 
-- `--profile <name>`: This flag tells Compose to look inside your `docker-compose.yml` and only start the services marked with that profile name.
-- `up -d`: This creates and starts the container(s) in the background.
+- `--profile <name>`: This flag tells Compose to only start services marked with that profile name.
+- `up -d`: Creates and starts the container(s) in the background.
 
 ### Step 3: Verify the Service is Running
 
@@ -166,40 +162,43 @@ You will see your main devcontainer and the new service container(s). They are o
 
 ### Step 4: Connect to the Service
 
-From inside your main dev container, you can now access the service using its name as the hostname.
+From inside your main dev container, you can access services using their service name as the hostname.
 
-- **Ollama:** `http://ollama:11434`
-- **Postgres:** `postgresql://codespace:DevTime2024!coding@postgres:5432/devdb`
-- **Redis:** `redis://redis:6379`
+For connection details (hostnames, ports, credentials), refer to the service definitions in `docker-compose.yml`.
+
+Examples:
+
+- Services typically use their service name as hostname (e.g., `http://ollama:11434`, `postgres:5432`)
+- Default credentials and database names are defined in the compose file
+- Port mappings allow access from your host machine as well
 
 ### Step 5: Stopping a Service
 
-When you are finished, you can stop the service(s) without affecting your main dev container.
+When you are finished, you can stop service(s) without affecting your main dev container.
 
 ```bash
-# Stop ollama
-docker compose --profile ai down
+# Stop services by profile
+docker compose --profile <profile-name> down
 
-# Stop postgres
+# Examples:
+docker compose --profile ai down
 docker compose --profile postgres down
 ```
 
 ## 🛠️ Maintainer Usage (developing this repo itself) <a id="maintainer"></a>
 
-Normally, this repository provides the contents of a `.devcontainer/` folder when used as a submodule inside consumer projects.
-
-However, if you want to **develop this repository itself** inside a Dev Container:
+If you want to **develop this repository itself** (including the devmagic.run website in the `www` folder) inside a Dev Container:
 
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/marcelocra/devmagic.run.git
-   cd devmagic.run
+   git clone https://github.com/marcelocra/devmagic.git
+   cd devmagic
    ```
 
-2. A `.devcontainer/devcontainer.json` wrapper file is included, which simply extends the root `devcontainer.json`.  
-   VS Code will detect it and allow you to **“Reopen in Container”**.
+2. A `.devcontainer/devcontainer.json` wrapper file is included at the root level.  
+   VS Code will detect it and allow you to **"Reopen in Container"**.
 
 3. This setup ensures:
    - **Consumers** see the expected `.devcontainer/` contents when using this repo as a submodule.
-   - **Maintainers** can work on `devmagic.run` itself in a self‑hosted Dev Container without extra steps.
+   - **Maintainers** can work on DevMagic itself (including the website) in a self‑hosted Dev Container without extra steps.
