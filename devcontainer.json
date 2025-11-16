@@ -1,16 +1,16 @@
 {
-  // ------------------------------------***------------------------------------
+  // ----------***----------***----------***----------***----------***----------
   // IMPORTANT: Each image might have a different default user. Be sure to set
   // `remoteUser` appropriately and to adjust any paths that depend on the user,
   // such as many of the `mounts` below.
-  // ------------------------------------***------------------------------------
+  // ----------***----------***----------***----------***----------***----------
 
   // Node.js with TypeScript (~2GB) on Debian 12 (Bookworm).
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
   "remoteUser": "node",
 
   // // Universal, with lots of things (~10GB) on Ubuntu 24 (Noble).
-  // "image": "mcr.microsoft.com/devcontainers/universal:3-noble",
+  // "image": "mcr.microsoft.com/devcontainers/universal:4-noble",
   // "remoteUser": "codespace",
 
   "containerEnv": {
