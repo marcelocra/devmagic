@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/universal:3-noble
+FROM mcr.microsoft.com/devcontainers/universal:4-noble
 
 ARG USERNAME=codespace
 ARG USER_UID=1000
