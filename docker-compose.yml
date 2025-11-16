@@ -106,7 +106,7 @@ services:
     image: docker.io/library/postgres:16-alpine
     environment:
       - POSTGRES_DB=devdb
-      - POSTGRI_USER=codespace
+      - POSTGRES_USER=codespace
       - POSTGRES_PASSWORD=${MCRA_DEV_DB_PASSWORD:-DevTime2024!coding}
     ports:
       - "5432:5432"
