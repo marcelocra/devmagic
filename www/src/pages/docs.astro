@@ -1,0 +1,382 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Documentation - DevMagic"
+  description="Complete documentation for DevMagic portable development environments."
+>
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl font-bold mb-4">Documentation</h1>
+      <p class="text-xl text-muted-foreground mb-12">
+        Everything you need to know about using and customizing DevMagic.
+      </p>
+
+      <!-- Table of Contents -->
+      <nav class="bg-muted/50 rounded-lg p-6 mb-12">
+        <h2 class="font-semibold mb-3">On This Page</h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#how-it-works" class="text-primary hover:underline">How It Works</a></li>
+          <li><a href="#usage-modes" class="text-primary hover:underline">Usage Modes</a></li>
+          <li><a href="#auxiliary-services" class="text-primary hover:underline">Auxiliary Services</a></li>
+          <li><a href="#customization" class="text-primary hover:underline">Customization</a></li>
+          <li><a href="#troubleshooting" class="text-primary hover:underline">Troubleshooting</a></li>
+        </ul>
+      </nav>
+
+      <!-- How It Works -->
+      <section id="how-it-works" class="mb-16">
+        <h2 class="text-3xl font-bold mb-6">How It Works</h2>
+        <div class="prose prose-slate dark:prose-invert max-w-none">
+          <p class="text-lg text-muted-foreground mb-4">
+            DevMagic leverages VS Code Dev Containers to create isolated, reproducible development environments using container technology.
+          </p>
+
+          <h3 class="text-xl font-semibold mt-6 mb-3">Architecture Overview</h3>
+          <ul class="space-y-3 text-muted-foreground mb-6">
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">•</span>
+              <span><strong>Base Container:</strong> Uses pre-built Ubuntu images with Node.js and common development tools</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">•</span>
+              <span><strong>Volume Mounts:</strong> Your host credentials (SSH, GitHub, Claude) are mounted read-only into the container</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">•</span>
+              <span><strong>Network:</strong> All containers share a Docker network for inter-service communication</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">•</span>
+              <span><strong>Profiles:</strong> Auxiliary services are organized by Docker Compose profiles for on-demand startup</span>
+            </li>
+          </ul>
+
+          <h3 class="text-xl font-semibold mt-6 mb-3">Key Design Decisions</h3>
+          <div class="bg-card border border-border rounded-lg p-6">
+            <ul class="space-y-3 text-sm text-muted-foreground">
+              <li>
+                <strong>Pre-built Images:</strong> Using pre-built images instead of building on startup significantly reduces container creation time
+              </li>
+              <li>
+                <strong>Mounted Credentials:</strong> Rather than copying secrets into the container, they're mounted from the host, keeping them secure and up-to-date
+              </li>
+              <li>
+                <strong>Modular Services:</strong> Start minimal and add services as needed, avoiding bloat and unnecessary resource usage
+              </li>
+              <li>
+                <strong>Git Submodule Support:</strong> Designed to be embedded in projects while also working standalone
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Usage Modes -->
+      <section id="usage-modes" class="mb-16">
+        <h2 class="text-3xl font-bold mb-6">Usage Modes</h2>
+        <p class="text-muted-foreground mb-6">
+          DevMagic supports three distinct usage patterns, each optimized for different workflows.
+        </p>
+
+        <div class="space-y-6">
+          <div class="border border-border rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-2">Standalone Mode</h3>
+            <p class="text-muted-foreground mb-3">
+              Use DevMagic as your primary development environment. Clone the repo, open in VS Code, and reopen in container. Perfect for:
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+              <li>Fresh OS installations where you don't want to install development tools</li>
+              <li>Temporary workspaces for quick projects or experiments</li>
+              <li>Consistent environments across multiple machines</li>
+            </ul>
+          </div>
+
+          <div class="border border-border rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-2">Consumer Mode</h3>
+            <p class="text-muted-foreground mb-3">
+              Add DevMagic as a Git submodule to your projects to provide instant development environments for all contributors:
+            </p>
+            <CodeBlock
+              code="git submodule add https://github.com/marcelocra/devmagic.git .devcontainer"
+              class="mb-3"
+            />
+            <p class="text-sm text-muted-foreground">
+              Anyone cloning your project can immediately open it in a container with all dependencies configured.
+            </p>
+          </div>
+
+          <div class="border border-border rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-2">Maintainer Mode</h3>
+            <p class="text-muted-foreground mb-3">
+              Work on DevMagic itself (including the website) using its own dev container. The repository includes a wrapper devcontainer configuration that:
+            </p>
+            <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+              <li>Allows consumers to see the expected <code>.devcontainer/</code> structure</li>
+              <li>Enables maintainers to develop in a self-hosted environment</li>
+              <li>Ensures consistency between development and consumer usage</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Auxiliary Services -->
+      <section id="auxiliary-services" class="mb-16">
+        <h2 class="text-3xl font-bold mb-6">Auxiliary Services</h2>
+        <p class="text-muted-foreground mb-6">
+          DevMagic includes optional services that can be started on-demand using Docker Compose profiles.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-4">Starting a Service</h3>
+        <p class="text-muted-foreground mb-3">
+          From a terminal inside your dev container:
+        </p>
+        <CodeBlock
+          code="docker compose --profile postgres up -d"
+          class="mb-6"
+        />
+
+        <h3 class="text-xl font-semibold mb-4">Available Services</h3>
+        <div class="space-y-4">
+          <div class="bg-card border border-border rounded-lg p-5">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold">PostgreSQL</h4>
+              <code class="text-sm bg-muted px-2 py-1 rounded">--profile postgres</code>
+            </div>
+            <p class="text-sm text-muted-foreground mb-3">
+              Full-featured relational database with persistent storage.
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Host:</span>
+                <code>postgres:5432</code>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Database:</span>
+                <code>devmagic</code>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Credentials:</span>
+                <span class="text-muted-foreground">See docker-compose.yml</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-lg p-5">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold">Redis</h4>
+              <code class="text-sm bg-muted px-2 py-1 rounded">--profile redis</code>
+            </div>
+            <p class="text-sm text-muted-foreground mb-3">
+              In-memory data store for caching and real-time features.
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Host:</span>
+                <code>redis:6379</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-lg p-5">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold">MongoDB</h4>
+              <code class="text-sm bg-muted px-2 py-1 rounded">--profile mongo</code>
+            </div>
+            <p class="text-sm text-muted-foreground mb-3">
+              Document-oriented NoSQL database.
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Host:</span>
+                <code>mongo:27017</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-lg p-5">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold">MinIO</h4>
+              <code class="text-sm bg-muted px-2 py-1 rounded">--profile minio</code>
+            </div>
+            <p class="text-sm text-muted-foreground mb-3">
+              S3-compatible object storage.
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">API:</span>
+                <code>http://minio:9000</code>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">Console:</span>
+                <code>http://localhost:9001</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-lg p-5">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold">Ollama</h4>
+              <code class="text-sm bg-muted px-2 py-1 rounded">--profile ai</code>
+            </div>
+            <p class="text-sm text-muted-foreground mb-3">
+              Run large language models locally.
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex gap-2">
+                <span class="text-muted-foreground">API:</span>
+                <code>http://ollama:11434</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4 mt-8">Managing Services</h3>
+        <div class="space-y-3">
+          <div>
+            <h4 class="font-semibold mb-2">Verify a service is running:</h4>
+            <CodeBlock code="docker ps" />
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2">Stop a service:</h4>
+            <CodeBlock code="docker compose --profile postgres down" />
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2">View logs:</h4>
+            <CodeBlock code="docker compose logs postgres -f" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Customization -->
+      <section id="customization" class="mb-16">
+        <h2 class="text-3xl font-bold mb-6">Customization</h2>
+        <p class="text-muted-foreground mb-6">
+          DevMagic is designed to be customized. Here's how to make it your own.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-4">Changing the Base Image</h3>
+        <p class="text-muted-foreground mb-3">
+          Edit <code>.devcontainer/devcontainer.json</code> and modify the <code>image</code> field:
+        </p>
+        <CodeBlock
+          code={`{
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20-bookworm",
+  // ... other settings
+}`}
+          lang="json"
+          class="mb-6"
+        />
+
+        <h3 class="text-xl font-semibold mb-4">Adding VS Code Extensions</h3>
+        <p class="text-muted-foreground mb-3">
+          Add extension IDs to the <code>customizations.vscode.extensions</code> array:
+        </p>
+        <CodeBlock
+          code={`{
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "your-extension-id"
+      ]
+    }
+  }
+}`}
+          lang="json"
+          class="mb-6"
+        />
+
+        <h3 class="text-xl font-semibold mb-4">Adding Tools and Packages</h3>
+        <p class="text-muted-foreground mb-3">
+          Use the <code>postCreateCommand</code> to install additional tools:
+        </p>
+        <CodeBlock
+          code={`{
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y your-package"
+}`}
+          lang="json"
+          class="mb-6"
+        />
+
+        <h3 class="text-xl font-semibold mb-4">Mounting Additional Volumes</h3>
+        <p class="text-muted-foreground mb-3">
+          Add mount points in the <code>mounts</code> array in <code>.devcontainer/devcontainer.json</code>. You can mount host directories into the container for sharing files, credentials, and configuration.
+        </p>
+        <p class="text-sm text-muted-foreground">
+          See the <a href="https://containers.dev/implementors/json_reference/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">devcontainer.json reference</a> for details on available mount options.
+        </p>
+      </section>
+
+      <!-- Troubleshooting -->
+      <section id="troubleshooting" class="mb-16">
+        <h2 class="text-3xl font-bold mb-6">Troubleshooting</h2>
+
+        <div class="space-y-6">
+          <div class="border-l-4 border-primary pl-4">
+            <h3 class="font-semibold mb-2">Container fails to start</h3>
+            <p class="text-sm text-muted-foreground mb-2">
+              Check that your container runtime (Docker/Podman) is running and you have sufficient resources (memory, disk space).
+            </p>
+            <CodeBlock
+              code="docker ps
+docker logs <container-id>"
+              class="text-xs"
+            />
+          </div>
+
+          <div class="border-l-4 border-primary pl-4">
+            <h3 class="font-semibold mb-2">VS Code can't connect to container</h3>
+            <p class="text-sm text-muted-foreground">
+              Ensure the Dev Containers extension is installed. Try rebuilding the container: Command Palette → "Dev Containers: Rebuild Container"
+            </p>
+          </div>
+
+          <div class="border-l-4 border-primary pl-4">
+            <h3 class="font-semibold mb-2">Mounted credentials not working</h3>
+            <p class="text-sm text-muted-foreground mb-2">
+              Check the <code>remoteUser</code> setting matches the user in your base image. Paths in mounts must match the remote user's home directory.
+            </p>
+          </div>
+
+          <div class="border-l-4 border-primary pl-4">
+            <h3 class="font-semibold mb-2">Auxiliary service won't start</h3>
+            <p class="text-sm text-muted-foreground mb-2">
+              Verify the profile name is correct and check logs:
+            </p>
+            <CodeBlock
+              code="docker compose --profile postgres up
+docker compose logs postgres"
+              class="text-xs"
+            />
+          </div>
+
+          <div class="border-l-4 border-primary pl-4">
+            <h3 class="font-semibold mb-2">Slow performance</h3>
+            <p class="text-sm text-muted-foreground">
+              Consider increasing resources allocated to your container runtime. On macOS/Windows, adjust Docker Desktop settings. Using named volumes instead of bind mounts can also improve performance.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-muted/50 rounded-lg p-6">
+          <h3 class="font-semibold mb-2">Still need help?</h3>
+          <p class="text-sm text-muted-foreground mb-4">
+            Check existing issues or open a new one on GitHub:
+          </p>
+          <a
+            href="https://github.com/marcelocra/devmagic/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary hover:underline font-medium"
+          >
+            Visit Issue Tracker →
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

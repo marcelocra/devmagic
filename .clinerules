@@ -1,0 +1,86 @@
+# DevMagic Development Context
+
+## Project Overview
+
+DevMagic is a portable development environment using VS Code Dev Containers. It provides zero-friction setup for development across any platform with consistent tooling and optional auxiliary services.
+
+## Key Files
+
+- `.devcontainer/devcontainer.json` - Main dev container configuration
+- `setup/devmagic.sh` - Installation script (served at /install)
+- `setup/devcontainer-setup.sh` - Container setup script (served at /setup with versioning)
+- `www/` - Website source (Astro + Tailwind CSS + shadcn/ui)
+- `docs/` - Built website (auto-generated, for GitHub Pages)
+- `docker-compose.yml` - Auxiliary services definitions
+
+## Project Structure
+
+```
+devmagic/
+├── .devcontainer/          # Dev container configuration
+├── setup/                  # Installation and setup scripts
+├── www/                    # Website source (Astro)
+│   ├── src/
+│   │   ├── pages/         # Website pages
+│   │   ├── layouts/       # Page layouts
+│   │   ├── components/    # Reusable components
+│   │   ├── styles/        # Global styles
+│   │   └── data/          # Data files (showcase.yml)
+│   └── astro.config.mjs
+├── docs/                   # Built website (GitHub Pages)
+├── docker-compose.yml      # Auxiliary services
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+└── LICENSE.md
+```
+
+## Conventions
+
+- **Use conventional commits** for automatic changelog generation
+- **Test changes in a dev container** before committing
+- **Update documentation** when changing features or configuration
+- **Build website outputs to `docs/`** for GitHub Pages hosting
+
+## Tech Stack
+
+- **Dev Containers** (Docker/Podman) - Portable environment runtime
+- **Astro** - Static site generation for website
+- **Tailwind CSS v4+** - Styling framework
+- **shadcn/ui** - UI component system
+- **GitHub Pages** - Website hosting (serves from `docs/`)
+
+## Common Tasks
+
+### Modifying Dev Container
+
+1. Edit `.devcontainer/devcontainer.json`
+2. Rebuild container to test changes
+3. Update documentation if configuration changes
+
+### Updating Setup Scripts
+
+1. Edit files in `setup/` directory
+2. Test in a fresh container (scripts should be idempotent)
+3. Scripts are served via website endpoints (/install, /setup)
+
+### Website Changes
+
+1. Work in `www/src/`
+2. Run `npm run dev` for local preview
+3. Build with `npm run build` (outputs to `docs/`)
+4. Commit both source and built files
+
+### Creating New Version
+
+1. Update CHANGELOG.md with changes
+2. Create git tag: `git tag -a v0.x.0 -m "Release v0.x.0"`
+3. Push tag: `git push --tags`
+4. GitHub Actions will deploy the website
+
+## Development Principles
+
+- **Prioritize developer experience** and simplicity
+- **Keep documentation in sync** with code
+- **Use conventional commits** for changelog automation
+- **Test in actual dev containers** before committing
+- **Start minimal, scale up** - don't add unnecessary complexity

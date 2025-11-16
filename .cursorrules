@@ -1,0 +1,102 @@
+# DevMagic Development Guidelines
+
+You are helping develop DevMagic, a portable development environment system built on VS Code Dev Containers.
+
+## Project Structure
+
+- `.devcontainer/` - Dev container configuration (consumed by VS Code)
+- `setup/` - Installation and setup scripts
+- `www/` - Website source (Astro, Tailwind CSS, shadcn/ui)
+- `docs/` - Built website (auto-generated, don't edit directly)
+- `docker-compose.yml` - Auxiliary services (PostgreSQL, Redis, MongoDB, MinIO, Ollama)
+
+## Development Principles
+
+1. **Prioritize developer experience** and simplicity over complexity
+2. **Keep documentation in sync** with code changes
+3. **Use conventional commits** for automatic changelog generation
+4. **Test in actual dev containers** before committing changes
+5. **Start minimal, scale up** - avoid unnecessary bloat
+
+## Coding Standards
+
+- **TypeScript** for website code (strict mode)
+- **Bash** for setup scripts (must be idempotent)
+- **Conventional commits** for version control
+- **Clarity over cleverness** - prioritize maintainability
+
+## Common Tasks
+
+### Modifying Dev Container
+
+```bash
+# Edit configuration
+vim .devcontainer/devcontainer.json
+
+# Rebuild to test (in VS Code)
+# Command Palette → "Dev Containers: Rebuild Container"
+```
+
+### Updating Setup Scripts
+
+```bash
+# Edit scripts (must be idempotent!)
+vim setup/devcontainer-setup.sh
+vim setup/devmagic.sh
+
+# Test in fresh container
+docker run -it --rm ubuntu:latest bash
+# Run your script manually to verify
+```
+
+### Website Development
+
+```bash
+cd www
+npm install
+npm run dev       # Local development server
+npm run build     # Build to ../docs
+```
+
+### Creating Versions
+
+```bash
+# Update CHANGELOG.md first
+vim CHANGELOG.md
+
+# Create and push tag
+git tag -a v0.x.0 -m "Release v0.x.0"
+git push --tags
+```
+
+## Key Technologies
+
+- **Dev Containers** with Docker/Podman
+- **Astro** for static site generation
+- **Tailwind CSS v4+** for styling
+- **shadcn/ui** for UI components
+- **GitHub Pages** for hosting (serves from docs/)
+
+## Testing Approach
+
+- **Dev container changes:** Rebuild container and verify all features work
+- **Website changes:** Run `npm run dev` and test locally
+- **Setup scripts:** Test in fresh container, ensure idempotency
+- **Documentation:** Build website and verify all links work
+
+## File Locations
+
+- Website pages: `www/src/pages/`
+- Components: `www/src/components/`
+- Layouts: `www/src/layouts/`
+- Styles: `www/src/styles/`
+- Data: `www/src/data/`
+- Scripts: `setup/`
+
+## Important Notes
+
+- The `docs/` directory is auto-generated - edit source in `www/src/` instead
+- Setup scripts are served via website endpoints (/install, /setup with versions)
+- Use pre-built images for dev containers to speed up startup
+- Mount credentials from host (don't copy secrets into containers)
+- Keep auxiliary services optional via Docker Compose profiles

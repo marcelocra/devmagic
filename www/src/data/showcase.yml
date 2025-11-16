@@ -1,0 +1,10 @@
+# DevMagic Showcase
+# Add your project here! Edit this file on GitHub and submit a PR:
+# https://github.com/marcelocra/devmagic/edit/main/www/src/data/showcase.yml
+
+projects:
+  # Example entry (remove this when adding real projects):
+  # - name: "My Awesome Project"
+  #   url: "https://github.com/username/project"
+  #   description: "A brief description of how you use DevMagic"
+  #   author: "username"
