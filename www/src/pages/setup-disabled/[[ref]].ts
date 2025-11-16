@@ -1,4 +1,14 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute, GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  // Pre-generate routes for common versions
+  // Note: For versioned routes (@v0.1.0, etc.), those need to be added here
+  return [
+    { params: { ref: undefined as any } }, // Base /setup route
+    { params: { ref: 'main' } }, // /setup/main
+    { params: { ref: '@v0.1.0' } } // /setup/@v0.1.0
+  ];
+};
 
 export const GET: APIRoute = async ({ params }) => {
   // Extract the ref parameter (version tag, commit hash, or branch)
