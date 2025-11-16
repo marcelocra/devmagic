@@ -14,20 +14,20 @@ This is the source code for the DevMagic documentation website, built with Astro
 ### Prerequisites
 
 - Node.js 20 or later
-- npm (comes with Node.js)
+- pnpm 9 or later (install with `npm install -g pnpm`)
 
 ### Getting Started
 
 1. **Install dependencies:**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Start development server:**
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
    The site will be available at `http://localhost:4321`
@@ -35,7 +35,7 @@ This is the source code for the DevMagic documentation website, built with Astro
 3. **Build for production:**
 
    ```bash
-   npm run build
+   pnpm run build
    ```
 
    The built site will be output to `../docs/` (for GitHub Pages)
@@ -43,16 +43,16 @@ This is the source code for the DevMagic documentation website, built with Astro
 4. **Preview production build:**
 
    ```bash
-   npm run preview
+   pnpm run preview
    ```
 
 ### Available Scripts
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build production site to `../docs/`
-- `npm run preview` - Preview production build locally
-- `npm run astro` - Run Astro CLI commands
-- `npm run changelog` - Generate/update CHANGELOG.md from git history
+- `pnpm run dev` - Start development server with hot reload
+- `pnpm run build` - Build production site to `../docs/`
+- `pnpm run preview` - Preview production build locally
+- `pnpm run astro` - Run Astro CLI commands
+- `pnpm run changelog` - Generate/update CHANGELOG.md from git history
 
 ## Project Structure
 
@@ -203,7 +203,7 @@ If needed, you can manually build and commit:
 
 ```bash
 # Build the site
-npm run build
+pnpm run build
 
 # Commit the built files
 git add ../docs
@@ -216,12 +216,12 @@ git push
 ### Build Errors
 
 - **Check Node.js version:** Must be 20 or later
-- **Clear cache:** Delete `node_modules` and `package-lock.json`, then `npm install`
-- **Check Astro errors:** Run `npm run astro check` for type errors
+- **Clear cache:** Delete `node_modules` and `pnpm-lock.yaml`, then `pnpm install`
+- **Check Astro errors:** Run `pnpm run astro check` for type errors
 
 ### Development Server Issues
 
-- **Port already in use:** Change port with `npm run dev -- --port 3000`
+- **Port already in use:** Change port with `pnpm run dev -- --port 3000`
 - **Hot reload not working:** Restart the dev server
 
 ### Deployment Issues
