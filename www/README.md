@@ -13,8 +13,8 @@ This is the source code for the DevMagic documentation website, built with Astro
 
 ### Prerequisites
 
-- Node.js 20 or later
-- pnpm 9 or later (install with `npm install -g pnpm`)
+- Node.js 22 or later
+- pnpm 10 or later (install with `npm install -g pnpm`)
 
 ### Getting Started
 
@@ -215,7 +215,7 @@ git push
 
 ### Build Errors
 
-- **Check Node.js version:** Must be 20 or later
+- **Check Node.js version:** Must be 22 or later
 - **Clear cache:** Delete `node_modules` and `pnpm-lock.yaml`, then `pnpm install`
 - **Check Astro errors:** Run `pnpm run astro check` for type errors
 

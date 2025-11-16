@@ -98,9 +98,9 @@ const { title } = Astro.props;
 ## Testing Approach
 
 - **Dev container changes:** Rebuild container and verify all mounted credentials work
-- **Website changes:** Run `npm run dev` in `www/` directory
+- **Website changes:** Run `pnpm run dev` in `www/` directory
 - **Setup scripts:** Test in fresh container, ensure idempotency
-- **Build process:** Run `npm run build` and verify `docs/` output
+- **Build process:** Run `pnpm run build` and verify `docs/` output
 
 ## File Organization
 

@@ -19,8 +19,8 @@ Thank you for your interest in contributing to DevMagic! This is primarily a per
 
    ```bash
    cd www
-   npm install
-   npm run dev
+   pnpm install
+   pnpm run dev
    ```
 
    The site will be available at `http://localhost:4321`
@@ -80,8 +80,8 @@ If you're modifying `.devcontainer/devcontainer.json` or related files:
 The website lives in the `www/` folder and is built with Astro:
 
 1. Make your changes in `www/src/`
-2. Test locally with `npm run dev`
-3. Build to verify: `npm run build`
+2. Test locally with `pnpm run dev`
+3. Build to verify: `pnpm run build`
 4. The built site goes to `docs/` for GitHub Pages
 
 ### Working on Setup Scripts
