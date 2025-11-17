@@ -1,4 +1,0 @@
-# Auto-generated documentation site
-# Mark as generated for GitHub and use 'ours' merge strategy to avoid conflicts
-# After any merge, rebuild with: cd www && pnpm run build
-docs/** merge=ours linguist-generated=true
