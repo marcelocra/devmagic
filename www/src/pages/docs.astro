@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+---
+
+<BaseLayout
+  title="Documentation - DevMagic"
+  description="Complete documentation for DevMagic portable development environments."
+>
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl font-bold mb-4">Documentation</h1>
+      <p class="text-xl text-muted-foreground mb-12">
+        Everything you need to know about using and customizing DevMagic.
+      </p>
+
+      <div class="bg-card border border-primary/20 rounded-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">📖 Documentation Coming Soon</h2>
+        <p class="text-muted-foreground mb-4">
+          Comprehensive documentation is being prepared. For now, please refer to:
+        </p>
+        <ul class="space-y-2">
+          <li>
+            <a href="/getting-started" class="text-primary hover:underline">Getting Started Guide</a> - Quick start instructions
+          </li>
+          <li>
+            <a href="https://github.com/marcelocra/devmagic/blob/main/README.md" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+              README.md
+            </a> - Full project documentation
+          </li>
+          <li>
+            <a href="https://github.com/marcelocra/devmagic/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+              CONTRIBUTING.md
+            </a> - Development and contribution guidelines
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

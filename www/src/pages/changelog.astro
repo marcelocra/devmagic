@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Changelog - DevMagic"
+  description="Version history and changes for DevMagic."
+>
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl font-bold mb-4">Changelog</h1>
+      <p class="text-xl text-muted-foreground mb-8">
+        All notable changes to DevMagic are documented here.
+      </p>
+
+      <div class="space-y-8">
+        <!-- Version 0.1.0 -->
+        <article class="border-l-4 border-primary pl-6">
+          <div class="flex items-baseline gap-3 mb-2">
+            <h2 class="text-2xl font-bold">v0.1.0</h2>
+            <time class="text-sm text-muted-foreground">2025-11-16</time>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-semibold text-green-600 dark:text-green-400 mb-2">Added</h3>
+              <ul class="space-y-1 text-muted-foreground text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Initial release of DevMagic portable development environment</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Support for three usage modes: standalone, consumer (git submodule), and maintainer</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>VS Code Dev Container configuration with pre-built Ubuntu images</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Auxiliary services via Docker Compose: PostgreSQL, Redis, MongoDB, MinIO, Ollama</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Automatic mounting of host credentials (SSH, GitHub, Claude)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Pre-configured VS Code extensions for productivity</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Documentation website at devmagic.run</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Setup script endpoint with version pinning support</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Installation script for quick setup</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-primary">•</span>
+                  <span>Apache 2.0 license</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Future versions will be added here -->
+        <div class="bg-muted/50 rounded-lg p-6 text-center">
+          <p class="text-muted-foreground text-sm">
+            This changelog is automatically generated from commit history using conventional commits.
+          </p>
+          <p class="text-muted-foreground text-sm mt-2">
+            For the latest changes, see the <a href="https://github.com/marcelocra/devmagic/commits/main" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">commit history on GitHub</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Version Info -->
+      <div class="mt-12 grid md:grid-cols-2 gap-6">
+        <div class="bg-card border border-border rounded-lg p-6">
+          <h3 class="font-semibold mb-3">Release Schedule</h3>
+          <p class="text-sm text-muted-foreground">
+            DevMagic follows semantic versioning. New versions are released as needed based on features and fixes.
+          </p>
+        </div>
+
+        <div class="bg-card border border-border rounded-lg p-6">
+          <h3 class="font-semibold mb-3">GitHub Releases</h3>
+          <p class="text-sm text-muted-foreground mb-3">
+            Detailed release notes are available on GitHub:
+          </p>
+          <a
+            href="https://github.com/marcelocra/devmagic/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary hover:underline text-sm font-medium"
+          >
+            View all releases →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
