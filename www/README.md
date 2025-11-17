@@ -38,8 +38,6 @@ This is the source code for the DevMagic documentation website, built with Astro
    pnpm run build
    ```
 
-   The built site will be output to `../docs/` (for GitHub Pages)
-
 4. **Preview production build:**
 
    ```bash
@@ -49,7 +47,7 @@ This is the source code for the DevMagic documentation website, built with Astro
 ### Available Scripts
 
 - `pnpm run dev` - Start development server with hot reload
-- `pnpm run build` - Build production site to `../docs/`
+- `pnpm run build` - Build production site
 - `pnpm run preview` - Preview production build locally
 - `pnpm run astro` - Run Astro CLI commands
 - `pnpm run changelog` - Generate/update CHANGELOG.md from git history
@@ -62,6 +60,7 @@ www/
 │   ├── pages/              # Routes and pages
 │   │   ├── index.astro    # Homepage
 │   │   ├── setup/         # /setup endpoint with versioning
+│   │   │   └── [[ref]].ts # Dynamic versioned setup endpoint
 │   │   └── install.ts     # /install endpoint
 │   ├── layouts/            # Page layouts
 │   │   └── BaseLayout.astro
@@ -69,12 +68,11 @@ www/
 │   │   ├── Button.astro
 │   │   └── CodeBlock.astro
 │   ├── styles/            # Global styles
-│   │   └── global.css
+│   │   └── global.css     # Tailwind v4 with custom theme
 │   └── data/              # Data files
 │       └── showcase.yml   # Projects using DevMagic
 ├── public/                # Static assets (copied as-is)
-├── astro.config.mjs       # Astro configuration
-├── tailwind.config.mjs    # Tailwind CSS configuration
+├── astro.config.mjs       # Astro + Vercel configuration
 ├── tsconfig.json          # TypeScript configuration
 └── package.json
 ```
@@ -84,9 +82,9 @@ www/
 ### Build Process
 
 1. **Source** - Website pages and components in `src/`
-2. **Build** - Astro compiles to static HTML/CSS/JS
-3. **Output** - Built files go to `../docs/` (GitHub Pages requirement)
-4. **Deploy** - GitHub Actions commits built files and GitHub Pages serves them
+2. **Build** - Astro compiles with Vercel serverless adapter
+3. **Deploy** - Vercel automatically deploys on push to main
+4. **Serve** - Static pages served from edge, dynamic routes from serverless functions
 
 ### Special Endpoints
 
@@ -179,54 +177,40 @@ projects:
 
 ## Deployment
 
-### GitHub Pages Setup
+The website is deployed on **Vercel** with automatic deployments on every push.
 
-1. Enable GitHub Pages in repository settings
-2. Set source to "Deploy from a branch"
-3. Select `main` branch and `/docs` folder
-4. Configure custom domain (optional): `devmagic.run`
+### Vercel Setup
+
+1. Import the repository in Vercel
+2. Set the root directory to `www/`
+3. Vercel will automatically detect Astro and configure build settings
+4. Configure custom domain: `devmagic.run`
 
 ### Automatic Deployment
 
-On every push to `main` that changes files in `www/`:
+Vercel automatically deploys:
+- **Production**: Pushes to `main` branch → https://devmagic.run
+- **Preview**: Pull requests → temporary preview URLs
 
-1. GitHub Actions runs the deploy workflow
-2. Installs dependencies and builds the site
-3. Commits the built files to `docs/`
-4. GitHub Pages automatically deploys the changes
+### Environment Variables
 
-See `.github/workflows/deploy-site.yml` for the full workflow.
+No environment variables are required for the basic setup.
 
 ### Manual Deployment
 
-If needed, you can manually build and commit:
+Using Vercel CLI:
 
 ```bash
-# Build the site
-pnpm run build
+# Install Vercel CLI
+npm i -g vercel
 
-# Commit the built files
-git add ../docs
-git commit -m "build: update website"
-git push
+# Deploy to preview
+cd www
+vercel
+
+# Deploy to production
+vercel --prod
 ```
-
-### Handling the `docs/` Folder
-
-The `docs/` folder is **auto-generated** from the build process and may cause merge conflicts when pulling changes. To avoid this:
-
-1. **Git Attributes:** The repository includes `.gitattributes` that marks `docs/**` with `merge=ours` strategy
-2. **Configure merge driver:** Run this once in your local clone:
-   ```bash
-   git config merge.ours.driver true
-   ```
-3. **After any merge/pull:** If you see conflicts in `docs/`, just rebuild:
-   ```bash
-   cd www
-   pnpm run build
-   ```
-
-The `merge=ours` strategy will automatically use your local version during conflicts, then you rebuild to get the correct output.
 
 ## Troubleshooting
 
@@ -243,9 +227,9 @@ The `merge=ours` strategy will automatically use your local version during confl
 
 ### Deployment Issues
 
-- **GitHub Actions failing:** Check the Actions tab for error logs
-- **Changes not appearing:** Verify `docs/` was committed and pushed
-- **404 errors:** Ensure GitHub Pages is enabled and configured correctly
+- **Build failing on Vercel:** Check the build logs in Vercel dashboard
+- **404 errors:** Ensure routes are properly configured in `astro.config.mjs`
+- **Dynamic routes not working:** Verify `output: 'hybrid'` and `prerender: false` for API routes
 
 ## Contributing
 
