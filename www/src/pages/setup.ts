@@ -2,9 +2,16 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ params }) => {
-  // Extract the ref parameter (version tag, commit hash, or branch)
-  const ref = params.ref?.replace('@', '') || 'main';
+export const GET: APIRoute = async ({ request, url }) => {
+  // Extract version from URL path if present (e.g., /setup@v0.1.0)
+  const pathname = url.pathname;
+  let ref = 'main';
+
+  // Check if the path contains @version syntax
+  const match = pathname.match(/\/setup@(.+)/);
+  if (match && match[1]) {
+    ref = match[1];
+  }
 
   // Construct the GitHub raw URL
   const scriptUrl = `https://raw.githubusercontent.com/marcelocra/devmagic/${ref}/setup/devcontainer-setup.sh`;

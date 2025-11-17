@@ -29,6 +29,8 @@
     // "MCRA_SETUP_EDITOR_LAUNCHER": "${localEnv:MCRA_SETUP_EDITOR_LAUNCHER:true}",
     // "MCRA_SETUP_SYSTEM_PACKAGES": "${localEnv:MCRA_SETUP_SYSTEM_PACKAGES:true}",
     // "MCRA_SETUP_PNPM": "${localEnv:MCRA_SETUP_PNPM:true}",
+    // "MCRA_QUICK": "${localEnv:MCRA_QUICK:false}",
+    // "MCRA_INTERACTIVE": "${localEnv:MCRA_INTERACTIVE:false}",
     // -----------------------------------***-----------------------------------
     // Shell history directory (automatically mounted from OneDrive).
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
