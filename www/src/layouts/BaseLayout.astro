@@ -42,7 +42,6 @@ const currentPath = Astro.url.pathname;
       };
 
       const theme = getThemePreference();
-      const isDark = theme === 'dark';
 
       // Remove both classes first
       document.documentElement.classList.remove('dark', 'light');
@@ -200,6 +199,11 @@ const currentPath = Astro.url.pathname;
         document.documentElement.classList.remove('dark', 'light');
         // Add the new theme
         document.documentElement.classList.add(newTheme);
+
+        // Save to localStorage
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('theme', newTheme);
+        }
 
         updateThemeIcon();
       });

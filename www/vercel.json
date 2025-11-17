@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/setup@:version",
+      "destination": "/setup"
+    }
+  ]
+}
