@@ -7,19 +7,23 @@
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       };
 
-      const isDark = getThemePreference() === 'dark';
-      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+      const theme = getThemePreference();
+      const isDark = theme === 'dark';
+
+      // Remove both classes first
+      document.documentElement.classList.remove('dark', 'light');
+      // Add the current theme class
+      document.documentElement.classList.add(theme);
 
       if (typeof localStorage !== 'undefined') {
         const observer = new MutationObserver(() => {
           const isDark = document.documentElement.classList.contains('dark');
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          const theme = isDark ? 'dark' : 'light';
+          localStorage.setItem('theme', theme);
         });
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
       }
-    </script><link rel="stylesheet" href="/_astro/about.B7WCrrRK.css"></head> <body> <div class="min-h-screen flex flex-col"> <header class="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50"> <nav class="container mx-auto px-4 py-4 flex items-center justify-between"> <div class="flex items-center space-x-8"> <a href="/" class="text-xl font-bold hover:text-primary transition-colors">
-DevMagic
-</a> <div class="hidden md:flex space-x-6"> <a href="/getting-started" class="hover:text-foreground transition-colors text-muted-foreground">
+    </script><link rel="stylesheet" href="/_astro/about.Cq7xHdsg.css"></head> <body> <div class="min-h-screen flex flex-col"> <header class="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50"> <nav class="container mx-auto px-4 py-4 flex items-center justify-between"> <div class="flex items-center space-x-8"> <a href="/" class="flex items-center space-x-2 text-xl font-bold hover:opacity-90 transition-opacity group"> <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"> <defs> <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1"></stop> <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1"></stop> </linearGradient> </defs> <rect width="100" height="100" rx="20" fill="url(#logo-grad)"></rect> <path d="M 30 35 L 50 55 L 70 35" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path> <path d="M 30 55 L 50 75 L 70 55" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path> </svg> <span class="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] bg-clip-text text-transparent">DevMagic</span> </a> <div class="hidden md:flex space-x-6"> <a href="/getting-started" class="hover:text-foreground transition-colors text-muted-foreground">
 Getting Started
 </a> <a href="/features" class="hover:text-foreground transition-colors text-muted-foreground">
 Features
@@ -77,4 +81,4 @@ Issue Tracker
 About
 </a> </li> </ul> </div> <div> <h3 class="font-semibold mb-3">Legal</h3> <ul class="space-y-2 text-sm"> <li> <a href="https://github.com/marcelocra/devmagic/blob/main/LICENSE.md" target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition-colors">
 Apache 2.0 License
-</a> </li> </ul> </div> </div> <div class="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground"> <p>© 2025 DevMagic. Apache 2.0 Licensed.</p> </div> </div> </footer> </div> <script type="module">const n=document.getElementById("theme-toggle"),o=document.getElementById("theme-toggle-dark-icon"),c=document.getElementById("theme-toggle-light-icon");function t(){const e=document.documentElement.classList.contains("dark");o?.classList.toggle("hidden",!e),c?.classList.toggle("hidden",e)}t();n?.addEventListener("click",()=>{document.documentElement.classList.toggle("dark"),t()});</script> </body> </html>
+</a> </li> </ul> </div> </div> <div class="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground"> <p>© 2025 DevMagic. Apache 2.0 Licensed.</p> </div> </div> </footer> </div> <script type="module">const o=document.getElementById("theme-toggle"),c=document.getElementById("theme-toggle-dark-icon"),d=document.getElementById("theme-toggle-light-icon");function t(){const e=document.documentElement.classList.contains("dark");c?.classList.toggle("hidden",!e),d?.classList.toggle("hidden",e)}t();o?.addEventListener("click",()=>{const n=document.documentElement.classList.contains("dark")?"light":"dark";document.documentElement.classList.remove("dark","light"),document.documentElement.classList.add(n),t()});document.addEventListener("astro:page-load",()=>{t()});</script> </body> </html>
