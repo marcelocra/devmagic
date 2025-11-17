@@ -211,6 +211,23 @@ git commit -m "build: update website"
 git push
 ```
 
+### Handling the `docs/` Folder
+
+The `docs/` folder is **auto-generated** from the build process and may cause merge conflicts when pulling changes. To avoid this:
+
+1. **Git Attributes:** The repository includes `.gitattributes` that marks `docs/**` with `merge=ours` strategy
+2. **Configure merge driver:** Run this once in your local clone:
+   ```bash
+   git config merge.ours.driver true
+   ```
+3. **After any merge/pull:** If you see conflicts in `docs/`, just rebuild:
+   ```bash
+   cd www
+   pnpm run build
+   ```
+
+The `merge=ours` strategy will automatically use your local version during conflicts, then you rebuild to get the correct output.
+
 ## Troubleshooting
 
 ### Build Errors
