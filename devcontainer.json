@@ -20,17 +20,8 @@
     "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
     "LANG": "${localEnv:LANG:en_US.UTF-8}",
     // -----------------------------------***-----------------------------------
-    // Options commented out, showing their default values. Use environment
-    // variables from the host machine to override or uncomment and modify here.
-    // -----------------------------------***-----------------------------------
-    // "MCRA_SETUP_ZSH_PLUGINS": "${localEnv:MCRA_SETUP_ZSH_PLUGINS:true}",
-    // "MCRA_SETUP_DOTFILES": "${localEnv:MCRA_SETUP_DOTFILES:true}",
-    // "MCRA_USE_MISE": "${localEnv:MCRA_USE_MISE:false}",
-    // "MCRA_SETUP_EDITOR_LAUNCHER": "${localEnv:MCRA_SETUP_EDITOR_LAUNCHER:true}",
-    // "MCRA_SETUP_SYSTEM_PACKAGES": "${localEnv:MCRA_SETUP_SYSTEM_PACKAGES:true}",
-    // "MCRA_SETUP_PNPM": "${localEnv:MCRA_SETUP_PNPM:true}",
-    // "MCRA_QUICK": "${localEnv:MCRA_QUICK:false}",
-    // "MCRA_INTERACTIVE": "${localEnv:MCRA_INTERACTIVE:false}",
+    // Setup script configuration: see .env.example for all available options.
+    // To customize, copy .env.example to .env and modify as needed.
     // -----------------------------------***-----------------------------------
     // Shell history directory (automatically mounted from OneDrive).
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
@@ -40,7 +31,9 @@
     // Ollama host URL for local LLM development. Kept here for convenience.
     "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
   },
-  "postCreateCommand": "curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | bash",
+  // FYI: See the .env.example file for all available MCRA_* variables that can
+  // be set and used here.
+  "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "upgradePackages": "false", // Skip package updates to speed up builds.

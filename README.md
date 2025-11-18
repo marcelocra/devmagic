@@ -73,6 +73,29 @@ You can use this repository **directly as your dev environment**. This is useful
 
    See `.devcontainer/devcontainer.json` for the current image and available configuration options. You can switch to different base images by editing this file.
 
+### Customizing the Setup
+
+The setup script (`https://devmagic.run/setup`) runs automatically when the container is created. To customize what gets installed:
+
+1. Create a `.devcontainer/.env` file (see `.devcontainer/.env.example` for all available options):
+
+   ```bash
+   cp .devcontainer/.env.example .devcontainer/.env
+   ```
+
+2. Edit `.devcontainer/.env` to enable/disable features:
+
+   ```bash
+   # Example: Enable quick mode and mise
+   MCRA_QUICK=true
+   MCRA_SETUP_MISE=true
+   MCRA_SETUP_PNPM=false
+   ```
+
+3. Rebuild the container for changes to take effect.
+
+The setup script automatically loads `.devcontainer/.env` if present. Without a `.env` file, sensible defaults are used (see `.env.example` for what those are).
+
 ### Temporary Workspace Workflow
 
 - Use this repo as a personal dev terminal/workstation.
