@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevMagic Website
 
-## Getting Started
+This is the source code for the DevMagic documentation website, built with Next.js and hosted at [devmagic.run](https://devmagic.run).
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **[Next.js 16](https://nextjs.org)** - React framework with App Router
+- **[React 19](https://react.dev)** - UI library
+- **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first CSS framework
+- **[TypeScript](https://www.typescriptlang.org)** - Type-safe JavaScript
+
+## Development
+
+### Prerequisites
+
+- Node.js 22 or later
+- pnpm 10 or later (install with `npm install -g pnpm`)
+
+### Getting Started
+
+1. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+2. **Start development server:**
+
+   ```bash
+   pnpm run dev
+   ```
+
+   The site will be available at `http://localhost:3000`
+
+3. **Build for production:**
+
+   ```bash
+   pnpm run build
+   ```
+
+4. **Preview production build:**
+
+   ```bash
+   pnpm run start
+   ```
+
+### Available Scripts
+
+- `pnpm run dev` - Start development server with hot reload
+- `pnpm run build` - Build production site
+- `pnpm run start` - Start production server
+- `pnpm run lint` - Run ESLint
+
+## Project Structure
+
+```
+www/
+├── app/
+│   ├── page.tsx           # Homepage
+│   ├── layout.tsx         # Root layout
+│   ├── globals.css        # Global styles
+│   ├── getting-started/   # Pages (App Router)
+│   ├── features/
+│   ├── docs/
+│   ├── showcase/
+│   ├── changelog/
+│   ├── about/
+│   ├── install/
+│   │   └── route.ts       # /install endpoint with versioning
+│   └── setup/
+│       └── route.ts       # /setup endpoint with versioning
+├── components/            # React components
+│   ├── header.tsx
+│   ├── footer.tsx
+│   ├── button.tsx
+│   ├── code-block.tsx
+│   ├── theme-toggle.tsx
+│   └── theme-provider.tsx
+├── data/                  # Data files
+│   └── showcase.yml       # Projects using DevMagic
+├── public/                # Static assets
+├── next.config.ts         # Next.js configuration
+├── tailwind.config.mjs    # Tailwind CSS configuration (v4)
+├── tsconfig.json          # TypeScript configuration
+├── vercel.json            # Vercel deployment config
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How It Works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The website is deployed to [Vercel](https://vercel.com) and automatically rebuilds when changes are pushed to the main branch.
 
-## Learn More
+### Special Endpoints
 
-To learn more about Next.js, take a look at the following resources:
+The website serves the DevMagic setup scripts via special API routes:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### `/install` or `/install@version`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Serves the installation script from `setup/devmagic.sh`:
 
-## Deploy on Vercel
+```bash
+# Latest version
+curl -fsSL https://devmagic.run/install | bash
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Specific version
+curl -fsSL https://devmagic.run/install@v0.1.0 | bash
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### `/setup` or `/setup@version`
+
+Serves the container setup script from `setup/devcontainer-setup.sh`:
+
+```bash
+# Latest version
+curl -fsSL https://devmagic.run/setup | bash
+
+# Specific version
+curl -fsSL https://devmagic.run/setup@v0.1.0 | bash
+```
+
+The `@version` syntax is handled by Vercel rewrites (configured in `vercel.json`) which maps `/install@v0.1.0` to `/install` and extracts the version from the pathname in the route handler.
+
+### Versioning
+
+- Version tags in the URL correspond to Git tags/branches in the repository
+- Scripts are fetched from GitHub raw URLs
+- Caching: Latest (main) is cached for 5 minutes, tagged versions for 1 year
+
+## Contributing
+
+### Adding Your Project to the Showcase
+
+Edit `data/showcase.yml` and submit a pull request:
+
+```yaml
+projects:
+  - name: "Your Project Name"
+    url: "https://github.com/username/project"
+    description: "How you use DevMagic"
+    author: "Your GitHub username"
+```
+
+## License
+
+Apache 2.0 - See [LICENSE.md](../LICENSE.md)
