@@ -35,15 +35,11 @@ if ! command -v curl &> /dev/null; then
 fi
 
 # Check if inside a Git repository (optional, but recommended)
-if ! git rev-parse --is-inside-work-tree &> /dev/null 2>&1; then
-    echo -e "${YELLOW}⚠️ This directory is not a Git repository.${NC}"
-    echo -e "${YELLOW}   DevMagic works best in a Git repository, but you can continue anyway.${NC}"
-    read -p "Continue without Git? (y/N) " -n 1 -r
+IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null || echo "false")
+if [ "$IS_GIT_REPO" != "true" ]; then
+    echo -e "${YELLOW}ℹ️  This directory is not a Git repository.${NC}"
+    echo -e "${YELLOW}   DevMagic works best in a Git repository.${NC}"
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Aborting. Please initialize a Git repository first with 'git init'.${NC}"
-        exit 1
-    fi
 fi
 
 # Check for existing .devcontainer directory
@@ -105,7 +101,7 @@ echo -e "${PURPLE}🚀 Your DevMagic environment is ready!${NC}"
 echo
 echo -e "${YELLOW}Next steps:${NC}"
 
-if git rev-parse --is-inside-work-tree &> /dev/null 2>&1; then
+if [ "$IS_GIT_REPO" = "true" ]; then
     echo "1. Review the downloaded files:"
     echo -e "   ${GREEN}ls -la .devcontainer/${NC}"
     echo
