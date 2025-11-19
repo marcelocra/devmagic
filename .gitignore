@@ -1,2 +1,5 @@
 # Pnpm
 .pnpm-store/
+
+# Env
+.env

@@ -8,3 +8,16 @@ projects:
   #   url: "https://github.com/username/project"
   #   description: "A brief description of how you use DevMagic"
   #   author: "username"
+  - name: DevMagic
+    url: https://github.com/marcelocra/devmagic
+    author: marcelocra
+  - name: Concept Compass
+    url: https://github.com/marcelocra/concept-compass
+    author: marcelocra
+  - name: "marcelocra's dotfiles"
+    url: https://github.com/marcelocra/dotfiles
+    author: marcelocra
+  - name: VSCode Improved
+    url: https://github.com/marcelocra/vscode-improved
+    author: marcelocra
+  

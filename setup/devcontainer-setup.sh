@@ -18,6 +18,14 @@
 
 set -e
 
+# Auto-load environment variables from .devcontainer/.env if present.
+# This allows configuration via .env file in addition to environment variables.
+if [ -f "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/.env" ]; then
+    set -a
+    source "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/.env"
+    set +a
+fi
+
 # Configuration from environment variables or defaults.
 GITHUB_HANDLE="${MCRA_GITHUB_HANDLE:-marcelocra}"
 PROJECTS_DIR="${MCRA_PROJECTS:-$HOME/prj}"
