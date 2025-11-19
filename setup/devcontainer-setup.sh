@@ -5,16 +5,18 @@
 # Usage examples:
 #
 #   # Full auto setup (default - installs everything)
-#   curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | bash
+#   curl -fsSL https://devmagic.run/setup | bash
 #
 #   # Quick setup - just dotfiles and editor launcher (skips heavy operations)
-#   curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | MCRA_SETUP_QUICK=true bash
+#   curl -fsSL https://devmagic.run/setup | MCRA_SETUP_QUICK=true bash
 #
 #   # Interactive setup - prompts before each major operation
-#   curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | MCRA_SETUP_INTERACTIVE=true bash
+#   curl -fsSL https://devmagic.run/setup | MCRA_SETUP_INTERACTIVE=true bash
 #
 #   # Custom setup - disable specific components
-#   curl -fsSL https://raw.githubusercontent.com/marcelocra/dotfiles/main/setup/devcontainer-setup.sh | MCRA_SETUP_PNPM=false MCRA_SETUP_MISE=true bash
+#   # You can also create a .env file in .devcontainer/ to set these variables,
+#   # see the .env.example for reference.
+#   curl -fsSL https://devmagic.run/setup | MCRA_SETUP_PNPM=false MCRA_SETUP_MISE=true bash
 
 set -e
 
