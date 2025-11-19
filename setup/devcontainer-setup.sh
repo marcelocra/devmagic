@@ -342,7 +342,7 @@ main() {
 
     log "🎉 Container setup complete! Welcome to your development environment."
     log "💡 Your dotfiles are linked and zsh plugins are ready to use."
-    log "🔧 To customize this setup, edit: https://github.com/$GITHUB_HANDLE/dotfiles/blob/main/setup/devcontainer-setup.sh"
+    log "🔧 To customize this setup, edit: https://github.com/$GITHUB_HANDLE/devmagic/blob/main/setup/devcontainer-setup.sh"
 }
 
 # User Management Decision: Using default 'codespace' user.
