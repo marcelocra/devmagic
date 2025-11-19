@@ -14,10 +14,11 @@ DevMagic provides portable development environments using VS Code Dev Containers
 ## Key Technologies
 
 - **Dev Containers** with Docker/Podman for environment isolation
-- **Astro** for static site generation (website)
+- **Next.js** for website (previously Astro - migration in progress)
+- **React 19** for UI components
 - **Tailwind CSS v4+** for styling
 - **shadcn/ui** for UI components
-- **GitHub Pages** for hosting (builds to `docs/`)
+- **Vercel/GitHub Pages** for hosting
 
 ## Architecture
 
@@ -30,11 +31,12 @@ DevMagic provides portable development environments using VS Code Dev Containers
 
 ### Website
 
-- Static site built with Astro
+- Built with Next.js and React 19
 - Serves setup scripts via dynamic endpoints:
   - `/install` - latest installation script
   - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
-- Builds from `www/src/` to `docs/` for GitHub Pages
+- Uses App Router for routing and API routes
+- TypeScript for type safety
 
 ### Auxiliary Services
 
@@ -63,36 +65,34 @@ VARIABLE="${VARIABLE:-default_value}"
 ### Website Endpoints
 
 ```typescript
-// Dynamic endpoints fetch from GitHub
-import type { APIRoute } from 'astro';
+// Next.js API routes or App Router route handlers
+import type { NextRequest } from 'next/server';
 
-export const GET: APIRoute = async ({ params }) => {
-  const version = params.version || 'main';
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const version = searchParams.get('version') || 'main';
   const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
   // Fetch and return
-};
+}
 ```
 
 ### Component Structure
 
-```astro
----
-// Component logic (TypeScript)
+```tsx
+// Next.js React component with TypeScript
 interface Props {
   title: string;
+  children?: React.ReactNode;
 }
-const { title } = Astro.props;
----
 
-<!-- Template (HTML) -->
-<div class="component">
-  <h1>{title}</h1>
-  <slot />
-</div>
-
-<style>
-  /* Scoped styles (or use Tailwind) */
-</style>
+export function Component({ title, children }: Props) {
+  return (
+    <div className="component">
+      <h1>{title}</h1>
+      {children}
+    </div>
+  );
+}
 ```
 
 ## Testing Approach
@@ -100,7 +100,8 @@ const { title } = Astro.props;
 - **Dev container changes:** Rebuild container and verify all mounted credentials work
 - **Website changes:** Run `pnpm run dev` in `www/` directory
 - **Setup scripts:** Test in fresh container, ensure idempotency
-- **Build process:** Run `pnpm run build` and verify `docs/` output
+- **Build process:** Run `pnpm run build` and verify output
+- **Linting:** Run `pnpm run lint` to check code style
 
 ## File Organization
 
@@ -108,14 +109,14 @@ const { title } = Astro.props;
 devmagic/
 ├── .devcontainer/          # Dev container config
 ├── setup/                  # Scripts served via endpoints
-├── www/                    # Website source
-│   ├── src/
-│   │   ├── pages/         # Routes and pages
-│   │   ├── components/    # Reusable components
-│   │   ├── layouts/       # Page layouts
-│   │   └── styles/        # Global styles
-│   └── astro.config.mjs
-├── docs/                   # Built website (auto-generated)
+├── www/                    # Website source (Next.js)
+│   ├── app/               # Next.js App Router pages and routes
+│   │   ├── api/          # API routes
+│   │   └── ...           # Page routes
+│   ├── components/        # Reusable React components
+│   ├── data/             # Data files and configs
+│   ├── public/           # Static assets
+│   └── ...               # Config files (next.config.ts, etc.)
 └── docker-compose.yml      # Auxiliary services
 ```
 
@@ -154,3 +155,45 @@ Use these prefixes for automatic changelog generation:
 - Teams wanting consistent dev setups across members
 - Projects wanting to provide easy onboarding
 - Anyone tired of "works on my machine" problems
+
+## Security Considerations
+
+- **Credentials:** Never copy secrets into containers - always mount read-only from host
+- **Docker socket:** Dev container needs Docker socket access for auxiliary services (security risk acknowledged)
+- **Environment variables:** Use `.env` files for configuration, never commit secrets
+- **Setup scripts:** Validate all downloaded content before execution
+- **Dependencies:** Regularly update base images and dependencies to patch vulnerabilities
+
+## Common Pitfalls and Known Issues
+
+### Credential Mounting
+- Different base images have different default users
+- The `remoteUser` setting must match the image's user for mounts to work
+- Check `.devcontainer/devcontainer.json` when switching base images
+
+### Docker-in-Docker
+- Requires privileged mode or Docker socket mounting
+- Not all container runtimes support all features identically
+- Podman and Docker may have slight differences in behavior
+
+### Script Idempotency
+- Setup scripts run on every container creation
+- Must check if tools are already installed before installing
+- Use conditional logic: `if ! command -v tool &> /dev/null; then ... fi`
+
+### Build Artifacts
+- Next.js build output should not be committed (`.next/`, `.vercel/`)
+- Ensure `.gitignore` is properly configured
+- Use deployment platforms (Vercel) for production builds
+
+### Pnpm Store
+- Pnpm store can become large over time
+- Excluded via `.gitignore` - don't commit it
+- May need periodic cleanup in development
+
+## CI/CD Information
+
+- **Current setup:** No automated CI/CD workflows (manual deployment)
+- **Future consideration:** GitHub Actions for automated testing and deployment
+- **Deployment:** Website can be deployed to Vercel or similar platforms
+- **Version tagging:** Create git tags for versioned setup scripts
