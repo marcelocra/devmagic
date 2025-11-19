@@ -1,30 +1,75 @@
 @import "tailwindcss";
 
 @theme {
-  /* Define custom colors for Tailwind utilities */
-  --color-background: light-dark(hsl(0 0% 100%), hsl(222.2 84% 4.9%));
-  --color-foreground: light-dark(hsl(222.2 84% 4.9%), hsl(210 40% 98%));
-  --color-card: light-dark(hsl(0 0% 100%), hsl(222.2 84% 4.9%));
-  --color-card-foreground: light-dark(hsl(222.2 84% 4.9%), hsl(210 40% 98%));
-  --color-popover: light-dark(hsl(0 0% 100%), hsl(222.2 84% 4.9%));
-  --color-popover-foreground: light-dark(hsl(222.2 84% 4.9%), hsl(210 40% 98%));
-  --color-primary: light-dark(hsl(243.4 75.4% 58.6%), hsl(243.4 75.4% 68.6%));
-  --color-primary-foreground: light-dark(hsl(0 0% 100%), hsl(222.2 84% 4.9%));
-  --color-secondary: light-dark(hsl(210 40% 96.1%), hsl(217.2 32.6% 17.5%));
-  --color-secondary-foreground: light-dark(hsl(222.2 47.4% 11.2%), hsl(210 40% 98%));
-  --color-muted: light-dark(hsl(210 40% 96.1%), hsl(217.2 32.6% 17.5%));
-  --color-muted-foreground: light-dark(hsl(215.4 16.3% 46.9%), hsl(215 20.2% 65.1%));
-  --color-accent: light-dark(hsl(269.2 78.3% 67.8%), hsl(269.2 78.3% 77.8%));
-  --color-accent-foreground: light-dark(hsl(0 0% 100%), hsl(222.2 84% 4.9%));
-  --color-destructive: light-dark(hsl(0 84.2% 60.2%), hsl(0 62.8% 50.6%));
-  --color-destructive-foreground: light-dark(hsl(210 40% 98%), hsl(210 40% 98%));
-  --color-border: light-dark(hsl(214.3 31.8% 91.4%), hsl(217.2 32.6% 17.5%));
-  --color-input: light-dark(hsl(214.3 31.8% 91.4%), hsl(217.2 32.6% 17.5%));
-  --color-ring: light-dark(hsl(243.4 75.4% 58.6%), hsl(243.4 75.4% 68.6%));
+  --color-background: #ffffff;
+  --color-foreground: #020817;
+  --color-card: #ffffff;
+  --color-card-foreground: #020817;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #020817;
+  --color-primary: #6366f1;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #c084fc;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #6366f1;
   --radius: 0.5rem;
 }
 
 @layer base {
+  :root {
+    /* Light mode colors */
+    --color-background: #ffffff;
+    --color-foreground: #020817;
+    --color-card: #ffffff;
+    --color-card-foreground: #020817;
+    --color-popover: #ffffff;
+    --color-popover-foreground: #020817;
+    --color-primary: #6366f1;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #f1f5f9;
+    --color-secondary-foreground: #0f172a;
+    --color-muted: #f1f5f9;
+    --color-muted-foreground: #64748b;
+    --color-accent: #c084fc;
+    --color-accent-foreground: #ffffff;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #f8fafc;
+    --color-border: #e2e8f0;
+    --color-input: #e2e8f0;
+    --color-ring: #6366f1;
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --color-background: #020817;
+    --color-foreground: #f8fafc;
+    --color-card: #020817;
+    --color-card-foreground: #f8fafc;
+    --color-popover: #020817;
+    --color-popover-foreground: #f8fafc;
+    --color-primary: #818cf8;
+    --color-primary-foreground: #020817;
+    --color-secondary: #1e293b;
+    --color-secondary-foreground: #f8fafc;
+    --color-muted: #1e293b;
+    --color-muted-foreground: #94a3b8;
+    --color-accent: #e9d5ff;
+    --color-accent-foreground: #020817;
+    --color-destructive: #dc2626;
+    --color-destructive-foreground: #f8fafc;
+    --color-border: #1e293b;
+    --color-input: #1e293b;
+    --color-ring: #818cf8;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -44,5 +89,6 @@ code {
 
 /* Smooth transitions for theme switching */
 * {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
 }
