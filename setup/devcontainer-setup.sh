@@ -14,22 +14,22 @@
 #   curl -fsSL https://devmagic.run/setup | MCRA_SETUP_INTERACTIVE=true bash
 #
 #   # Custom setup - disable specific components
-#   # You can also create a .env file in .devcontainer/ to set these variables,
-#   # see the .env.example for reference.
+#   # You can also create a devcontainer-setup.conf file in .devcontainer/ to set these variables,
+#   # see the devcontainer-setup.conf for reference.
 #   curl -fsSL https://devmagic.run/setup | MCRA_SETUP_PNPM=false MCRA_SETUP_MISE=true bash
 
 set -e
 
-# Auto-load environment variables from .devcontainer/.env if present.
-# This allows configuration via .env file in addition to environment variables.
-if [ -f "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/.env" ]; then
+# Auto-load environment variables from .devcontainer/devcontainer-setup.conf if present.
+# This allows configuration via config file in addition to environment variables.
+if [ -f "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/devcontainer-setup.conf" ]; then
     set -a
-    source "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/.env"
+    source "${WORKSPACE_FOLDER:-/workspaces/*}/.devcontainer/devcontainer-setup.conf"
     set +a
 fi
 
 # Configuration from environment variables or defaults.
-GITHUB_HANDLE="${MCRA_GITHUB_HANDLE:-marcelocra}"
+DOTFILES_REPO="${MCRA_DOTFILES_REPO:-marcelocra/dotfiles}"
 PROJECTS_DIR="${MCRA_PROJECTS:-$HOME/prj}"
 DOTFILES_DIR="$PROJECTS_DIR/dotfiles"
 
@@ -57,7 +57,7 @@ NPM_INSTALL="${MCRA_NPM_INSTALL:-${NPM_PACKAGES[*]}}"
 echo "🚀 Starting devcontainer setup"
 echo "👤 User: $(whoami)"
 echo "🏠 Home: $HOME"
-echo "📋 GitHub Handle: $GITHUB_HANDLE"
+echo "📦 Dotfiles Repo: $DOTFILES_REPO"
 echo "📁 Projects Dir: $PROJECTS_DIR"
 echo "📦 Dotfiles Dir: $DOTFILES_DIR"
 
@@ -74,7 +74,7 @@ command_exists() {
 # Helper for interactive prompts with timeout.
 prompt_continue() {
     [ "$SETUP_INTERACTIVE" != "true" ] && return 0
-    
+
     echo -n "  $1 Continue? [Y/n] (auto-continue in 10s) "
     read -t 10 -n 1 response
     echo
@@ -117,7 +117,7 @@ setup_dotfiles() {
         log "✅ VS Code dotfiles linked"
     elif [ ! -d "$DOTFILES_DIR" ]; then
         log "📦 Cloning dotfiles..."
-        git clone --depth 1 "https://github.com/$GITHUB_HANDLE/dotfiles.git" "$DOTFILES_DIR"
+        git clone --depth 1 "https://github.com/$DOTFILES_REPO.git" "$DOTFILES_DIR"
         log "✅ Dotfiles cloned"
     else
         log "ℹ️  Dotfiles already exist, updating..."
@@ -129,7 +129,7 @@ setup_dotfiles() {
     log "🔗 Creating shell configuration symlinks..."
     ln -sf "$DOTFILES_DIR/shell/.tmux.conf" "$HOME/.tmux.conf"
     log "✅ Shell configuration symlinks created"
-    
+
     # Source the shell initialization script.
     printf "\n\nsource $DOTFILES_DIR/shell/init.sh\n\n" >> $HOME/.bashrc
     printf "\n\nsource $DOTFILES_DIR/shell/init.sh\n\n" >> $HOME/.zshrc
@@ -156,7 +156,7 @@ setup_zsh_plugins() {
 
     if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions" ]; then
         log "🔌 Installing zsh-autosuggestions plugin..."
-        git clone --depth 1 "https://github.com/$GITHUB_HANDLE/zsh-autosuggestions" "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions"
+        git clone --depth 1 "https://github.com/marcelocra/zsh-autosuggestions" "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions"
         log "✅ zsh-autosuggestions installed"
     else
         log "ℹ️  zsh-autosuggestions already exists, updating..."
@@ -165,7 +165,7 @@ setup_zsh_plugins() {
 
     if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting" ]; then
         log "🔌 Installing zsh-syntax-highlighting plugin..."
-        git clone --depth 1 "https://github.com/$GITHUB_HANDLE/zsh-syntax-highlighting.git" "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting"
+        git clone --depth 1 "https://github.com/marcelocra/zsh-syntax-highlighting.git" "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting"
         log "✅ zsh-syntax-highlighting installed"
     else
         log "ℹ️  zsh-syntax-highlighting already exists, updating..."
@@ -200,7 +200,7 @@ setup_mise() {
     # Add mise to the current shell's PATH to use it immediately.
     export PATH="$HOME/.local/bin:$PATH"
     mise use --global uv clojure babashka deno
-    
+
     # Check if npm is available globally, if not install node/npm via mise.
     if ! command_exists npm; then
         log "📦 Installing Node.js/npm via mise..."
@@ -242,7 +242,7 @@ setup_system_packages() {
     # Note: Assumes Debian/Ubuntu-based image (apt). If using different base images,
     # this section may need adjustment for different package managers.
     log "📦 Installing essential system packages..."
-    
+
     ! command_exists apt-get && {
         log "⚠️  apt-get not found. Skipping system package installation."
         log "    If using non-Debian/Ubuntu image, install tmux, fzf manually."
@@ -258,13 +258,13 @@ setup_system_packages() {
     if [ ! -f /var/lib/apt/lists/lock ] || [ "$(find /var/lib/apt/lists -mtime +1 -print -quit)" ]; then
         sudo apt-get update
     fi
-    
+
     # Install packages if not already present.
     PACKAGES_TO_INSTALL=()
-    
+
     ! command_exists tmux && PACKAGES_TO_INSTALL+=(tmux)
     ! command_exists git-lfs && PACKAGES_TO_INSTALL+=(git-lfs)
-    
+
     if [ ${#PACKAGES_TO_INSTALL[@]} -gt 0 ]; then
         log "📦 Installing: ${PACKAGES_TO_INSTALL[*]}"
         sudo apt-get install -y "${PACKAGES_TO_INSTALL[@]}"
@@ -272,11 +272,11 @@ setup_system_packages() {
     else
         log "ℹ️  All essential packages already installed"
     fi
-    
+
     # Install fzf from GitHub (apt version is too old).
     if ! command_exists fzf; then
         log "📦 Installing fzf from GitHub..."
-        git clone --depth 1 https://github.com/$GITHUB_HANDLE/fzf.git ~/.fzf
+        git clone --depth 1 https://github.com/marcelocra/fzf.git ~/.fzf
         ~/.fzf/install --bin
         # Move binary to user bin directory.
         mkdir -p "$HOME/bin"
@@ -342,7 +342,7 @@ main() {
 
     log "🎉 Container setup complete! Welcome to your development environment."
     log "💡 Your dotfiles are linked and zsh plugins are ready to use."
-    log "🔧 To customize this setup, edit: https://github.com/$GITHUB_HANDLE/devmagic/blob/main/setup/devcontainer-setup.sh"
+    log "🔧 To customize this setup, edit: https://github.com/marcelocra/devmagic/blob/main/setup/devcontainer-setup.sh"
 }
 
 # User Management Decision: Using default 'codespace' user.

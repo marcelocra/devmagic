@@ -64,7 +64,7 @@ mkdir -p .devcontainer
 declare -A REMOTE_TO_LOCAL_FILES=(
     ["devcontainer.json"]=".devcontainer/devcontainer.json"
     ["docker-compose.yml"]=".devcontainer/docker-compose.yml"
-    [".env.example"]=".devcontainer/.env.example"
+    ["devcontainer-setup.conf"]=".devcontainer/devcontainer-setup.conf"
 )
 
 # Download each file
@@ -100,23 +100,22 @@ echo -e "${PURPLE}🚀 Your DevMagic environment is ready!${NC}"
 echo
 echo -e "${YELLOW}Next steps:${NC}"
 
+echo "• Review the downloaded files:"
+echo -e "  ${GREEN}ls -la .devcontainer/${NC}"
+echo
+echo "• (Optional) Customize your setup:"
+echo -e "  ${BLUE}Edit .devcontainer/devcontainer-setup.conf and uncomment variables to override defaults${NC}"
+echo
+
 if [ "$IS_GIT_REPO" = "true" ]; then
-    echo "1. Review the downloaded files:"
-    echo -e "   ${GREEN}ls -la .devcontainer/${NC}"
+    echo "• (Optional) Commit the files to your repository:"
+    echo -e "  ${GREEN}git add .devcontainer${NC}"
+    echo -e "  ${GREEN}git commit -m \"feat: add DevMagic development environment\"${NC}"
     echo
-    echo "2. (Optional) Commit the files to your repository:"
-    echo -e "   ${GREEN}git add .devcontainer${NC}"
-    echo -e "   ${GREEN}git commit -m \"feat: add DevMagic development environment\"${NC}"
-    echo
-    echo "3. Open this project in VS Code with the Dev Containers extension."
-    echo "   It will automatically prompt you to reopen in the container."
-else
-    echo "1. Review the downloaded files:"
-    echo -e "   ${GREEN}ls -la .devcontainer/${NC}"
-    echo
-    echo "2. Open this project in VS Code with the Dev Containers extension."
-    echo "   It will automatically prompt you to reopen in the container."
 fi
+
+echo "• Open this project in VS Code with the Dev Containers extension."
+echo "  It will automatically prompt you to reopen in the container."
 
 echo
 echo -e "${BLUE}💡 To update to a different version, rerun this script:${NC}"
