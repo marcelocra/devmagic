@@ -61,17 +61,16 @@ echo -e "${BLUE}⚙️ Downloading DevMagic environment files...${NC}"
 mkdir -p .devcontainer
 
 # List of files to download
-declare -A FILES=(
-    [".devcontainer/devcontainer.json"]=".devcontainer/devcontainer.json"
-    [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
-    [".devcontainer/Dockerfile"]=".devcontainer/Dockerfile"
-    [".devcontainer/README.md"]=".devcontainer/README.md"
+declare -A REMOTE_TO_LOCAL_FILES=(
+    ["devcontainer.json"]=".devcontainer/devcontainer.json"
+    ["docker-compose.yml"]=".devcontainer/docker-compose.yml"
+    [".env.example"]=".devcontainer/.env.example"
 )
 
 # Download each file
 FAILED=0
-for REMOTE_PATH in "${!FILES[@]}"; do
-    LOCAL_PATH="${FILES[$REMOTE_PATH]}"
+for REMOTE_PATH in "${!REMOTE_TO_LOCAL_FILES[@]}"; do
+    LOCAL_PATH="${REMOTE_TO_LOCAL_FILES[$REMOTE_PATH]}"
     URL="${BASE_URL}/${REMOTE_PATH}"
 
     echo -e "${BLUE}  📥 Downloading ${REMOTE_PATH}...${NC}"
