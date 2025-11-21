@@ -4,14 +4,14 @@
   // `remoteUser` appropriately and to adjust any paths that depend on the user,
   // such as many of the `mounts` below.
   // ----------***----------***----------***----------***----------***----------
+  "name": "DevMagic",
 
-  // Node.js with TypeScript (~2GB) on Debian 12 (Bookworm).
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
-  "remoteUser": "node",
-
-  // // Universal, with lots of things (~10GB) on Ubuntu 24 (Noble).
+  // Universal, with lots of things (~10GB) on Ubuntu 24 (Noble):
   // "image": "mcr.microsoft.com/devcontainers/universal:4-noble",
-  // "remoteUser": "codespace",
+  // Node.js with TypeScript (~2GB) on Debian 12 (Bookworm):
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24-bookworm",
+  // "remoteUser": "codespace", // When using the universal image.
+  "remoteUser": "node",
 
   "containerEnv": {
     // Essential locale and timezone settings. Without these, you WILL get
@@ -19,33 +19,33 @@
     "TZ": "${localEnv:TZ:America/Sao_Paulo}",
     "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
     "LANG": "${localEnv:LANG:en_US.UTF-8}",
-    // -----------------------------------***-----------------------------------
-    // Setup script configuration: see .env.example for all available options.
-    // To customize, copy .env.example to .env and modify as needed.
-    // -----------------------------------***-----------------------------------
     // Shell history directory (automatically mounted from OneDrive).
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
-    // -----------------------------------***-----------------------------------
-    // Ollama host URL for local LLM development. Kept here for convenience.
+    // Ollama host URL for local LLM development.
     "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
   },
-  // FYI: See the .env.example file for all available MCRA_* variables that can
-  // be set and used here.
-  "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
+  "postCreateCommand": "bash -c 'curl -fsSL https://devmagic.run/setup | bash'",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "upgradePackages": "false", // Skip package updates to speed up builds.
+      "upgradePackages": "false",
       "configureZshAsDefaultShell": "true",
       "installOhMyZsh": "true"
     },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "nodeGypDependencies": true,
+      "nvmInstall": false
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": true,
       "dockerDashComposeVersion": "v2"
     },
-    "ghcr.io/devcontainers/features/git-lfs:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/homebrew:1": {}
   },
   "mounts": [
     // SSH credentials for Git operations and SSH-based authentication/signing.

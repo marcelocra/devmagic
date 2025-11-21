@@ -75,26 +75,20 @@ You can use this repository **directly as your dev environment**. This is useful
 
 ### Customizing the Setup
 
-The setup script (`https://devmagic.run/setup`) runs automatically when the container is created. To customize what gets installed:
+The environment uses [Dev Container Features](https://containers.dev/features) for setup. To customize:
 
-1. Create a `.devcontainer/.env` file (see `.devcontainer/.env.example` for all available options):
+1. Edit `.devcontainer/devcontainer.json` and modify the `features` section
+2. Add or remove features as needed (official features at [ghcr.io/devcontainers/features](https://github.com/devcontainers/features))
+3. Rebuild the container for changes to take effect
 
-   ```bash
-   cp .devcontainer/.env.example .devcontainer/.env
-   ```
-
-2. Edit `.devcontainer/.env` to enable/disable features:
-
-   ```bash
-   # Example: Enable quick mode and mise
-   MCRA_QUICK=true
-   MCRA_SETUP_MISE=true
-   MCRA_SETUP_PNPM=false
-   ```
-
-3. Rebuild the container for changes to take effect.
-
-The setup script automatically loads `.devcontainer/.env` if present. Without a `.env` file, sensible defaults are used (see `.env.example` for what those are).
+The devcontainer includes:
+- Node.js with pnpm and yarn
+- Git with Git LFS
+- GitHub CLI
+- Docker-in-Docker
+- Zsh with Oh My Zsh
+- Homebrew for additional packages
+- Optional extras: fzf, zsh-plugins, mise
 
 ### Temporary Workspace Workflow
 
@@ -127,6 +121,7 @@ your-project/
 └── .devcontainer/        ← submodule
     ├── devcontainer.json
     ├── docker-compose.yml
+    ├── Dockerfile.alpine
     └── ...
 ```
 
@@ -219,7 +214,7 @@ If you want to **develop this repository itself** (including the devmagic.run we
    cd devmagic
    ```
 
-2. A `.devcontainer/devcontainer.json` wrapper file is included at the root level.  
+2. A `.devcontainer/devcontainer.json` wrapper file is included at the root level.
    VS Code will detect it and allow you to **"Reopen in Container"**.
 
 3. This setup ensures:

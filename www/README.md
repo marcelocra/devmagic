@@ -110,7 +110,7 @@ curl -fsSL https://devmagic.run/install@v0.1.0 | bash
 
 #### `/setup` or `/setup@version`
 
-Serves the container setup script from `setup/devcontainer-setup.sh`:
+Serves the container setup script from `setup/container-setup.sh`:
 
 ```bash
 # Latest version
@@ -120,12 +120,14 @@ curl -fsSL https://devmagic.run/setup | bash
 curl -fsSL https://devmagic.run/setup@v0.1.0 | bash
 ```
 
+This script handles SSH key setup, shell history configuration, and other container-specific initialization.
+
 The `@version` syntax is handled by Vercel rewrites (configured in `vercel.json`) which maps `/install@v0.1.0` to `/install` and extracts the version from the pathname in the route handler.
 
 ### Versioning
 
 - Version tags in the URL correspond to Git tags/branches in the repository
-- Scripts are fetched from GitHub raw URLs
+- Files are fetched from GitHub raw URLs
 - Caching: Latest (main) is cached for 5 minutes, tagged versions for 1 year
 
 ## Contributing

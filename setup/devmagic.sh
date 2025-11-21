@@ -62,9 +62,8 @@ mkdir -p .devcontainer
 
 # List of files to download
 declare -A REMOTE_TO_LOCAL_FILES=(
-    ["devcontainer.json"]=".devcontainer/devcontainer.json"
-    ["docker-compose.yml"]=".devcontainer/docker-compose.yml"
-    ["devcontainer-setup.conf"]=".devcontainer/devcontainer-setup.conf"
+    [".devcontainer/devcontainer.json"]=".devcontainer/devcontainer.json"
+    [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
 )
 
 # Download each file
@@ -102,9 +101,6 @@ echo -e "${YELLOW}Next steps:${NC}"
 
 echo "• Review the downloaded files:"
 echo -e "  ${GREEN}ls -la .devcontainer/${NC}"
-echo
-echo "• (Optional) Customize your setup:"
-echo -e "  ${BLUE}Edit .devcontainer/devcontainer-setup.conf and uncomment variables to override defaults${NC}"
 echo
 
 if [ "$IS_GIT_REPO" = "true" ]; then
