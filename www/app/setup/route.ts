@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Construct the GitHub raw URL for container setup script
-  const scriptUrl = `https://raw.githubusercontent.com/marcelocra/devmagic/${ref}/setup/container-setup.sh`
+  const scriptUrl = `https://raw.githubusercontent.com/marcelocra/devmagic/${ref}/setup/devcontainer-setup.sh`
 
   try {
     // Fetch the script from GitHub

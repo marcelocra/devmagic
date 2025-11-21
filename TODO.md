@@ -1,7 +1,7 @@
 # DevMagic Refactor Plan — DevContainer Features First
 
 Date: 2025-11-20
-Completed: 2025-11-21
+Status: ✅ Complete (2025-11-21)
 
 ## Goals
 
@@ -9,83 +9,137 @@ Completed: 2025-11-21
 - Keep security posture (pin versions, allow optional forks for specific tools).
 - Move all devcontainer-related files under `.devcontainer/`.
 
-## What Was Completed
+## Requirements
 
-### ✅ Migrated to Dev Container Features
-- **Added official features:**
-  - `ghcr.io/devcontainers/features/common-utils:2` - Zsh with Oh My Zsh, tmux, utilities
-  - `ghcr.io/devcontainers/features/node:1` - Node.js LTS with pnpm/yarn support
-  - `ghcr.io/devcontainers/features/git:1` - Latest Git
-  - `ghcr.io/devcontainers/features/git-lfs:1` - Git Large File Support
-  - `ghcr.io/devcontainers/features/github-cli:1` - GitHub CLI (`gh`)
-  - `ghcr.io/devcontainers/features/docker-in-docker:2` - Docker with Compose v2
-  - `ghcr.io/devcontainers/features/homebrew:1` - Homebrew package manager
-- **Created minimal setup script:** `setup/container-setup.sh`
-  - Only handles SSH key copying (from read-only mount)
-  - Removed all package installation logic (now in Features)
-  - History configuration handled by dotfiles (`~/prj/dotfiles/shell/init.sh`)
+- ✅ Use official Features from `ghcr.io/devcontainers/features/*` when possible
+- ✅ Pin versions to prevent unexpected updates
+- ✅ Maintain read-only credential mounts for security
+- ✅ Support idempotent setup (safe to rebuild)
+- ✅ Keep minimal container-setup.sh for custom needs (SSH keys)
 
-### ✅ File Organization
-- **Moved to `.devcontainer/` directory:**
-  - `devcontainer.json` (removed root duplicate)
-  - `devcontainer.alpine.json`
-  - `docker-compose.yml`
-  - `Dockerfile.alpine`
-  - `Dockerfile.example`
-- **Deleted legacy files:**
-  - `setup/devcontainer-setup.sh` (replaced by Features + minimal container-setup.sh)
-  - `.devcontainer/devcontainer-setup.conf` (config no longer needed)
+## Constraints
 
-### ✅ Scripts & Endpoints
-- **Installer:** `setup/devmagic.sh`
-  - Downloads `.devcontainer/devcontainer.json`
-  - Downloads `.devcontainer/docker-compose.yml`
-  - Updated paths to new locations
-- **Container setup:** `setup/container-setup.sh`
-  - Minimal script (SSH keys only)
-  - Called via `postCreateCommand` in devcontainer.json
-- **Website routes:**
-  - `/install` → serves `setup/devmagic.sh`
-  - `/setup` → serves `setup/container-setup.sh`
+- ✅ Must work with existing mounts (SSH, GitHub, Claude, Gemini, shell histories)
+- ✅ Must preserve MCRA_HISTORY_DIR for persistent shell history
+- ✅ Must handle SSH key permissions (copied from read-only mount)
+- ✅ User dotfiles handle history/editor configuration
 
-### ✅ Documentation
-- **Updated `README.md`:**
-  - Replaced setup script instructions with Features explanation
-  - Listed all included Features
-  - Removed references to `.env` customization
-- **Updated `www/README.md`:**
-  - Corrected `/setup` endpoint documentation
-  - Clarified what each endpoint serves
+## Step-by-step Plan
+
+### 1. ✅ Analyze Current Setup
+- ✅ Reviewed `setup/devcontainer-setup.sh` for what needs Features
+- ✅ Identified: common-utils, node, git, git-lfs, github-cli, docker-in-docker, homebrew
+- ✅ Determined SSH keys still need custom script (permissions)
+
+### 2. ✅ Add Official Features
+- ✅ Added `common-utils:2` (zsh, oh-my-zsh, tmux, utilities)
+- ✅ Added `node:1` with pnpm support (LTS version)
+- ✅ Added `git:1` for latest Git
+- ✅ Added `git-lfs:1` for Git Large File Support
+- ✅ Added `github-cli:1` for GitHub CLI
+- ✅ Added `docker-in-docker:2` with Compose v2
+- ✅ Added `homebrew:1` for additional package management
+
+### 3. ✅ Create Minimal Container Setup Script
+- ✅ Created `setup/devcontainer-setup.sh` with only SSH key handling
+- ✅ Added AI CLI tools installation (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
+- ✅ Used main() function pattern for better structure
+- ✅ Removed package installation (now handled by Features)
+- ✅ Noted that history/editor config is in dotfiles
+
+### 4. ✅ Update devcontainer.json
+- ✅ Added `features` property with all official Features
+- ✅ Kept essential environment variables (MCRA_HISTORY_DIR, WORKSPACE_FOLDER, locale, OLLAMA_HOST)
+- ✅ Updated `postCreateCommand` to run devcontainer-setup.sh
+- ✅ Added VS Code extensions for AI tools (Cline, Continue.dev)
+- ✅ Verified all credential mounts still work
+
+### 5. ✅ Update Website Routes
+- ✅ Updated `/setup` endpoint to serve `devcontainer-setup.sh`
+- ✅ Kept `/install` endpoint serving `devmagic.sh`
+- ✅ Verified script downloads work correctly
+
+### 6. ✅ Update Installer Script
+- ✅ Updated `setup/devmagic.sh` to download from correct paths
+- ✅ Downloads `.devcontainer/devcontainer.json`
+- ✅ Downloads `.devcontainer/docker-compose.yml`
+
+### 7. ✅ File Organization
+- ✅ Consolidated setup in `.devcontainer/` directory
+- ✅ Removed duplicate `container-setup.sh`
+- ✅ Kept `devcontainer-setup.sh` as the single source of truth
+
+### 8. ✅ Documentation Updates
+- ✅ Updated `README.md` with Features information
+- ✅ Updated `www/README.md` with correct endpoint info
+- ✅ Documented AI CLI tools included
+
+### 9. ~~Option C: Fork-based customization~~ (Cancelled)
+- Decided against fork-based approach - using Features-only is simpler
+
+## What Was Implemented
+
+### Dev Container Features
+All package installation now handled by official Features:
+- `common-utils:2` - Zsh, Oh My Zsh, tmux, core utilities
+- `node:1` - Node.js LTS with pnpm (10.18.3+) and yarn support
+- `git:1` - Latest Git from official sources
+- `git-lfs:1` - Git Large File Support
+- `github-cli:1` - GitHub CLI (`gh`) with authentication
+- `docker-in-docker:2` - Docker daemon with Compose v2
+- `homebrew:1` - Homebrew for additional packages
+
+### Container Setup Script
+Minimal `setup/devcontainer-setup.sh`:
+- SSH key copying from read-only mount (`~/.ssh-from-host` → `~/.ssh`)
+- Proper permissions (700 for directory, 600 for files)
+- AI CLI tools installation:
+  - `aider` via pipx (AI pair programming)
+  - GitHub Copilot CLI via npm
+  - Gemini CLI via pnpm
+  - Claude CLI via pnpm (if not already installed)
+- Structured with main() function pattern
+- Color-coded logging (info, success, warning, error)
+
+### VS Code Extensions
+Added AI development extensions:
+- `saaspegasus.cline` - AI coding assistant
+- `continue.continue` - AI code completion and chat
+
+### Files Removed
+- Legacy `setup/container-setup.sh` (duplicate)
+- Old `.devcontainer/devcontainer-setup.conf` (no longer needed)
 
 ## Architecture Summary
 
-**Dev Container Features handle:**
-- Language runtimes (Node.js with pnpm/yarn via Features)
+**Official Features handle:**
+- Language runtimes (Node.js)
 - Development tools (Git, GitHub CLI, Docker)
 - Shell environment (Zsh with Oh My Zsh)
-- Package managers (Homebrew for additional tools)
+- Package managers (Homebrew, pnpm, yarn)
 
 **Container setup script handles:**
-- SSH key copying (from read-only mount to writable location)
-- Permissions setup for SSH keys
+- SSH key copying and permissions
+- AI CLI tools installation
 
 **User dotfiles handle:**
-- Shell history configuration (via `~/prj/dotfiles/shell/init.sh`)
-- Editor configuration (EDITOR env var, VS Code aliases)
-- AI CLI tools setup (if any)
+- Shell history configuration (`~/prj/dotfiles/shell/init.sh`)
+- Editor configuration
 - Additional shell customizations
 
-## Key Decisions
+## Environment Variables
 
-1. **pnpm:** Comes with Node Feature, no additional setup needed
-2. **History:** Handled by user dotfiles, respects `MCRA_HISTORY_DIR` env var
-3. **Editor:** Configured in user dotfiles
-4. **AI CLIs:** Can be installed via Homebrew or configured in dotfiles
-5. **SSH keys:** Must be copied in container-setup.sh (from read-only mount)
+Essential variables preserved in `devcontainer.json`:
+- `MCRA_HISTORY_DIR` - Persistent shell history location
+- `WORKSPACE_FOLDER` - For history file naming
+- `TZ`, `LC_ALL`, `LANG` - Locale and timezone
+- `OLLAMA_HOST` - Local LLM development
 
-## Environment Variables (in devcontainer.json)
+## AI CLI Tools Included
 
-- `MCRA_HISTORY_DIR` - Directory for persistent shell history (used by dotfiles)
-- `WORKSPACE_FOLDER` - Current workspace path (for history file naming)
-- `TZ`, `LC_ALL`, `LANG` - Locale and timezone settings
-- `OLLAMA_HOST` - Optional Ollama API endpoint
+- **Claude CLI** (`claude`) - Anthropic's Claude via pnpm
+- **Aider** (`aider`) - AI pair programming via pipx
+- **GitHub Copilot CLI** (`github-copilot-cli`) - GitHub's AI assistant via npm
+- **Gemini CLI** (`gemini`) - Google's Gemini via pnpm
+- **Cline** - VS Code extension (not CLI)
+- **Continue.dev** - VS Code extension (not CLI)

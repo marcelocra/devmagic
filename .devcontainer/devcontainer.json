@@ -83,6 +83,7 @@
         "anthropic.claude-code",
         "bradlc.vscode-tailwindcss",
         "charliermarsh.ruff",
+        "continue.continue",
         "dbaeumer.vscode-eslint",
         "denoland.vscode-deno",
         "eamodio.gitlens",
@@ -117,7 +118,8 @@
         "ms-vscode.vscode-speech-language-pack-pt-br",
         "ms-vscode.vscode-speech",
         "openai.chatgpt",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "saoudrizwan.claude-dev"
       ]
     }
   }
