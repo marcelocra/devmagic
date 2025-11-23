@@ -19,33 +19,25 @@
     "TZ": "${localEnv:TZ:America/Sao_Paulo}",
     "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
     "LANG": "${localEnv:LANG:en_US.UTF-8}",
-    // Shell history directory (automatically mounted from OneDrive).
+    // Shell history directory. You must mount have a mounted ~/.shell_histories
+    // directory for the history to persist across containers and WSL sessions.
+    // Otherwise, history will be lost when the container is removed.
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
     // Ollama host URL for local LLM development.
     "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
   },
-  "postCreateCommand": "bash -c 'curl -fsSL https://devmagic.run/setup | bash'",
+  "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "upgradePackages": "false",
-      "configureZshAsDefaultShell": "true",
-      "installOhMyZsh": "true"
+      "configureZshAsDefaultShell": "true"
     },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts",
-      "nodeGypDependencies": true,
-      "nvmInstall": false
-    },
-    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "moby": true,
-      "dockerDashComposeVersion": "v2"
-    },
-    "ghcr.io/devcontainers/features/homebrew:1": {}
+    "ghcr.io/devcontainers/features/node:1": {}
   },
   "mounts": [
     // SSH credentials for Git operations and SSH-based authentication/signing.
