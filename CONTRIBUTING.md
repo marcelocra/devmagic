@@ -23,7 +23,7 @@ Thank you for your interest in contributing to DevMagic! This is primarily a per
    pnpm run dev
    ```
 
-   The site will be available at `http://localhost:4321`
+   The site will be available at `http://localhost:3000`
 
 ## Making Changes
 
@@ -77,12 +77,12 @@ If you're modifying `.devcontainer/devcontainer.json` or related files:
 
 ### Working on the Website
 
-The website lives in the `www/` folder and is built with Astro:
+The website lives in the `www/` folder and is built with Next.js:
 
-1. Make your changes in `www/src/`
+1. Make your changes in `www/app/`
 2. Test locally with `pnpm run dev`
 3. Build to verify: `pnpm run build`
-4. The built site goes to `docs/` for GitHub Pages
+4. The production build is deployed via Vercel
 
 ### Working on Setup Scripts
 

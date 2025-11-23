@@ -50,7 +50,7 @@ Status: ✅ Complete (2025-11-21)
 ### 4. ✅ Update devcontainer.json
 - ✅ Added `features` property with all official Features
 - ✅ Kept essential environment variables (MCRA_HISTORY_DIR, WORKSPACE_FOLDER, locale, OLLAMA_HOST)
-- ✅ Updated `postCreateCommand` to run devcontainer-setup.sh
+- ✅ Updated `postCreateCommand` to run setup script via curl
 - ✅ Added VS Code extensions for AI tools (Cline, Continue.dev)
 - ✅ Verified all credential mounts still work
 
@@ -87,7 +87,6 @@ All package installation now handled by official Features:
 - `git-lfs:1` - Git Large File Support
 - `github-cli:1` - GitHub CLI (`gh`) with authentication
 - `docker-in-docker:2` - Docker daemon with Compose v2
-- `homebrew:1` - Homebrew for additional packages
 
 ### Container Setup Script
 Minimal `setup/devcontainer-setup.sh`:
@@ -103,8 +102,8 @@ Minimal `setup/devcontainer-setup.sh`:
 
 ### VS Code Extensions
 Added AI development extensions:
-- `saaspegasus.cline` - AI coding assistant
-- `continue.continue` - AI code completion and chat
+- `saoudrizwan.claude-dev` - Cline (AI coding assistant)
+- `continue.continue` - Continue.dev (AI code completion and chat)
 
 ### Files Removed
 - Legacy `setup/container-setup.sh` (duplicate)

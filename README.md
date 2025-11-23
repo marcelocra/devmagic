@@ -13,32 +13,69 @@
 
 DevMagic can be used in **three different ways**:
 
-1. **Standalone (recommended for most users)** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
-2. **Consumer** — embed it as a `.devcontainer` submodule inside your own projects.
-3. **Maintainer** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
+1. **Add to Your Project (recommended)** — use the installer to add DevMagic to any existing project with one command.
+2. **Standalone Environment** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
+3. **Contribute to DevMagic** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
 
 It also supports optional auxiliary services (see `docker-compose.yml` for available options).
 
 ## Table of Contents
 
+- [Add to Your Project](#consumer)
 - [Standalone Usage](#standalone)
   - Requirements
   - Getting Started
+  - Customizing the Setup
   - Temporary Workspace Workflow
-- [Consumer Usage](#consumer)
 - [Auxiliary Services](#aux)
   - Step 1: Open a Terminal in VS Code
   - Step 2: Start an Auxiliary Service
   - Step 3: Verify the Service is Running
   - Step 4: Connect to the Service
   - Step 5: Stopping a Service
-- [Maintainer Usage](#maintainer)
+- [Contribute to DevMagic](#maintainer)
 
 ## Overview
 
 This repository contains the core configuration for the DevMagic development environment.
-You can use it as a **standalone workspace**, as a **submodule in other projects**, or to
-**develop DevMagic itself** (including the website hosted at devmagic.run).
+You can **add it to your existing projects** with a single command, use it as a **standalone workspace**,
+or use it to **develop DevMagic itself** (including the website hosted at devmagic.run).
+
+## 🚀 Add to Your Project <a id="consumer"></a>
+
+The easiest way to use DevMagic is to add it to your existing project:
+
+```bash
+curl -fsSL https://devmagic.run/install | bash
+```
+
+This will:
+1. Create a `.devcontainer/` directory in your project
+2. Download the DevMagic configuration files
+3. Set up auxiliary services configuration (optional)
+
+After running the installer:
+1. Open your project in VS Code
+2. Choose **"Reopen in Container"**
+3. Your project now has a fully configured dev environment!
+
+The dev container includes:
+- Node.js with pnpm and yarn
+- Git with Git LFS and GitHub CLI
+- Docker-in-Docker for running containers
+- Zsh with Oh My Zsh
+- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
+- VS Code extensions for AI development (Cline, Continue.dev)
+
+### Customizing Your Setup
+
+After installation, you can customize `.devcontainer/devcontainer.json`:
+- Add or remove [Dev Container Features](https://containers.dev/features)
+- Adjust environment variables
+- Configure VS Code extensions
+- Set up credential mounts
+
+See the [official features list](https://github.com/devcontainers/features) for available options.
 
 ## 💻 Standalone Usage (Portable Dev Environment) <a id="standalone"></a>
 
@@ -83,12 +120,11 @@ The environment uses [Dev Container Features](https://containers.dev/features) f
 
 The devcontainer includes:
 - Node.js with pnpm and yarn
-- Git with Git LFS
-- GitHub CLI
+- Git with Git LFS and GitHub CLI
 - Docker-in-Docker
 - Zsh with Oh My Zsh
-- Homebrew for additional packages
-- Optional extras: fzf, zsh-plugins, mise
+- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
+- VS Code extensions for AI development (Cline, Continue.dev)
 
 ### Temporary Workspace Workflow
 
@@ -106,38 +142,7 @@ The devcontainer includes:
 This makes DevMagic a **portable coding box** you can carry
 between machines or use on a fresh OS in minutes.
 
-## 📦 Consumer Usage (for other repositories) <a id="consumer"></a>
 
-This repository is also designed to be used as a **submodule** inside your projects, specifically mounted at `.devcontainer/`:
-
-```bash
-git submodule add https://github.com/marcelocra/devmagic.git .devcontainer
-```
-
-After adding, your project will have:
-
-```
-your-project/
-└── .devcontainer/        ← submodule
-    ├── devcontainer.json
-    ├── docker-compose.yml
-    ├── Dockerfile.alpine
-    └── ...
-```
-
-From here, open the project in VS Code and "Reopen in Container."
-
-> [!NOTE]
-> Once it is possible to [extend a devcontainer](https://github.com/devcontainers/spec/issues/22), this step won't be necessary anymore and we'll be able to simply:
->
-> ```json
-> {
->   "name": "My Project",
->   "extends": ".devcontainer/devcontainer.json"
-> }
-> ```
->
-> But don't hold your breath... the issue is from 2022.
 
 ## Using Auxiliary Services <a id="aux"></a>
 
@@ -203,9 +208,9 @@ docker compose --profile ai down
 docker compose --profile postgres down
 ```
 
-## 🛠️ Maintainer Usage (developing this repo itself) <a id="maintainer"></a>
+## 🛠️ Contribute to DevMagic <a id="maintainer"></a>
 
-If you want to **develop this repository itself** (including the devmagic.run website in the `www` folder) inside a Dev Container:
+If you want to **contribute to this repository** (including the devmagic.run website in the `www` folder):
 
 1. Clone this repository:
 
@@ -214,9 +219,13 @@ If you want to **develop this repository itself** (including the devmagic.run we
    cd devmagic
    ```
 
-2. A `.devcontainer/devcontainer.json` wrapper file is included at the root level.
-   VS Code will detect it and allow you to **"Reopen in Container"**.
+2. Open the repository in VS Code and choose **"Reopen in Container"**
 
-3. This setup ensures:
-   - **Consumers** see the expected `.devcontainer/` contents when using this repo as a submodule.
-   - **Maintainers** can work on DevMagic itself (including the website) in a self‑hosted Dev Container without extra steps.
+3. For website development:
+   ```bash
+   cd www
+   pnpm install
+   pnpm run dev
+   ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.

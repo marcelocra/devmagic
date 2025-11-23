@@ -14,10 +14,10 @@ DevMagic provides portable development environments using VS Code Dev Containers
 ## Key Technologies
 
 - **Dev Containers** with Docker/Podman for environment isolation
-- **Astro** for static site generation (website)
-- **Tailwind CSS v4+** for styling
+- **Next.js 16** with App Router for website
+- **Tailwind CSS v4** for styling
 - **shadcn/ui** for UI components
-- **GitHub Pages** for hosting (builds to `docs/`)
+- **Vercel** for hosting and deployment
 
 ## Architecture
 
@@ -30,11 +30,11 @@ DevMagic provides portable development environments using VS Code Dev Containers
 
 ### Website
 
-- Static site built with Astro
-- Serves setup scripts via dynamic endpoints:
+- Built with Next.js 15 App Router
+- Serves setup scripts via API routes:
   - `/install` - latest installation script
   - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
-- Builds from `www/src/` to `docs/` for GitHub Pages
+- Deployed to Vercel
 
 ### Auxiliary Services
 
@@ -63,36 +63,33 @@ VARIABLE="${VARIABLE:-default_value}"
 ### Website Endpoints
 
 ```typescript
-// Dynamic endpoints fetch from GitHub
-import type { APIRoute } from 'astro';
+// API routes fetch from GitHub
+import { type NextRequest } from 'next/server';
 
-export const GET: APIRoute = async ({ params }) => {
-  const version = params.version || 'main';
+export async function GET(request: NextRequest) {
+  const version = request.nextUrl.searchParams.get('version') || 'main';
   const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
   // Fetch and return
-};
+}
 ```
 
 ### Component Structure
 
-```astro
----
-// Component logic (TypeScript)
+```tsx
+// React Server Component (default)
 interface Props {
   title: string;
+  children?: React.ReactNode;
 }
-const { title } = Astro.props;
----
 
-<!-- Template (HTML) -->
-<div class="component">
-  <h1>{title}</h1>
-  <slot />
-</div>
-
-<style>
-  /* Scoped styles (or use Tailwind) */
-</style>
+export function Component({ title, children }: Props) {
+  return (
+    <div className="component">
+      <h1>{title}</h1>
+      {children}
+    </div>
+  );
+}
 ```
 
 ## Testing Approach
@@ -100,7 +97,7 @@ const { title } = Astro.props;
 - **Dev container changes:** Rebuild container and verify all mounted credentials work
 - **Website changes:** Run `pnpm run dev` in `www/` directory
 - **Setup scripts:** Test in fresh container, ensure idempotency
-- **Build process:** Run `pnpm run build` and verify `docs/` output
+- **Build process:** Run `pnpm run build` and verify output (deployed via Vercel)
 
 ## File Organization
 
@@ -109,13 +106,13 @@ devmagic/
 ├── .devcontainer/          # Dev container config
 ├── setup/                  # Scripts served via endpoints
 ├── www/                    # Website source
-│   ├── src/
-│   │   ├── pages/         # Routes and pages
-│   │   ├── components/    # Reusable components
-│   │   ├── layouts/       # Page layouts
-│   │   └── styles/        # Global styles
-│   └── astro.config.mjs
-├── docs/                   # Built website (auto-generated)
+│   ├── app/
+│   │   ├── page.tsx       # Pages and routes
+│   │   ├── layout.tsx     # Layouts
+│   │   └── */route.ts     # API routes
+│   ├── components/        # React components
+│   ├── data/              # Data files (YAML, etc.)
+│   └── public/            # Static assets
 └── docker-compose.yml      # Auxiliary services
 ```
 
