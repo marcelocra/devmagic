@@ -1,18 +1,16 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Changelog - DevMagic',
-  description: 'Version history and changes for DevMagic.',
-}
+  title: "Changelog - DevMagic",
+  description: "Version history and changes for DevMagic.",
+};
 
 export default function ChangelogPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-4">Changelog</h1>
-        <p className="text-xl text-muted-foreground mb-8">
-          All notable changes to DevMagic are documented here.
-        </p>
+        <p className="text-xl text-muted-foreground mb-8">All notable changes to DevMagic are documented here.</p>
 
         <div className="space-y-8">
           {/* Version 0.1.0 */}
@@ -36,7 +34,10 @@ export default function ChangelogPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>VS Code Dev Container configuration with official Features (common-utils, node, git, git-lfs, github-cli, docker-in-docker, homebrew)</span>
+                    <span>
+                      VS Code Dev Container configuration with official Features (common-utils, node, git, git-lfs,
+                      github-cli, docker-in-docker, homebrew)
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
@@ -44,7 +45,7 @@ export default function ChangelogPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>VS Code extensions for AI development: Claude Dev, Continue.dev</span>
+                    <span>VS Code extensions for AI development: Cline, Continue.dev</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
@@ -77,7 +78,16 @@ export default function ChangelogPage() {
               This changelog is automatically generated from commit history using conventional commits.
             </p>
             <p className="text-muted-foreground text-sm mt-2">
-              For the latest changes, see the <a href="https://github.com/marcelocra/devmagic/commits/main" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">commit history on GitHub</a>.
+              For the latest changes, see the{" "}
+              <a
+                href="https://github.com/marcelocra/devmagic/commits/main"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                commit history on GitHub
+              </a>
+              .
             </p>
           </div>
         </div>
@@ -93,9 +103,7 @@ export default function ChangelogPage() {
 
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="font-semibold mb-3">GitHub Releases</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Detailed release notes are available on GitHub:
-            </p>
+            <p className="text-sm text-muted-foreground mb-3">Detailed release notes are available on GitHub:</p>
             <a
               href="https://github.com/marcelocra/devmagic/releases"
               target="_blank"
@@ -108,5 +116,5 @@ export default function ChangelogPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
