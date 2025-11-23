@@ -45,3 +45,6 @@ next-env.d.ts
 
 # My workspace temporary files.
 .temp/
+
+# Turborepo
+.turbo/
