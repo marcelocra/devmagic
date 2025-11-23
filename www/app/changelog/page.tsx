@@ -32,11 +32,19 @@ export default function ChangelogPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>Support for three usage modes: standalone, consumer (git submodule), and maintainer</span>
+                    <span>One-command installer for adding DevMagic to any project</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>VS Code Dev Container configuration with pre-built Ubuntu images</span>
+                    <span>VS Code Dev Container configuration with official Features (common-utils, node, git, git-lfs, github-cli, docker-in-docker, homebrew)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>AI CLI tools: aider, GitHub Copilot CLI, Gemini CLI, Claude CLI</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    <span>VS Code extensions for AI development: Claude Dev, Continue.dev</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
@@ -44,23 +52,15 @@ export default function ChangelogPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>Automatic mounting of host credentials (SSH, GitHub, Claude)</span>
+                    <span>Automatic mounting of host credentials (SSH, GitHub, Claude, Gemini)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
-                    <span>Pre-configured VS Code extensions for productivity</span>
+                    <span>Persistent shell history across containers</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>
                     <span>Documentation website at devmagic.run</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    <span>Setup script endpoint with version pinning support</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    <span>Installation script for quick setup</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">•</span>

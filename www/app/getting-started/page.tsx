@@ -150,59 +150,88 @@ code .`}
           {activeTab === 'consumer' && (
             <div className="bg-card border border-border rounded-lg p-8">
               <div className="mb-6">
-                <h2 className="text-3xl font-bold mb-3">Consumer Mode</h2>
+                <h2 className="text-3xl font-bold mb-3">Project Setup Mode</h2>
                 <p className="text-lg text-muted-foreground">
-                  Embed DevMagic as a Git submodule in your projects to provide instant, consistent development environments for all contributors.
+                  Add DevMagic to any project with one command to provide instant, consistent development environments for all contributors.
                 </p>
               </div>
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Step 1: Add as Submodule</h3>
+                  <h3 className="text-xl font-semibold mb-3">Step 1: Run the Installer</h3>
                   <p className="mb-2">
-                    From your project root, add DevMagic as a submodule at <code>.devcontainer/</code>:
+                    From your project root, run the DevMagic installer:
                   </p>
                   <CodeBlock
-                    code="git submodule add https://github.com/marcelocra/devmagic.git .devcontainer"
+                    code="curl -fsSL https://devmagic.run/install | bash"
                   />
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    💡 Always review scripts before running: <code>curl -fsSL https://devmagic.run/install</code>
+                  </p>
                 </div>
 
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Step 2: Project Structure</h3>
-                  <p className="mb-2">Your project will now have:</p>
+                  <p className="mb-2">The installer creates a <code>.devcontainer/</code> directory with:</p>
                   <CodeBlock
                     code={`your-project/
-└── .devcontainer/        ← submodule
-    ├── devcontainer.json
-    ├── docker-compose.yml
-    └── ...`}
+├── .devcontainer/
+│   ├── devcontainer.json
+│   └── docker-compose.yml
+├── src/
+└── ...`}
                     lang="plaintext"
                   />
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Step 3: Use the Environment</h3>
+                  <h3 className="text-xl font-semibold mb-3">Step 3: Commit to Your Repository</h3>
                   <p className="mb-2">
-                    Open your project in VS Code and select <strong>&quot;Reopen in Container&quot;</strong>. All contributors will get the same environment!
+                    Add the dev container configuration to version control:
                   </p>
+                  <CodeBlock
+                    code={`git add .devcontainer/
+git commit -m "feat: add DevMagic development environment"
+git push`}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Step 4: Contributors Get Started Instantly</h3>
+                  <p className="mb-2">
+                    When contributors clone your project and open it in VS Code, they just select <strong>&quot;Reopen in Container&quot;</strong> when prompted. Everyone gets the same environment with:
+                  </p>
+                  <ul className="space-y-2 text-muted-foreground mt-3">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">✓</span>
+                      Node.js, pnpm, Git, GitHub CLI
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">✓</span>
+                      Docker-in-Docker for containerized apps
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">✓</span>
+                      Zsh with Oh My Zsh
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">✓</span>
+                      AI CLI tools (aider, GitHub Copilot CLI, etc.)
+                    </li>
+                  </ul>
                 </div>
 
                 <div className="bg-muted/50 rounded-lg p-4 mt-6">
-                  <h4 className="font-semibold mb-2">Future Enhancement</h4>
+                  <h4 className="font-semibold mb-2">Customization</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Once <a href="https://github.com/devcontainers/spec/issues/22" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">devcontainer extension</a> is supported, you&apos;ll be able to simply extend the configuration:
+                    Customize <code>.devcontainer/devcontainer.json</code> for your project&apos;s needs:
                   </p>
-                  <CodeBlock
-                    code={`{
-  "name": "My Project",
-  "extends": ".devcontainer/devcontainer.json"
-}`}
-                    lang="json"
-                    className="text-xs"
-                  />
-                  <p className="text-sm text-muted-foreground mt-2">
-                    But don&apos;t hold your breath... the issue is from 2022.
-                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Add project-specific VS Code extensions</li>
+                    <li>• Configure environment variables</li>
+                    <li>• Enable auxiliary services (PostgreSQL, Redis, etc.)</li>
+                    <li>• Adjust the base image or features</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -236,17 +265,7 @@ cd devmagic`}
 
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Step 3: Start Developing</h3>
-                  <p className="mb-2">This setup ensures:</p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">✓</span>
-                      <strong>Consumers</strong> see the expected <code>.devcontainer/</code> contents when using this repo as a submodule
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary">✓</span>
-                      <strong>Maintainers</strong> can work on DevMagic itself in a self-hosted Dev Container
-                    </li>
-                  </ul>
+                  <p className="mb-2">This setup ensures maintainers can work on DevMagic itself (including this website) in a self-hosted Dev Container with all necessary tools pre-configured.</p>
                 </div>
 
                 <div>

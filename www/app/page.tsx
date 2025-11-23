@@ -122,11 +122,11 @@ export default function Home() {
                   2
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Consumer - Add to Your Projects</h3>
+                  <h3 className="text-xl font-semibold mb-2">Project Setup - Add to Your Projects</h3>
                   <p className="text-muted-foreground mb-3">
-                    Embed DevMagic as a Git submodule in your projects to provide instant development environments for contributors.
+                    Add DevMagic to any project with one command. Contributors get instant, consistent development environments.
                   </p>
-                  <code className="text-sm bg-muted px-2 py-1 rounded">git submodule add https://github.com/marcelocra/devmagic .devcontainer</code>
+                  <code className="text-sm bg-muted px-2 py-1 rounded">curl -fsSL https://devmagic.run/install | bash</code>
                 </div>
               </div>
             </div>
