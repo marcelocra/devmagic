@@ -1,8 +1,11 @@
 {
   "scripts": {
+    "changelog": "git-cliff --unreleased --prepend CHANGELOG.md",
+    "changelog:unreleased": "git-cliff --unreleased",
     "prepare": "husky"
   },
   "devDependencies": {
+    "git-cliff": "^2.10.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "3.6.2",
