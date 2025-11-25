@@ -1,8 +1,8 @@
 #!/bin/bash
-# DevMagic v0.1.0 - Development environment setup
+# DevMagic - Development environment setup
 # Usage:
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
-#   Specific version: curl -fsSL https://devmagic.run/install@v0.1.0 | bash
+#   Specific version: curl -fsSL https://devmagic.run/install@v0.2.1 | bash
 
 set -e
 
@@ -21,7 +21,7 @@ NC='\033[0m' # No Color
 
 # --- Header ---
 echo -e "${PURPLE}"
-echo "🚀 DevMagic v0.1.0"
+echo "🚀 DevMagic"
 echo "━━━━━━━━━━━━━━━━━━━"
 echo "Development environment setup"
 echo -e "Version: ${VERSION}${NC}"
@@ -116,7 +116,7 @@ echo "  It will automatically prompt you to reopen in the container."
 
 echo
 echo -e "${BLUE}💡 To update to a different version, rerun this script:${NC}"
-echo -e "   ${GREEN}curl -fsSL https://devmagic.run/install@v0.1.0 | bash${NC}"
+echo -e "   ${GREEN}curl -fsSL https://devmagic.run/install@v0.2.1 | bash${NC}"
 echo
 echo -e "${BLUE}📚 Learn more: https://devmagic.run${NC}"
 echo
