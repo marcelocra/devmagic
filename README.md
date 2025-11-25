@@ -1,6 +1,6 @@
 # 🚀 DevMagic Environment
 
-> [!NOTE]\
+> [!NOTE]
 > _If you just want to use it, run_:
 >
 > ```sh
@@ -13,32 +13,74 @@
 
 DevMagic can be used in **three different ways**:
 
-1. **Standalone (recommended for most users)** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
-2. **Consumer** — embed it as a `.devcontainer` submodule inside your own projects.
-3. **Maintainer** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
+1. **Add to Your Project (recommended)** — use the installer to add DevMagic to any existing project with one command.
+2. **Standalone Environment** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
+3. **Contribute to DevMagic** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
 
 It also supports optional auxiliary services (see `docker-compose.yml` for available options).
 
 ## Table of Contents
 
+- [Add to Your Project](#consumer)
 - [Standalone Usage](#standalone)
-  - Requirements
-  - Getting Started
-  - Temporary Workspace Workflow
-- [Consumer Usage](#consumer)
+    - Requirements
+    - Getting Started
+    - Customizing the Setup
+    - Temporary Workspace Workflow
 - [Auxiliary Services](#aux)
-  - Step 1: Open a Terminal in VS Code
-  - Step 2: Start an Auxiliary Service
-  - Step 3: Verify the Service is Running
-  - Step 4: Connect to the Service
-  - Step 5: Stopping a Service
-- [Maintainer Usage](#maintainer)
+    - Step 1: Open a Terminal in VS Code
+    - Step 2: Start an Auxiliary Service
+    - Step 3: Verify the Service is Running
+    - Step 4: Connect to the Service
+    - Step 5: Stopping a Service
+- [Contribute to DevMagic](#maintainer)
+- [Personal Configuration with Dotfiles](#dotfiles)
 
 ## Overview
 
 This repository contains the core configuration for the DevMagic development environment.
-You can use it as a **standalone workspace**, as a **submodule in other projects**, or to
-**develop DevMagic itself** (including the website hosted at devmagic.run).
+You can **add it to your existing projects** with a single command, use it as a **standalone workspace**,
+or use it to **develop DevMagic itself** (including the website hosted at devmagic.run).
+
+## 🚀 Add to Your Project <a id="consumer"></a>
+
+The easiest way to use DevMagic is to add it to your existing project:
+
+```bash
+curl -fsSL https://devmagic.run/install | bash
+```
+
+This will:
+
+1. Create a `.devcontainer/` directory in your project
+2. Download the DevMagic configuration files
+3. Set up auxiliary services configuration (optional)
+
+After running the installer:
+
+1. Open your project in VS Code
+2. Choose **"Reopen in Container"**
+3. Your project now has a fully configured dev environment!
+
+The dev container includes:
+
+- Node.js with pnpm and yarn
+- Git with Git LFS and GitHub CLI
+- Docker-in-Docker for running containers
+- Zsh with Oh My Zsh
+- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
+- VS Code extensions for AI development (Cline, Continue.dev)
+
+### Customizing Your Setup
+
+After installation, you can customize `.devcontainer/devcontainer.json`:
+
+- Add or remove [Dev Container Features](https://containers.dev/features)
+- Adjust environment variables
+- Configure VS Code extensions
+- Set up credential mounts
+
+See the [official features list](https://github.com/devcontainers/features) for available options.
 
 ## 💻 Standalone Usage (Portable Dev Environment) <a id="standalone"></a>
 
@@ -57,92 +99,54 @@ You can use this repository **directly as your dev environment**. This is useful
 
 1. Clone this repository:
 
-   ```bash
-   git clone https://github.com/marcelocra/devmagic.git
-   cd devmagic
-   ```
+    ```bash
+    git clone https://github.com/marcelocra/devmagic.git
+    cd devmagic
+    ```
 
-   > 💡 If you don't have `git` installed locally, you can download the repo as a zip from GitHub, since this environment itself provides Git.
+    > 💡 If you don't have `git` installed locally, you can download the repo as a zip from GitHub, since this environment itself provides Git.
 
 2. Open the folder in VS Code and choose **"Reopen in Container."**
 
 3. You now have a fully featured dev environment **without installing anything else** on the host system.
 
-   > [!IMPORTANT]
-   > Each image might have a different default user. Be sure to check the `remoteUser` setting in `.devcontainer/devcontainer.json` and adjust any paths that depend on the user, such as volume mounts.
+    > [!IMPORTANT]
+    > Each image might have a different default user. Be sure to check the `remoteUser` setting in `.devcontainer/devcontainer.json` and adjust any paths that depend on the user, such as volume mounts.
 
-   See `.devcontainer/devcontainer.json` for the current image and available configuration options. You can switch to different base images by editing this file.
+    See `.devcontainer/devcontainer.json` for the current image and available configuration options. You can switch to different base images by editing this file.
 
 ### Customizing the Setup
 
-The setup script (`https://devmagic.run/setup`) runs automatically when the container is created. To customize what gets installed:
+The environment uses [Dev Container Features](https://containers.dev/features) for setup. To customize:
 
-1. Create a `.devcontainer/.env` file (see `.devcontainer/.env.example` for all available options):
+1. Edit `.devcontainer/devcontainer.json` and modify the `features` section
+2. Add or remove features as needed (official features at [ghcr.io/devcontainers/features](https://github.com/devcontainers/features))
+3. Rebuild the container for changes to take effect
 
-   ```bash
-   cp .devcontainer/.env.example .devcontainer/.env
-   ```
+The devcontainer includes:
 
-2. Edit `.devcontainer/.env` to enable/disable features:
-
-   ```bash
-   # Example: Enable quick mode and mise
-   MCRA_QUICK=true
-   MCRA_SETUP_MISE=true
-   MCRA_SETUP_PNPM=false
-   ```
-
-3. Rebuild the container for changes to take effect.
-
-The setup script automatically loads `.devcontainer/.env` if present. Without a `.env` file, sensible defaults are used (see `.env.example` for what those are).
+- Node.js with pnpm and yarn
+- Git with Git LFS and GitHub CLI
+- Docker-in-Docker
+- Zsh with Oh My Zsh
+- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
+- VS Code extensions for AI development (Cline, Continue.dev)
 
 ### Temporary Workspace Workflow
 
 - Use this repo as a personal dev terminal/workstation.
 - Whenever you need to work on another repo:
 
-  ```bash
-  git clone https://github.com/other/repo.git
-  cd repo
-  code .
-  ```
+    ```bash
+    git clone https://github.com/other/repo.git
+    cd repo
+    code .
+    ```
 
 - Each cloned repo automatically uses the same dev container setup.
 
 This makes DevMagic a **portable coding box** you can carry
 between machines or use on a fresh OS in minutes.
-
-## 📦 Consumer Usage (for other repositories) <a id="consumer"></a>
-
-This repository is also designed to be used as a **submodule** inside your projects, specifically mounted at `.devcontainer/`:
-
-```bash
-git submodule add https://github.com/marcelocra/devmagic.git .devcontainer
-```
-
-After adding, your project will have:
-
-```
-your-project/
-└── .devcontainer/        ← submodule
-    ├── devcontainer.json
-    ├── docker-compose.yml
-    └── ...
-```
-
-From here, open the project in VS Code and "Reopen in Container."
-
-> [!NOTE]
-> Once it is possible to [extend a devcontainer](https://github.com/devcontainers/spec/issues/22), this step won't be necessary anymore and we'll be able to simply:
->
-> ```json
-> {
->   "name": "My Project",
->   "extends": ".devcontainer/devcontainer.json"
-> }
-> ```
->
-> But don't hold your breath... the issue is from 2022.
 
 ## Using Auxiliary Services <a id="aux"></a>
 
@@ -208,20 +212,35 @@ docker compose --profile ai down
 docker compose --profile postgres down
 ```
 
-## 🛠️ Maintainer Usage (developing this repo itself) <a id="maintainer"></a>
+## 🛠️ Contribute to DevMagic <a id="maintainer"></a>
 
-If you want to **develop this repository itself** (including the devmagic.run website in the `www` folder) inside a Dev Container:
+If you want to **contribute to this repository** (including the devmagic.run website in the `www` folder):
 
 1. Clone this repository:
 
-   ```bash
-   git clone https://github.com/marcelocra/devmagic.git
-   cd devmagic
-   ```
+    ```bash
+    git clone https://github.com/marcelocra/devmagic.git
+    cd devmagic
+    ```
 
-2. A `.devcontainer/devcontainer.json` wrapper file is included at the root level.  
-   VS Code will detect it and allow you to **"Reopen in Container"**.
+2. Open the repository in VS Code and choose **"Reopen in Container"**
 
-3. This setup ensures:
-   - **Consumers** see the expected `.devcontainer/` contents when using this repo as a submodule.
-   - **Maintainers** can work on DevMagic itself (including the website) in a self‑hosted Dev Container without extra steps.
+3. For website development:
+    ```bash
+    cd www
+    pnpm install
+    pnpm run dev
+    ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+
+## 🔧 Personal Configuration with Dotfiles <a id="dotfiles"></a>
+
+DevMagic integrates with your personal dotfiles repository, keeping container infrastructure separate from personal preferences. When the container starts, it automatically runs `~/prj/dotfiles/shell/install.sh` if it exists.
+
+**Quick setup:**
+
+1. Configure VS Code: `"dotfiles.repository": "yourusername/dotfiles"`
+2. Create `shell/install.sh` in your dotfiles for personal tools (Homebrew, fzf, VS Code settings, etc.)
+
+For full details, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) or [devmagic.run/docs](https://devmagic.run/docs).

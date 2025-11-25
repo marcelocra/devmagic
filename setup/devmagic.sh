@@ -1,8 +1,8 @@
 #!/bin/bash
-# DevMagic v0.1.0 - Development environment setup
+# DevMagic - Development environment setup
 # Usage:
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
-#   Specific version: curl -fsSL https://devmagic.run/install@v0.1.0 | bash
+#   Specific version: curl -fsSL https://devmagic.run/install@v0.2.1 | bash
 
 set -e
 
@@ -21,7 +21,7 @@ NC='\033[0m' # No Color
 
 # --- Header ---
 echo -e "${PURPLE}"
-echo "🚀 DevMagic v0.1.0"
+echo "🚀 DevMagic"
 echo "━━━━━━━━━━━━━━━━━━━"
 echo "Development environment setup"
 echo -e "Version: ${VERSION}${NC}"
@@ -35,15 +35,11 @@ if ! command -v curl &> /dev/null; then
 fi
 
 # Check if inside a Git repository (optional, but recommended)
-if ! git rev-parse --is-inside-work-tree &> /dev/null 2>&1; then
-    echo -e "${YELLOW}⚠️ This directory is not a Git repository.${NC}"
-    echo -e "${YELLOW}   DevMagic works best in a Git repository, but you can continue anyway.${NC}"
-    read -p "Continue without Git? (y/N) " -n 1 -r
+IS_GIT_REPO=$(git rev-parse --is-inside-work-tree 2>/dev/null || echo "false")
+if [ "$IS_GIT_REPO" != "true" ]; then
+    echo -e "${YELLOW}ℹ️  This directory is not a Git repository.${NC}"
+    echo -e "${YELLOW}   DevMagic works best in a Git repository.${NC}"
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Aborting. Please initialize a Git repository first with 'git init'.${NC}"
-        exit 1
-    fi
 fi
 
 # Check for existing .devcontainer directory
@@ -65,17 +61,16 @@ echo -e "${BLUE}⚙️ Downloading DevMagic environment files...${NC}"
 mkdir -p .devcontainer
 
 # List of files to download
-declare -A FILES=(
+declare -A REMOTE_TO_LOCAL_FILES=(
     [".devcontainer/devcontainer.json"]=".devcontainer/devcontainer.json"
-    [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
-    [".devcontainer/Dockerfile"]=".devcontainer/Dockerfile"
-    [".devcontainer/README.md"]=".devcontainer/README.md"
+    # TODO: Test this docker-compose before adding it.
+    # [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
 )
 
 # Download each file
 FAILED=0
-for REMOTE_PATH in "${!FILES[@]}"; do
-    LOCAL_PATH="${FILES[$REMOTE_PATH]}"
+for REMOTE_PATH in "${!REMOTE_TO_LOCAL_FILES[@]}"; do
+    LOCAL_PATH="${REMOTE_TO_LOCAL_FILES[$REMOTE_PATH]}"
     URL="${BASE_URL}/${REMOTE_PATH}"
 
     echo -e "${BLUE}  📥 Downloading ${REMOTE_PATH}...${NC}"
@@ -105,27 +100,23 @@ echo -e "${PURPLE}🚀 Your DevMagic environment is ready!${NC}"
 echo
 echo -e "${YELLOW}Next steps:${NC}"
 
-if git rev-parse --is-inside-work-tree &> /dev/null 2>&1; then
-    echo "1. Review the downloaded files:"
-    echo -e "   ${GREEN}ls -la .devcontainer/${NC}"
+echo "• Review the downloaded files:"
+echo -e "  ${GREEN}ls -la .devcontainer/${NC}"
+echo
+
+if [ "$IS_GIT_REPO" = "true" ]; then
+    echo "• (Optional) Commit the files to your repository:"
+    echo -e "  ${GREEN}git add .devcontainer${NC}"
+    echo -e "  ${GREEN}git commit -m \"feat: add DevMagic development environment\"${NC}"
     echo
-    echo "2. (Optional) Commit the files to your repository:"
-    echo -e "   ${GREEN}git add .devcontainer${NC}"
-    echo -e "   ${GREEN}git commit -m \"feat: add DevMagic development environment\"${NC}"
-    echo
-    echo "3. Open this project in VS Code with the Dev Containers extension."
-    echo "   It will automatically prompt you to reopen in the container."
-else
-    echo "1. Review the downloaded files:"
-    echo -e "   ${GREEN}ls -la .devcontainer/${NC}"
-    echo
-    echo "2. Open this project in VS Code with the Dev Containers extension."
-    echo "   It will automatically prompt you to reopen in the container."
 fi
+
+echo "• Open this project in VS Code with the Dev Containers extension."
+echo "  It will automatically prompt you to reopen in the container."
 
 echo
 echo -e "${BLUE}💡 To update to a different version, rerun this script:${NC}"
-echo -e "   ${GREEN}curl -fsSL https://devmagic.run/install@v0.1.0 | bash${NC}"
+echo -e "   ${GREEN}curl -fsSL https://devmagic.run/install@v0.2.1 | bash${NC}"
 echo
 echo -e "${BLUE}📚 Learn more: https://devmagic.run${NC}"
 echo

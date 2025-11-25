@@ -65,7 +65,7 @@ export default function AboutPage() {
           <div className="flex items-start gap-4">
             <div className="flex-1">
               <p className="text-muted-foreground mb-4">
-                DevMagic is created and maintained by <strong>Marcelo de Castro Rodrigues e Almeida</strong> (<a href="https://github.com/marcelocra" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@marcelocra</a>).
+                DevMagic is created and maintained by <strong>Marcelo Almeida</strong> (<a href="https://github.com/marcelocra" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@marcelocra</a>).
               </p>
               <p className="text-muted-foreground">
                 This is primarily a personal project designed to solve real development workflow challenges. However, contributions from the community are welcome and appreciated!

@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     ref = match[1]
   }
 
-  // Construct the GitHub raw URL
+  // Construct the GitHub raw URL for container setup script
   const scriptUrl = `https://raw.githubusercontent.com/marcelocra/devmagic/${ref}/setup/devcontainer-setup.sh`
 
   try {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(scriptUrl)
 
     if (!response.ok) {
-      return new NextResponse(`Script not found for version: ${ref}`, {
+      return new NextResponse(`Setup script not found for version: ${ref}`, {
         status: 404,
         headers: {
           'Content-Type': 'text/plain',
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     return new NextResponse(
-      `Error fetching script: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Error fetching setup script: ${error instanceof Error ? error.message : 'Unknown error'}`,
       {
         status: 500,
         headers: {

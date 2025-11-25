@@ -14,11 +14,10 @@ DevMagic provides portable development environments using VS Code Dev Containers
 ## Key Technologies
 
 - **Dev Containers** with Docker/Podman for environment isolation
-- **Next.js** for website (previously Astro - migration in progress)
-- **React 19** for UI components
-- **Tailwind CSS v4+** for styling
+- **Next.js 16** with App Router for website
+- **Tailwind CSS v4** for styling
 - **shadcn/ui** for UI components
-- **Vercel/GitHub Pages** for hosting
+- **Vercel** for hosting and deployment
 
 ## Architecture
 
@@ -37,11 +36,12 @@ DevMagic provides portable development environments using VS Code Dev Containers
   - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
 - Uses App Router for routing and API routes
 - TypeScript for type safety
+- Deployed to Vercel
 
 ### Auxiliary Services
 
 - Optional services via Docker Compose profiles:
-  - PostgreSQL, Redis, MongoDB, MinIO, Ollama
+    - PostgreSQL, Redis, MongoDB, MinIO, Ollama
 - Started on-demand from within dev container
 - All services share a Docker network
 
@@ -62,39 +62,6 @@ fi
 VARIABLE="${VARIABLE:-default_value}"
 ```
 
-### Website Endpoints
-
-```typescript
-// Next.js API routes or App Router route handlers
-import type { NextRequest } from 'next/server';
-
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const version = searchParams.get('version') || 'main';
-  const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
-  // Fetch and return
-}
-```
-
-### Component Structure
-
-```tsx
-// Next.js React component with TypeScript
-interface Props {
-  title: string;
-  children?: React.ReactNode;
-}
-
-export function Component({ title, children }: Props) {
-  return (
-    <div className="component">
-      <h1>{title}</h1>
-      {children}
-    </div>
-  );
-}
-```
-
 ## Testing Approach
 
 - **Dev container changes:** Rebuild container and verify all mounted credentials work
@@ -109,14 +76,14 @@ export function Component({ title, children }: Props) {
 devmagic/
 ├── .devcontainer/          # Dev container config
 ├── setup/                  # Scripts served via endpoints
-├── www/                    # Website source (Next.js)
-│   ├── app/               # Next.js App Router pages and routes
-│   │   ├── api/          # API routes
-│   │   └── ...           # Page routes
-│   ├── components/        # Reusable React components
-│   ├── data/             # Data files and configs
-│   ├── public/           # Static assets
-│   └── ...               # Config files (next.config.ts, etc.)
+├── www/                    # Website source
+│   ├── app/
+│   │   ├── page.tsx       # Pages and routes
+│   │   ├── layout.tsx     # Layouts
+│   │   └── */route.ts     # API routes
+│   ├── components/        # React components
+│   ├── data/              # Data files (YAML, etc.)
+│   └── public/            # Static assets
 └── docker-compose.yml      # Auxiliary services
 ```
 
@@ -140,6 +107,31 @@ Use these prefixes for automatic changelog generation:
 - `test:` - Adding or updating tests
 - `chore:` - Updating build tasks, package manager configs, etc.
 - `perf:` - Performance improvements
+
+### Commit Message Guidelines
+
+**Commit messages are used directly in the changelog**, so write them as user-facing release notes:
+
+```bash
+# ❌ Bad - too vague, internal-focused
+git commit -m "fix: update script"
+
+# ✅ Good - clear, describes user impact
+git commit -m "fix: resolve dev container build failure when Node.js feature is enabled"
+
+# ❌ Bad - implementation detail
+git commit -m "feat: add array for packages"
+
+# ✅ Good - describes the feature
+git commit -m "feat: add configurable AI CLI tools installation (Gemini, Claude, Copilot)"
+```
+
+### Changelog Automation
+
+- **git-cliff** generates changelog from commit messages
+- Run `pnpm changelog` to update CHANGELOG.md with unreleased changes
+- Run `pnpm changelog:unreleased` to preview what will be added
+- Past versions (v0.1.0, v0.2.0, v0.2.1) are excluded via `cliff.toml` to preserve manually curated history
 
 ## Design Principles
 
