@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add visual identity documentation for DevMagic
 - Add blog post on refactoring DevMagic's dev container setup
 - Update the logo and the favicon
 - Add GitHub Actions workflow for automated changelog generation
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update Copilot instructions with commit message guidelines and changelog automation details
