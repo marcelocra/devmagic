@@ -1,7 +1,5 @@
 # DevMagic Visual Identity System
 
-<!-- TODO: Move to the <root>/docs folder. -->
-
 ## Brand Essence
 
 DevMagic represents **effortless development**—the feeling of code floating freely across machines, environments that materialize instantly, and technology that feels like magic. Our visual identity conveys:
