@@ -51,14 +51,14 @@ export default function ChangelogPage() {
               </svg>
               CHANGELOG.md
             </a>
-            <a
+            {/* <a
               href="https://github.com/marcelocra/devmagic/releases"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-muted text-foreground px-6 py-3 rounded-lg font-medium hover:bg-muted/80 transition-colors"
             >
               GitHub Releases →
-            </a>
+            </a> */}
           </div>
         </div>
 
