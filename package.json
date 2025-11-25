@@ -1,7 +1,15 @@
 {
-	"devDependencies": {
-		"prettier": "3.6.2",
-		"turbo": "^2.6.1"
-	},
-  "packageManager": "pnpm@10.0.0"
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.6.2",
+    "turbo": "^2.6.1"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
 }
