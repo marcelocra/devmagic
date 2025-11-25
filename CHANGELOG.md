@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add GitHub Actions workflow for automated changelog generation
+- Recreate changelog file with git-diff and full project history and versioning details
 - Add shortcut script for changelog generation
 - Add git-cliff for changelog generation
 - Add pre-commit hook with lint-staged for code formatting
@@ -26,8 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Update changelog script to output to CHANGELOG.md instead of prepending
 - Comment out GitHub Releases link in ChangelogPage as we don't use releases for now
-
 ## [0.2.1] - 2025-11-25
 
 ### Added
@@ -38,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Devcontainer build and AI tool packages
 - Comment out Node.js feature in devcontainer configuration, as image already has node
-
 ## [0.2.0] - 2025-11-25
 
 ### Added
@@ -61,7 +62,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - Improve documentation
-
 ## [0.1.0] - 2025-11-20
 
 ### Added
@@ -141,7 +141,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update comments and correct image version in devcontainer configuration
 - Remove devcontainer with invalid setting and update documentation
 - Update README links to use correct anchors
-  [unreleased]: https://github.com/marcelocra/devmagic/compare/v0.2.1...HEAD
-  [0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
-  [0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
-  [0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
+[unreleased]: https://github.com/marcelocra/devmagic/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
+
