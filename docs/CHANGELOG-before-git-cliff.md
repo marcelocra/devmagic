@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add shortcut script for changelog generation
+- Add git-cliff for changelog generation
+- Add pre-commit hook with lint-staged for code formatting
+- Enhance AI CLI tools setup with pnpm configuration; convert aider install to log doc
+- Comment out docker-compose.yml download before testing it
+
+### Changed
+
+- Remove version in setup script and package.json
+
+### Documentation
+
+- Update Copilot instructions with commit message guidelines and changelog automation details
+
+### Fixed
+
+- Comment out GitHub Releases link in ChangelogPage as we don't use releases for now
+
 ## [0.2.1] - 2025-11-25
 
 ### Fixed
@@ -86,7 +106,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apache 2.0 license
 - Comprehensive documentation and getting started guides
 
-[unreleased]: https://github.com/marcelocra/devmagic/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
+[0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
+[0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
