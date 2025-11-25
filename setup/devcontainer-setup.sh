@@ -110,6 +110,18 @@ main() {
     setup_ai_tools
     echo
 
+    # Run dotfiles installation script if available.
+    local dotfiles_install="$HOME/prj/dotfiles/shell/install.sh"
+    if [ -x "$dotfiles_install" ]; then
+        log "🧩 Running dotfiles install script..."
+        "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
+        echo
+    else
+        log_warning "⚠️  No dotfiles install script found at ~/prj/dotfiles/shell/install.sh"
+        log "   Skipping dotfiles installation"
+        echo
+    fi
+
     log_success "✅ DevMagic container setup complete!"
     log "ℹ️  Shell history is configured via dotfiles (~/prj/dotfiles/shell/init.sh)"
     log "ℹ️  Editor configuration is handled via dotfiles"
