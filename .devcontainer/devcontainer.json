@@ -37,7 +37,16 @@
     "ghcr.io/devcontainers/features/git-lfs:1": {},
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
+    // Other official features you might consider adding. Uncomment as needed.
+    // More details at https://github.com/devcontainers/features
+    // "ghcr.io/devcontainers/features/dotnet:2": {},
+    // "ghcr.io/devcontainers/features/go:1": {},
+    // "ghcr.io/devcontainers/features/java:1": {},
     // "ghcr.io/devcontainers/features/node:1": {}  // Uncomment if base image doesn't have Node.js
+    // "ghcr.io/devcontainers/features/php:1": {},
+    // "ghcr.io/devcontainers/features/python:1": {}
+    // "ghcr.io/devcontainers/features/ruby:1": {},
+    // "ghcr.io/devcontainers/features/rust:1": {},
   },
   "mounts": [
     // SSH credentials for Git operations and SSH-based authentication/signing.

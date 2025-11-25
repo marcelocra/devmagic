@@ -48,47 +48,34 @@ setup_ssh_keys() {
 # ---------------------------------------------------------------------------
 # AI CLI Tools Installation
 # ---------------------------------------------------------------------------
+
+# NPM packages to install globally (using pnpm)
+# Move packages between arrays as needed
+NPM_PACKAGES_UNUSED=(
+    "@openai/codex"
+)
+NPM_PACKAGES=(
+    "@google/gemini-cli"
+    "@anthropic-ai/claude-code"
+    "@github/copilot"
+)
+
 setup_ai_tools() {
     log "🤖 Installing AI CLI tools..."
 
-    # Install/update aider via pipx
-    if command -v pipx &> /dev/null; then
-        if pipx list | grep -q "aider-chat"; then
-            log "   Upgrading aider..."
-            pipx upgrade aider-chat || log_warning "   Failed to upgrade aider"
-        else
-            log "   Installing aider..."
-            pipx install aider-chat || log_warning "   Failed to install aider"
-        fi
+    # Install NPM packages globally using pnpm
+    if command -v pnpm &> /dev/null; then
+        for package in "${NPM_PACKAGES[@]}"; do
+            log "   Installing $package..."
+            pnpm add -g "$package" || log_warning "   Failed to install $package"
+        done
     else
-        log_warning "   pipx not found, skipping aider installation"
+        log_warning "   pnpm not found, skipping NPM packages"
     fi
 
-    # Install GitHub Copilot CLI if not present
-    if ! command -v github-copilot-cli &> /dev/null; then
-        if command -v npm &> /dev/null; then
-            log "   Installing GitHub Copilot CLI..."
-            npm install -g @githubnext/github-copilot-cli || log_warning "   Failed to install GitHub Copilot CLI"
-        fi
-    fi
-
-    # Install Gemini CLI if not present (using pnpm since it's available)
-    if ! command -v gemini &> /dev/null; then
-        if command -v pnpm &> /dev/null; then
-            log "   Installing Gemini CLI..."
-            pnpm add -g @google/generative-ai-cli || log_warning "   Failed to install Gemini CLI"
-        fi
-    fi
-
-    # Claude CLI is already installed via pnpm
-    if command -v claude &> /dev/null; then
-        log_success "   ✓ Claude CLI found"
-    else
-        if command -v pnpm &> /dev/null; then
-            log "   Installing Claude CLI..."
-            pnpm add -g @anthropic-ai/claude-cli || log_warning "   Failed to install Claude CLI"
-        fi
-    fi
+    # Install aider via official installer (includes uv + Python 3.12 if needed)
+    log "   Installing aider..."
+    curl -LsSf https://aider.chat/install.sh | sh || log_warning "   Failed to install aider"
 
     # Note about VS Code extensions (Continue.dev and Cline)
     log "   📝 Note: Continue.dev and Cline are VS Code extensions (not CLI tools)"
