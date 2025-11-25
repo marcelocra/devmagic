@@ -63,8 +63,8 @@ export function Header() {
                 <circle cx="200" cy="200" r="3" fill="#ffffff"/>
               </svg>
               
-              {/* Subtle glow effect behind logo */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-accent rounded-full blur-lg opacity-20 group-hover:opacity-40 transition-opacity -z-10 scale-150" />
+              {/* Subtle glow effect behind logo using box-shadow for better performance */}
+              <div className="absolute inset-0 rounded-full opacity-20 group-hover:opacity-35 transition-opacity -z-10" style={{ boxShadow: '0 0 30px 10px rgba(124, 58, 237, 0.5)' }} />
             </div>
 
             <span className="gradient-text font-extrabold tracking-tight">

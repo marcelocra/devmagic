@@ -7,12 +7,12 @@ export default function Home() {
     <>
       {/* Hero Section with animated gradient background */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Animated background elements */}
+        {/* Animated background elements - optimized with reduced blur for performance */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient orbs */}
-          <div className="absolute top-20 left-[10%] w-72 h-72 bg-primary/30 rounded-full blur-[100px] animate-float" />
-          <div className="absolute top-40 right-[15%] w-96 h-96 bg-accent/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
-          <div className="absolute bottom-20 left-[30%] w-80 h-80 bg-purple-500/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '4s' }} />
+          {/* Gradient orbs with CSS custom properties for animation delays */}
+          <div className="absolute top-20 left-[10%] w-72 h-72 bg-primary/30 rounded-full blur-[60px] animate-float" />
+          <div className="absolute top-40 right-[15%] w-96 h-96 bg-accent/20 rounded-full blur-[80px] animate-float [animation-delay:2s]" />
+          <div className="absolute bottom-20 left-[30%] w-80 h-80 bg-purple-500/20 rounded-full blur-[60px] animate-float [animation-delay:4s]" />
           
           {/* Grid pattern overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(124,58,237,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(124,58,237,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
