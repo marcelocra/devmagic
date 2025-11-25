@@ -6,24 +6,24 @@ Thank you for your interest in contributing to DevMagic! This is primarily a per
 
 1. **Clone the repository:**
 
-   ```bash
-   git clone https://github.com/marcelocra/devmagic.git
-   cd devmagic
-   ```
+    ```bash
+    git clone https://github.com/marcelocra/devmagic.git
+    cd devmagic
+    ```
 
 2. **Open in VS Code and "Reopen in Container"**
 
-   The repository includes a dev container configuration that provides everything you need for development.
+    The repository includes a dev container configuration that provides everything you need for development.
 
 3. **For website development:**
 
-   ```bash
-   cd www
-   pnpm install
-   pnpm run dev
-   ```
+    ```bash
+    cd www
+    pnpm install
+    pnpm run dev
+    ```
 
-   The site will be available at `http://localhost:3000`
+    The site will be available at `http://localhost:3000`
 
 ## Making Changes
 
@@ -97,6 +97,12 @@ The scripts in `setup/` are served via the website endpoints:
 - **Well-commented** - explain what each section does
 - **Tested** - try them in a fresh container
 
+## Dotfiles Integration
+
+DevMagic automatically runs `~/prj/dotfiles/shell/install.sh` when the container starts (if it exists). This keeps DevMagic focused on container infrastructure while your dotfiles handle personal preferences.
+
+For setup instructions and architecture details, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Adding to the Showcase
 
 To add your project to the showcase:
@@ -104,12 +110,12 @@ To add your project to the showcase:
 1. Click [here](https://github.com/marcelocra/devmagic/edit/main/www/src/data/showcase.yml) to edit the showcase file
 2. Add your project following the existing format:
 
-   ```yaml
-   - name: "Your Project Name"
-     url: "https://github.com/yourusername/yourproject"
-     description: "Brief description of your project and how you use DevMagic"
-     author: "yourusername"
-   ```
+    ```yaml
+    - name: "Your Project Name"
+      url: "https://github.com/yourusername/yourproject"
+      description: "Brief description of your project and how you use DevMagic"
+      author: "yourusername"
+    ```
 
 3. GitHub will guide you through creating a fork and pull request
 4. That's it!
@@ -121,10 +127,10 @@ Found a bug or have a feature request?
 1. **Search existing issues** to avoid duplicates
 2. **Use the issue templates** if available
 3. **Provide details:**
-   - What you expected to happen
-   - What actually happened
-   - Steps to reproduce
-   - Your environment (OS, Docker/Podman version, VS Code version)
+    - What you expected to happen
+    - What actually happened
+    - Steps to reproduce
+    - Your environment (OS, Docker/Podman version, VS Code version)
 
 ## Questions?
 

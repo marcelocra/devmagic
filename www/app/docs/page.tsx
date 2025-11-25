@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Documentation - DevMagic',
-  description: 'Complete documentation for DevMagic portable development environments.',
-}
+  title: "Documentation - DevMagic",
+  description: "Complete documentation for DevMagic portable development environments.",
+};
 
 export default function DocsPage() {
   return (
@@ -15,28 +15,71 @@ export default function DocsPage() {
           Everything you need to know about using and customizing DevMagic.
         </p>
 
-        <div className="bg-card border border-primary/20 rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">📖 Documentation Coming Soon</h2>
-          <p className="text-muted-foreground mb-4">
-            Comprehensive documentation is being prepared. For now, please refer to:
-          </p>
-          <ul className="space-y-2">
+        <div className="grid gap-6 mb-8">
+          <Link
+            href="/getting-started"
+            className="block bg-card border border-primary/20 rounded-lg p-6 hover:border-primary/40 transition-colors"
+          >
+            <h2 className="text-xl font-semibold mb-2">🚀 Getting Started</h2>
+            <p className="text-muted-foreground">Quick start instructions to add DevMagic to your project.</p>
+          </Link>
+
+          <Link
+            href="/docs/architecture"
+            className="block bg-card border border-primary/20 rounded-lg p-6 hover:border-primary/40 transition-colors"
+          >
+            <h2 className="text-xl font-semibold mb-2">🏗️ Architecture</h2>
+            <p className="text-muted-foreground">Design principles, separation of concerns, and technical decisions.</p>
+          </Link>
+
+          <Link
+            href="/features"
+            className="block bg-card border border-primary/20 rounded-lg p-6 hover:border-primary/40 transition-colors"
+          >
+            <h2 className="text-xl font-semibold mb-2">✨ Features</h2>
+            <p className="text-muted-foreground">What's included in DevMagic and how to customize it.</p>
+          </Link>
+        </div>
+
+        <div className="bg-muted/50 rounded-lg p-6">
+          <h3 className="font-semibold mb-3">External Resources</h3>
+          <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/getting-started" className="text-primary hover:underline">Getting Started Guide</Link> - Quick start instructions
-            </li>
-            <li>
-              <a href="https://github.com/marcelocra/devmagic/blob/main/README.md" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              <a
+                href="https://github.com/marcelocra/devmagic/blob/main/README.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
                 README.md
-              </a> - Full project documentation
+              </a>{" "}
+              — Full project documentation on GitHub
             </li>
             <li>
-              <a href="https://github.com/marcelocra/devmagic/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              <a
+                href="https://github.com/marcelocra/devmagic/blob/main/CONTRIBUTING.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
                 CONTRIBUTING.md
-              </a> - Development and contribution guidelines
+              </a>{" "}
+              — Development and contribution guidelines
+            </li>
+            <li>
+              <a
+                href="https://github.com/marcelocra/devmagic/blob/main/docs/ARCHITECTURE.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                docs/ARCHITECTURE.md
+              </a>{" "}
+              — Complete technical architecture
             </li>
           </ul>
         </div>
       </div>
     </div>
-  )
+  );
 }
