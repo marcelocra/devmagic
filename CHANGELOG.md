@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-11-25
+
+### Fixed
+
+- Dev container build failure due to missing configuration
+- AI CLI tool package names (corrected to `@google/gemini-cli`, `@anthropic-ai/claude-code`, `@github/copilot`)
+- Use `pnpm` instead of `npm` for global package installation
+- Aider installation now uses official installer script (no Python/pipx dependency)
+
 ## [0.2.0] - 2025-11-25
 
 ### Added
@@ -77,5 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apache 2.0 license
 - Comprehensive documentation and getting started guides
 
-[0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
+[unreleased]: https://github.com/marcelocra/devmagic/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
