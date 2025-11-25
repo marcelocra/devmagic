@@ -43,7 +43,7 @@ next-env.d.ts
 # Pnpm
 .pnpm-store/
 
-# My workspace temporary files.
+# Workspace temporary files.
 .temp/
 
 # Turborepo

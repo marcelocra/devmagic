@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-11-25
+
 ### Added
 
+- Architecture documentation (`docs/ARCHITECTURE.md`) with design principles and separation of concerns
+- Website `/docs/architecture` page with interactive documentation
+- Dotfiles integration section in README and CONTRIBUTING
 - AI CLI tools automatically installed in container:
     - via pnpm
         - Claude Code
@@ -46,7 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Legacy `.devcontainer/devcontainer-setup.conf` configuration file
 - Duplicate setup script files
 
-
 ### Fixed
 
 - VS Code extension ID for Cline (was incorrect `saaspegasus.cline`, now `saoudrizwan.claude-dev`)
@@ -74,3 +78,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and getting started guides
 
 [0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
+[0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
