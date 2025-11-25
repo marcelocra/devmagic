@@ -32,14 +32,14 @@ DevMagic provides portable development environments using VS Code Dev Containers
 
 - Built with Next.js 15 App Router
 - Serves setup scripts via API routes:
-  - `/install` - latest installation script
-  - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
+    - `/install` - latest installation script
+    - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
 - Deployed to Vercel
 
 ### Auxiliary Services
 
 - Optional services via Docker Compose profiles:
-  - PostgreSQL, Redis, MongoDB, MinIO, Ollama
+    - PostgreSQL, Redis, MongoDB, MinIO, Ollama
 - Started on-demand from within dev container
 - All services share a Docker network
 
@@ -64,12 +64,12 @@ VARIABLE="${VARIABLE:-default_value}"
 
 ```typescript
 // API routes fetch from GitHub
-import { type NextRequest } from 'next/server';
+import { type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const version = request.nextUrl.searchParams.get('version') || 'main';
-  const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
-  // Fetch and return
+    const version = request.nextUrl.searchParams.get("version") || "main";
+    const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
+    // Fetch and return
 }
 ```
 
@@ -78,17 +78,17 @@ export async function GET(request: NextRequest) {
 ```tsx
 // React Server Component (default)
 interface Props {
-  title: string;
-  children?: React.ReactNode;
+    title: string;
+    children?: React.ReactNode;
 }
 
 export function Component({ title, children }: Props) {
-  return (
-    <div className="component">
-      <h1>{title}</h1>
-      {children}
-    </div>
-  );
+    return (
+        <div className="component">
+            <h1>{title}</h1>
+            {children}
+        </div>
+    );
 }
 ```
 
@@ -136,6 +136,31 @@ Use these prefixes for automatic changelog generation:
 - `test:` - Adding or updating tests
 - `chore:` - Updating build tasks, package manager configs, etc.
 - `perf:` - Performance improvements
+
+### Commit Message Guidelines
+
+**Commit messages are used directly in the changelog**, so write them as user-facing release notes:
+
+```bash
+# ❌ Bad - too vague, internal-focused
+git commit -m "fix: update script"
+
+# ✅ Good - clear, describes user impact
+git commit -m "fix: resolve dev container build failure when Node.js feature is enabled"
+
+# ❌ Bad - implementation detail
+git commit -m "feat: add array for packages"
+
+# ✅ Good - describes the feature
+git commit -m "feat: add configurable AI CLI tools installation (Gemini, Claude, Copilot)"
+```
+
+### Changelog Automation
+
+- **git-cliff** generates changelog from commit messages
+- Run `pnpm changelog` to update CHANGELOG.md with unreleased changes
+- Run `pnpm changelog:unreleased` to preview what will be added
+- Past versions (v0.1.0, v0.2.0, v0.2.1) are excluded via `cliff.toml` to preserve manually curated history
 
 ## Design Principles
 
