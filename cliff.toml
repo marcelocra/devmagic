@@ -63,9 +63,6 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 
-# Skip commits from these tags (preserve manually curated changelog)
-skip_tags = "v0\\.1\\.0|v0\\.2\\.0|v0\\.2\\.1"
-
 # Commit parsers for grouping
 commit_parsers = [
   { message = "^feat", group = "Added" },

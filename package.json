@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "changelog": "git-cliff --unreleased --prepend CHANGELOG.md",
+    "changelog": "git-cliff -o CHANGELOG.md",
     "cl": "pnpm run changelog",
     "changelog:unreleased": "git-cliff --unreleased",
     "prepare": "husky"
