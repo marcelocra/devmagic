@@ -63,6 +63,15 @@ NPM_PACKAGES=(
 setup_ai_tools() {
     log "🤖 Installing AI CLI tools..."
 
+    # Configure pnpm global store
+    log "   Configuring pnpm global store..."
+    export PNPM_HOME="$HOME/.local/share/pnpm"
+    mkdir -p "$PNPM_HOME"
+    case ":$PATH:" in
+        *":$PNPM_HOME:"*) ;;
+        *) export PATH="$PNPM_HOME:$PATH" ;;
+    esac
+
     # Install NPM packages globally using pnpm
     if command -v pnpm &> /dev/null; then
         for package in "${NPM_PACKAGES[@]}"; do
@@ -74,12 +83,7 @@ setup_ai_tools() {
     fi
 
     # Install aider via official installer (includes uv + Python 3.12 if needed)
-    log "   Installing aider..."
-    curl -LsSf https://aider.chat/install.sh | sh || log_warning "   Failed to install aider"
-
-    # Note about VS Code extensions (Continue.dev and Cline)
-    log "   📝 Note: Continue.dev and Cline are VS Code extensions (not CLI tools)"
-    log "      They should be installed via VS Code Extensions panel or devcontainer.json"
+    log "   💡 To install aider: curl -LsSf https://aider.chat/install.sh | sh"
 
     log_success "✅ AI CLI tools setup complete"
 }
