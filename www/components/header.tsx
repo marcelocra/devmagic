@@ -17,22 +17,57 @@ export function Header() {
   ];
 
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b border-border glass-strong sticky top-0 z-50">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link
             href="/"
-            className="flex items-center space-x-2 text-xl font-bold hover:opacity-90 transition-opacity group"
+            className="flex items-center space-x-2 text-xl font-bold hover:opacity-90 transition-all group"
           >
-            <svg className="w-8 h-8" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-              {/* Left angle bracket < */}
-              <path d="M 180 80 L 60 200 L 180 320 L 180 260 L 140 200 L 180 140 Z" fill="#8b5cf6" />
+            {/* Updated logo with gradient and glow effect */}
+            <div className="relative">
+              <svg className="w-9 h-9 animate-float" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="headerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style={{stopColor: '#7c3aed'}}/>
+                    <stop offset="50%" style={{stopColor: '#a855f7'}}/>
+                    <stop offset="100%" style={{stopColor: '#06b6d4'}}/>
+                  </linearGradient>
+                  <filter id="headerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                
+                {/* Left angle bracket < */}
+                <path 
+                  d="M 175 70 C 175 70 50 200 50 200 C 50 200 175 330 175 330 C 185 340 175 350 165 340 C 165 340 30 200 30 200 C 30 200 165 60 165 60 C 175 50 185 60 175 70 Z" 
+                  fill="url(#headerLogoGradient)" 
+                  filter="url(#headerGlow)"
+                  className="group-hover:opacity-100 opacity-90 transition-opacity"
+                />
+                
+                {/* Right angle bracket > */}
+                <path 
+                  d="M 225 70 C 225 70 350 200 350 200 C 350 200 225 330 225 330 C 215 340 225 350 235 340 C 235 340 370 200 370 200 C 370 200 235 60 235 60 C 225 50 215 60 225 70 Z" 
+                  fill="url(#headerLogoGradient)" 
+                  filter="url(#headerGlow)"
+                  className="group-hover:opacity-100 opacity-90 transition-opacity"
+                />
+                
+                {/* Central magic spark */}
+                <circle cx="200" cy="200" r="6" fill="#ffffff" opacity="0.9" className="group-hover:opacity-100"/>
+                <circle cx="200" cy="200" r="3" fill="#ffffff"/>
+              </svg>
+              
+              {/* Subtle glow effect behind logo */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-accent rounded-full blur-lg opacity-20 group-hover:opacity-40 transition-opacity -z-10 scale-150" />
+            </div>
 
-              {/* Right angle bracket > */}
-              <path d="M 220 80 L 340 200 L 220 320 L 220 260 L 260 200 L 220 140 Z" fill="#8b5cf6" />
-            </svg>
-
-            <span className="bg-linear-to-r from-[#6366f1] via-[#8b5cf6] to-[#a855f7] bg-clip-text text-transparent">
+            <span className="gradient-text font-extrabold tracking-tight">
               DevMagic
             </span>
           </Link>
@@ -41,11 +76,14 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`hover:text-foreground transition-colors ${
+                className={`relative hover:text-foreground transition-colors font-medium ${
                   pathname === link.href ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
                 {link.label}
+                {pathname === link.href && (
+                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+                )}
               </Link>
             ))}
           </div>
@@ -55,7 +93,7 @@ export function Header() {
             href="https://github.com/marcelocra/devmagic"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
             aria-label="GitHub"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

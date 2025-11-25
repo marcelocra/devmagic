@@ -1,86 +1,232 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #020817;
-  --color-card: #ffffff;
-  --color-card-foreground: #020817;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #020817;
-  --color-primary: #6366f1;
+  /* Primary: Ethereal violet-cyan gradient spectrum */
+  --color-background: #fafbff;
+  --color-foreground: #0f0f23;
+  --color-card: rgba(255, 255, 255, 0.8);
+  --color-card-foreground: #0f0f23;
+  --color-popover: rgba(255, 255, 255, 0.95);
+  --color-popover-foreground: #0f0f23;
+  --color-primary: #7c3aed;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #f1f5f9;
-  --color-secondary-foreground: #0f172a;
-  --color-muted: #f1f5f9;
+  --color-secondary: #f0f4ff;
+  --color-secondary-foreground: #1e1b4b;
+  --color-muted: #f4f4f8;
   --color-muted-foreground: #64748b;
-  --color-accent: #c084fc;
+  --color-accent: #06b6d4;
   --color-accent-foreground: #ffffff;
   --color-destructive: #ef4444;
-  --color-destructive-foreground: #f8fafc;
-  --color-border: #e2e8f0;
-  --color-input: #e2e8f0;
-  --color-ring: #6366f1;
-  --radius: 0.5rem;
+  --color-destructive-foreground: #fafafa;
+  --color-border: rgba(139, 92, 246, 0.15);
+  --color-input: rgba(139, 92, 246, 0.1);
+  --color-ring: #7c3aed;
+  --radius: 0.75rem;
+  
+  /* Custom gradient colors */
+  --color-gradient-start: #7c3aed;
+  --color-gradient-mid: #a855f7;
+  --color-gradient-end: #06b6d4;
+  --color-glow: rgba(139, 92, 246, 0.35);
 }
 
 @layer base {
   :root {
-    /* Light mode colors */
-    --color-background: #ffffff;
-    --color-foreground: #020817;
-    --color-card: #ffffff;
-    --color-card-foreground: #020817;
-    --color-popover: #ffffff;
-    --color-popover-foreground: #020817;
-    --color-primary: #6366f1;
+    /* Light mode - airy, ethereal feel */
+    --color-background: #fafbff;
+    --color-foreground: #0f0f23;
+    --color-card: rgba(255, 255, 255, 0.8);
+    --color-card-foreground: #0f0f23;
+    --color-popover: rgba(255, 255, 255, 0.95);
+    --color-popover-foreground: #0f0f23;
+    --color-primary: #7c3aed;
     --color-primary-foreground: #ffffff;
-    --color-secondary: #f1f5f9;
-    --color-secondary-foreground: #0f172a;
-    --color-muted: #f1f5f9;
+    --color-secondary: #f0f4ff;
+    --color-secondary-foreground: #1e1b4b;
+    --color-muted: #f4f4f8;
     --color-muted-foreground: #64748b;
-    --color-accent: #c084fc;
+    --color-accent: #06b6d4;
     --color-accent-foreground: #ffffff;
     --color-destructive: #ef4444;
-    --color-destructive-foreground: #f8fafc;
-    --color-border: #e2e8f0;
-    --color-input: #e2e8f0;
-    --color-ring: #6366f1;
+    --color-destructive-foreground: #fafafa;
+    --color-border: rgba(139, 92, 246, 0.15);
+    --color-input: rgba(139, 92, 246, 0.1);
+    --color-ring: #7c3aed;
+    --color-glow: rgba(139, 92, 246, 0.35);
   }
 
   .dark {
-    /* Dark mode colors */
-    --color-background: #020817;
-    --color-foreground: #f8fafc;
-    --color-card: #020817;
-    --color-card-foreground: #f8fafc;
-    --color-popover: #020817;
-    --color-popover-foreground: #f8fafc;
-    --color-primary: #818cf8;
-    --color-primary-foreground: #020817;
-    --color-secondary: #1e293b;
-    --color-secondary-foreground: #f8fafc;
-    --color-muted: #1e293b;
-    --color-muted-foreground: #94a3b8;
-    --color-accent: #e9d5ff;
-    --color-accent-foreground: #020817;
-    --color-destructive: #dc2626;
-    --color-destructive-foreground: #f8fafc;
-    --color-border: #1e293b;
-    --color-input: #1e293b;
-    --color-ring: #818cf8;
+    /* Dark mode - cosmic, deep space feel */
+    --color-background: #0a0a1a;
+    --color-foreground: #f0f4ff;
+    --color-card: rgba(15, 15, 35, 0.8);
+    --color-card-foreground: #f0f4ff;
+    --color-popover: rgba(15, 15, 35, 0.95);
+    --color-popover-foreground: #f0f4ff;
+    --color-primary: #a78bfa;
+    --color-primary-foreground: #0a0a1a;
+    --color-secondary: rgba(139, 92, 246, 0.15);
+    --color-secondary-foreground: #f0f4ff;
+    --color-muted: rgba(139, 92, 246, 0.1);
+    --color-muted-foreground: #a5b4fc;
+    --color-accent: #22d3ee;
+    --color-accent-foreground: #0a0a1a;
+    --color-destructive: #f87171;
+    --color-destructive-foreground: #0a0a1a;
+    --color-border: rgba(167, 139, 250, 0.2);
+    --color-input: rgba(167, 139, 250, 0.15);
+    --color-ring: #a78bfa;
+    --color-glow: rgba(167, 139, 250, 0.4);
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Utility classes for animations */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: var(--color-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+}
+
+.glass-strong {
+  background: var(--color-popover);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient border utility */
+.gradient-border {
+  position: relative;
+  background: var(--color-card);
+  border-radius: var(--radius);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Glow effects */
+.glow {
+  box-shadow: 0 0 30px var(--color-glow);
+}
+
+.glow-sm {
+  box-shadow: 0 0 15px var(--color-glow);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 0 25px var(--color-glow);
 }
 
 /* Syntax highlighting for code blocks */
 pre {
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   padding: 1rem;
   overflow-x: auto;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border: 1px solid var(--color-border);
+}
+
+.dark pre {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
 }
 
 code {
@@ -89,6 +235,34 @@ code {
 
 /* Smooth transitions for theme switching */
 * {
-  transition: background-color 0.2s ease, border-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(124, 58, 237, 0.3);
+}
+
+.dark ::selection {
+  background: rgba(167, 139, 250, 0.3);
 }
