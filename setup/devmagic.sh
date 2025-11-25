@@ -63,7 +63,8 @@ mkdir -p .devcontainer
 # List of files to download
 declare -A REMOTE_TO_LOCAL_FILES=(
     [".devcontainer/devcontainer.json"]=".devcontainer/devcontainer.json"
-    [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
+    # TODO: Test this docker-compose before adding it.
+    # [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
 )
 
 # Download each file
