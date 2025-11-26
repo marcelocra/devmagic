@@ -101,17 +101,48 @@ main() {
     setup_ai_tools
     echo
 
-    # Run dotfiles installation script if available.
-    local dotfiles_install="$HOME/prj/dotfiles/shell/install.sh"
-    if [ -x "$dotfiles_install" ]; then
+    # TODO: Move this whole block to a separate script, following the patterns
+    # established above.
+    # <move-to-funcion>
+
+    # Dotfiles setup with automatic cloning
+    local dotfiles_dir="$HOME/prj/dotfiles"
+    # TODO: Considering how this script is called, through a curl | bash, I don't think the user will be able to set these variables easily. See the comment regarding config variables in the readme. Likely it would require a config/env file, which I was trying to avoid. If you have any other suggestion, please let me know. In the past, I considered changing the endpoint (/setup) to allow customization through query parameters, but that might be clunky? Actually, take a look at the endpoints, as I believe we already allow for a version/branch parameter... might just need to change how it is parsed to actually support the repo user too.
+    local dotfiles_repo="${DEVMAGIC_DOTFILES_REPO:-https://github.com/marcelocra/dotfiles.git}"
+    local dotfiles_branch="${DEVMAGIC_DOTFILES_BRANCH:-main}"
+
+    log "📦 Checking for dotfiles..."
+
+    # Clone dotfiles if directory doesn't exist
+    if [ ! -d "$dotfiles_dir" ]; then
+        log "   Cloning dotfiles from $dotfiles_repo..."
+        mkdir -p "$(dirname "$dotfiles_dir")"
+        if git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"; then
+            log_success "   Dotfiles cloned successfully"
+        else
+            log_warning "   Failed to clone dotfiles (network issue?). Skipping."
+            echo
+            # TODO: This can't be here, otherwise it exits the main function prematurely, one more reason to use the separate function.
+            return 0
+        fi
+    else
+        log "   Dotfiles directory already exists at $dotfiles_dir"
+    fi
+
+    # Run dotfiles installation script if available
+    local dotfiles_install="$dotfiles_dir/shell/install.sh"
+    if [ -f "$dotfiles_install" ]; then
         log "🧩 Running dotfiles install script..."
-        "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
+        # TODO: The dotfiles_install script has a shebang and is executable. Is it still better to use bash to run it? (This is really a question, so I can learn. Consider most recent (nov/2025) best practices to answer.)
+        bash "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
         echo
     else
-        log_warning "⚠️  No dotfiles install script found at ~/prj/dotfiles/shell/install.sh"
+        log_warning "⚠️  No dotfiles install script found at $dotfiles_install"
         log "   Skipping dotfiles installation"
         echo
     fi
+
+    # </move-to-function>
 
     log_success "✅ DevMagic container setup complete!"
     log "ℹ️  Shell history is configured via dotfiles (~/prj/dotfiles/shell/init.sh)"

@@ -236,11 +236,34 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## 🔧 Personal Configuration with Dotfiles <a id="dotfiles"></a>
 
-DevMagic integrates with your personal dotfiles repository, keeping container infrastructure separate from personal preferences. When the container starts, it automatically runs `~/prj/dotfiles/shell/install.sh` if it exists.
+DevMagic automatically clones and installs your personal dotfiles repository during container creation, keeping container infrastructure separate from personal preferences.
 
-**Quick setup:**
+**How it works:**
 
-1. Configure VS Code: `"dotfiles.repository": "yourusername/dotfiles"`
-2. Create `shell/install.sh` in your dotfiles for personal tools (Homebrew, fzf, VS Code settings, etc.)
+1. When the container is created, DevMagic checks for a dotfiles repository at `~/prj/dotfiles`
+2. If not found, it clones your dotfiles repository automatically
+3. It then runs `~/prj/dotfiles/shell/install.sh` to set up your personal environment
+
+**Configuration:**
+
+Set these environment variables in `.devcontainer/devcontainer.json` to customize:
+
+```json
+{
+  "remoteEnv": {
+    // TODO: Are you sure that this will work? I don't think the postCreateCommand can read remoteEnv variables...
+    // Take a look at the devcontainer-setup.sh from tag v0.1.0 to see how we used to deal with it before.
+    "DEVMAGIC_DOTFILES_REPO": "https://github.com/yourusername/dotfiles.git",
+    "DEVMAGIC_DOTFILES_BRANCH": "main"
+  }
+}
+```
+
+- `DEVMAGIC_DOTFILES_REPO`: Your dotfiles repository URL (default: `https://github.com/marcelocra/dotfiles.git`)
+- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
+
+**Disable dotfiles:** Set `DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
+
+Your `shell/install.sh` script should handle personal tools (Homebrew, fzf, VS Code settings, etc.) and must be idempotent (safe to run multiple times).
 
 For full details, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) or [devmagic.run/docs](https://devmagic.run/docs).

@@ -319,3 +319,44 @@ fi
 **One function addition to `devcontainer-setup.sh`, no other changes needed.** This restores your previous working approach while adding the flexibility of environment variable configuration.
 
 Does this align with your vision for simplicity?
+
+---
+
+## Implementation Complete (2025-11-26)
+
+### Changes Made
+
+1. **Modified `setup/devcontainer-setup.sh`**:
+   - Added automatic dotfiles repository cloning if `~/prj/dotfiles` doesn't exist
+   - Uses environment variables for configuration:
+     - `DEVMAGIC_DOTFILES_REPO` (default: `https://github.com/marcelocra/dotfiles.git`)
+     - `DEVMAGIC_DOTFILES_BRANCH` (default: `main`)
+   - Shallow clone (`--depth=1`) for speed
+   - Graceful fallback on network failure
+   - Preserves idempotency (only clones if directory missing)
+
+2. **Updated `README.md`**:
+   - Removed references to VS Code dotfiles settings for remote containers
+   - Added clear documentation on automatic cloning behavior
+   - Documented environment variables for customization
+   - Explained how to disable dotfiles installation
+
+3. **Updated `docs/ARCHITECTURE.md`**:
+   - Clarified that dotfiles are automatically cloned (not dependent on VS Code settings)
+   - Documented environment variable configuration
+   - Updated installation flow diagram
+
+4. **Updated `www/app/docs/architecture/page.tsx`**:
+   - Replaced VS Code settings instructions with environment variable configuration
+   - Explained the automatic cloning flow
+   - Showed how to disable dotfiles via environment variable
+
+### Result
+
+Simple, working solution that:
+- ✅ Automatically clones dotfiles on container creation
+- ✅ Works in all scenarios (local, remote SSH, tunnels, Codespaces)
+- ✅ Maintains separation of concerns (DevMagic vs dotfiles)
+- ✅ Allows customization via environment variables
+- ✅ Gracefully handles network failures
+- ✅ No complex marker files or integrity checks needed

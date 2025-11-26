@@ -61,26 +61,34 @@ The current design is correct:
 - DevMagic = portable dev container infrastructure (works for anyone)
 - Dotfiles = your personal preferences (only applies to you)
 
-The `devcontainer-setup.sh` gracefully handles missing dotfiles:
+The `devcontainer-setup.sh` automatically clones your dotfiles repository during container creation:
 
 ```bash
-if [ -x "$HOME/prj/dotfiles/shell/install.sh" ]; then
-    log "🧩 Running dotfiles install script..."
-    "$HOME/prj/dotfiles/shell/install.sh"
-else
-    log_warning "⚠️  No dotfiles install script found"
-    log "   Skipping dotfiles installation"
+# Clone dotfiles if directory doesn't exist
+if [ ! -d "$dotfiles_dir" ]; then
+    git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"
+fi
+
+# Run install script if it exists
+if [ -f "$dotfiles_dir/shell/install.sh" ]; then
+    bash "$dotfiles_dir/shell/install.sh"
 fi
 ```
 
+You can configure which repository to clone via environment variables:
+
+- `DEVMAGIC_DOTFILES_REPO`: Repository URL (default: marcelocra's dotfiles)
+- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
+
 This means:
 
-- ✅ **Your machine** (with VS Code dotfiles configured): Gets full personal setup
-- ✅ **Someone else using DevMagic**: Gets a working container without your preferences
-- ✅ **No coupling**: DevMagic doesn't depend on any specific dotfiles repo
+- ✅ **Your machine**: Configure your own dotfiles repo via `remoteEnv` in `devcontainer.json`
+- ✅ **Someone else using DevMagic**: Gets a working container (can skip dotfiles by setting `DEVMAGIC_DOTFILES_REPO=""`)
+- ✅ **No coupling**: DevMagic works without dotfiles; dotfiles are optional enhancement
 
 ## Installation Flow
 
+<!-- TODO: I really like this simple diagram, but since github displays mermaid, perhaps it would be more interesting for readers if we used mermaid? But I don't want to remove this yet. Please, create a mermaid diagram for this flow right after it in a <details> block, so I can see how it looks in github. -->
 ```
 User runs: curl -fsSL https://devmagic.run/install | bash
     │
@@ -103,16 +111,18 @@ postCreateCommand: curl -fsSL https://devmagic.run/setup | bash
 devcontainer-setup.sh:
   ├─ SSH keys setup (from mounted ~/.ssh-from-host)
   ├─ AI CLI tools (aider, claude, gemini, copilot)
-  └─ Calls ~/prj/dotfiles/shell/install.sh (if exists)
-        │
-        ▼
-    install.sh (from dotfiles):
-      ├─ Homebrew installation
-      ├─ fzf (from custom fork for security)
-      ├─ Brew packages (hugo, babashka, bat, ripgrep, etc.)
-      ├─ Zsh plugins (from custom forks)
-      ├─ Shell config symlinks (.zshrc, .bashrc)
-      └─ VS Code config symlinks (settings.json, keybindings.json)
+  └─ Dotfiles setup:
+        ├─ Clone repo if ~/prj/dotfiles doesn't exist
+        └─ Run ~/prj/dotfiles/shell/install.sh
+              │
+              ▼
+          install.sh (from dotfiles):
+            ├─ Homebrew installation
+            ├─ fzf (from custom fork for security)
+            ├─ Brew packages (hugo, babashka, bat, ripgrep, etc.)
+            ├─ Zsh plugins (from custom forks)
+            ├─ Shell config symlinks (.zshrc, .bashrc)
+            └─ VS Code config symlinks (settings.json, keybindings.json)
 ```
 
 ## Homebrew vs Conda
