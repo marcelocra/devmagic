@@ -39,18 +39,26 @@ if [ -f "$HOME/prj/dotfiles/shell/install.sh" ]; then
 fi
 ```
 
-Configuration via environment variables in `devcontainer.json`:
+Configuration via **host environment variables** (no devcontainer.json edits needed):
+
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/username/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"
+```
+
+DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` syntax to pass host environment variables to the container:
 
 ```json
 {
   "containerEnv": {
-    "DEVMAGIC_DOTFILES_REPO": "https://github.com/username/dotfiles.git",
-    "DEVMAGIC_DOTFILES_BRANCH": "main"
+    "DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO:https://github.com/marcelocra/dotfiles.git}",
+    "DEVMAGIC_DOTFILES_BRANCH": "${localEnv:DEVMAGIC_DOTFILES_BRANCH:main}"
   }
 }
 ```
 
-**Important:** Use `containerEnv` (not `remoteEnv`) because these variables must be available during `postCreateCommand` execution. The Dev Container specification confirms that `containerEnv` sets variables at container creation time, making them accessible to all processes including lifecycle scripts. `remoteEnv` variables are only set after VS Code connects to the container, which happens after `postCreateCommand` completes.
+**Important:** Uses `containerEnv` (not `remoteEnv`) because variables must be available during `postCreateCommand` execution. The Dev Container specification confirms that `containerEnv` sets variables at container creation time, making them accessible to all processes including lifecycle scripts. `remoteEnv` variables are only set after VS Code connects, which happens after `postCreateCommand` completes.
 
 ## Alternatives Considered
 

@@ -75,14 +75,22 @@ if [ -f "$dotfiles_dir/shell/install.sh" ]; then
 fi
 ```
 
-You can configure which repository to clone via environment variables:
+You can configure which repository to clone via **host environment variables** (no need to edit devcontainer.json):
+
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional
+```
 
 - `DEVMAGIC_DOTFILES_REPO`: Repository URL (default: marcelocra's dotfiles)
 - `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
 
+DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` to read your host environment and pass it to the container.
+
 This means:
 
-- ✅ **Your machine**: Configure your own dotfiles repo via `remoteEnv` in `devcontainer.json`
+- ✅ **Your machine**: Set host env vars once, works for all DevMagic containers
 - ✅ **Someone else using DevMagic**: Gets a working container (can skip dotfiles by setting `DEVMAGIC_DOTFILES_REPO=""`)
 - ✅ **No coupling**: DevMagic works without dotfiles; dotfiles are optional enhancement
 

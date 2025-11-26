@@ -26,7 +26,12 @@
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
     // Ollama host URL for local LLM development.
-    "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}"
+    "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}",
+    // Dotfiles configuration. Override via host environment variables.
+    // Set DEVMAGIC_DOTFILES_REPO in your ~/.bashrc or ~/.zshrc to use your own repo.
+    // Set to empty string to disable dotfiles: export DEVMAGIC_DOTFILES_REPO=""
+    "DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO:https://github.com/marcelocra/dotfiles.git}",
+    "DEVMAGIC_DOTFILES_BRANCH": "${localEnv:DEVMAGIC_DOTFILES_BRANCH:main}"
   },
   "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
   "features": {

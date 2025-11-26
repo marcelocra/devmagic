@@ -121,14 +121,14 @@ Container starts:
           <div className="bg-card border border-primary/20 rounded-lg p-6 mb-4">
             <h4 className="font-medium mb-3">Configuration</h4>
             <p className="text-sm text-muted-foreground mb-3">
-              Add environment variables to your <code className="bg-muted px-1 rounded">.devcontainer/devcontainer.json</code>:
+              Set <strong>host environment variables</strong> (no devcontainer.json edits needed):
             </p>
-            <pre className="bg-muted/50 rounded p-3 text-xs mb-3">{`{
-  "remoteEnv": {
-    "DEVMAGIC_DOTFILES_REPO": "https://github.com/yourusername/dotfiles.git",
-    "DEVMAGIC_DOTFILES_BRANCH": "main"
-  }
-}`}</pre>
+            <pre className="bg-muted/50 rounded p-3 text-xs mb-3">{`# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main`}</pre>
+            <p className="text-xs text-muted-foreground mb-3">
+              DevMagic uses <code className="bg-muted px-1 rounded">{"${localEnv:VAR:default}"}</code> to read your host environment.
+            </p>
             <ol className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <span className="font-medium text-foreground">1. Container starts</span>
@@ -144,7 +144,7 @@ Container starts:
               </li>
             </ol>
             <p className="text-xs text-muted-foreground mt-4">
-              Disable dotfiles: Set <code className="bg-muted px-1 rounded">DEVMAGIC_DOTFILES_REPO=""</code>
+              Disable dotfiles: <code className="bg-muted px-1 rounded">export DEVMAGIC_DOTFILES_REPO=""</code>
             </p>
           </div>
         </section>

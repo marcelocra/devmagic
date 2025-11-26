@@ -246,23 +246,20 @@ DevMagic automatically clones and installs your personal dotfiles repository dur
 
 **Configuration:**
 
-Set these environment variables in `.devcontainer/devcontainer.json` to customize:
+DevMagic reads dotfiles settings from your **host environment variables** (no need to edit devcontainer.json):
 
-```json
-{
-  "containerEnv": {
-    "DEVMAGIC_DOTFILES_REPO": "https://github.com/yourusername/dotfiles.git",
-    "DEVMAGIC_DOTFILES_BRANCH": "main"
-  }
-}
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main
 ```
-
-> **Note:** Use `containerEnv` (not `remoteEnv`) so the variables are available during `postCreateCommand` execution.
 
 - `DEVMAGIC_DOTFILES_REPO`: Your dotfiles repository URL (default: `https://github.com/marcelocra/dotfiles.git`)
 - `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
 
-**Disable dotfiles:** Set `DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
+**Disable dotfiles:** Set `export DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
+
+> **How it works:** DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` syntax to read your host environment variables and pass them to the container.
 
 Your `shell/install.sh` script should handle personal tools (Homebrew, fzf, VS Code settings, etc.) and must be idempotent (safe to run multiple times).
 
