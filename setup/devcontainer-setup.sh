@@ -93,11 +93,8 @@ setup_ai_tools() {
 # ---------------------------------------------------------------------------
 setup_dotfiles() {
     local dotfiles_dir="$HOME/prj/dotfiles"
-    # Environment variables come from devcontainer.json's containerEnv, which uses
-    # ${localEnv:VAR:default} syntax. Users override by setting host environment variables:
-    #   export DEVMAGIC_DOTFILES_REPO="https://github.com/youruser/dotfiles.git"
-    #   export DEVMAGIC_DOTFILES_BRANCH="main"
-    # To disable dotfiles entirely: export DEVMAGIC_DOTFILES_REPO=""
+    # Override via host env vars: DEVMAGIC_DOTFILES_REPO, DEVMAGIC_DOTFILES_BRANCH
+    # Set to empty string to disable: export DEVMAGIC_DOTFILES_REPO=""
     local dotfiles_repo="${DEVMAGIC_DOTFILES_REPO:-https://github.com/marcelocra/dotfiles.git}"
     local dotfiles_branch="${DEVMAGIC_DOTFILES_BRANCH:-main}"
 

@@ -23,42 +23,17 @@ This violates DevMagic's portability goal - containers should work consistently 
 
 ## Decision
 
-Implement automatic dotfiles cloning in `devcontainer-setup.sh`:
+Implement automatic dotfiles cloning in `devcontainer-setup.sh` using environment variables configured via `${localEnv:VAR:default}` syntax in `containerEnv`.
 
-```bash
-# Check if dotfiles directory exists
-if [ ! -d "$HOME/prj/dotfiles" ]; then
-    # Clone using environment variables
-    git clone --depth=1 --branch "$DEVMAGIC_DOTFILES_BRANCH" \
-              "$DEVMAGIC_DOTFILES_REPO" "$HOME/prj/dotfiles"
-fi
+**Key design choices:**
 
-# Run install script if present
-if [ -f "$HOME/prj/dotfiles/shell/install.sh" ]; then
-    bash "$HOME/prj/dotfiles/shell/install.sh"
-fi
-```
+1. **Clone on first run** - Directory presence (`~/prj/dotfiles`) is the marker
+2. **Host environment variables** - Users set `DEVMAGIC_DOTFILES_REPO` in their shell config, no devcontainer.json edits needed
+3. **`containerEnv` not `remoteEnv`** - Variables must be available during `postCreateCommand` (before VS Code connects)
+4. **Shallow clone** - `--depth=1` for speed
+5. **Graceful failure** - Log warning and continue if clone fails
 
-Configuration via **host environment variables** (no devcontainer.json edits needed):
-
-```bash
-# Add to your ~/.bashrc or ~/.zshrc
-export DEVMAGIC_DOTFILES_REPO="https://github.com/username/dotfiles.git"
-export DEVMAGIC_DOTFILES_BRANCH="main"
-```
-
-DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` syntax to pass host environment variables to the container:
-
-```json
-{
-  "containerEnv": {
-    "DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO:https://github.com/marcelocra/dotfiles.git}",
-    "DEVMAGIC_DOTFILES_BRANCH": "${localEnv:DEVMAGIC_DOTFILES_BRANCH:main}"
-  }
-}
-```
-
-**Important:** Uses `containerEnv` (not `remoteEnv`) because variables must be available during `postCreateCommand` execution. The Dev Container specification confirms that `containerEnv` sets variables at container creation time, making them accessible to all processes including lifecycle scripts. `remoteEnv` variables are only set after VS Code connects, which happens after `postCreateCommand` completes.
+See [ARCHITECTURE.md](../ARCHITECTURE.md#the-install-script-location) for configuration details and code examples.
 
 ## Alternatives Considered
 
