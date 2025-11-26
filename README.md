@@ -250,14 +250,14 @@ Set these environment variables in `.devcontainer/devcontainer.json` to customiz
 
 ```json
 {
-  "remoteEnv": {
-    // TODO: Are you sure that this will work? I don't think the postCreateCommand can read remoteEnv variables...
-    // Take a look at the devcontainer-setup.sh from tag v0.1.0 to see how we used to deal with it before.
+  "containerEnv": {
     "DEVMAGIC_DOTFILES_REPO": "https://github.com/yourusername/dotfiles.git",
     "DEVMAGIC_DOTFILES_BRANCH": "main"
   }
 }
 ```
+
+> **Note:** Use `containerEnv` (not `remoteEnv`) so the variables are available during `postCreateCommand` execution.
 
 - `DEVMAGIC_DOTFILES_REPO`: Your dotfiles repository URL (default: `https://github.com/marcelocra/dotfiles.git`)
 - `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
