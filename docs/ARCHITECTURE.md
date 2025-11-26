@@ -88,7 +88,8 @@ This means:
 
 ## Installation Flow
 
-<!-- TODO: I really like this simple diagram, but since github displays mermaid, perhaps it would be more interesting for readers if we used mermaid? But I don't want to remove this yet. Please, create a mermaid diagram for this flow right after it in a <details> block, so I can see how it looks in github. -->
+<!-- IMPORTANT: Keep this flowchart synchronized with the Mermaid diagram below. -->
+
 ```
 User runs: curl -fsSL https://devmagic.run/install | bash
     │
@@ -124,6 +125,41 @@ devcontainer-setup.sh:
             ├─ Shell config symlinks (.zshrc, .bashrc)
             └─ VS Code config symlinks (settings.json, keybindings.json)
 ```
+
+<details>
+<summary><b>View as Mermaid diagram</b></summary>
+
+<!-- IMPORTANT: Keep this flowchart synchronized with the diagram above. -->
+
+```mermaid
+flowchart TD
+    A["User runs: curl devmagic.run/install | bash"] --> B["/install endpoint<br/>fetches setup/devmagic.sh"]
+    B --> C["devmagic.sh downloads<br/>.devcontainer/ files"]
+    C --> D["User opens in<br/>VS Code Dev Container"]
+    D --> E["postCreateCommand:<br/>curl devmagic.run/setup | bash"]
+    E --> F["/setup endpoint<br/>fetches devcontainer-setup.sh"]
+    F --> G["devcontainer-setup.sh"]
+
+    G --> H["SSH keys setup"]
+    G --> I["AI CLI tools"]
+    G --> J["Dotfiles setup"]
+
+    J --> K["Clone repo if missing<br/>~/prj/dotfiles"]
+    K --> L["Run install.sh"]
+
+    L --> M["Homebrew installation"]
+    L --> N["fzf from custom fork"]
+    L --> O["Brew packages"]
+    L --> P["Zsh plugins"]
+    L --> Q["Shell config symlinks"]
+    L --> R["VS Code config symlinks"]
+
+    style A fill:#e1f5ff
+    style G fill:#fff4e1
+    style L fill:#f0f0f0
+```
+
+</details>
 
 ## Homebrew vs Conda
 
