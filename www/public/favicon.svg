@@ -1,48 +1,7 @@
 <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Main gradient for the logo -->
-    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#7c3aed"/>
-      <stop offset="50%" style="stop-color:#a855f7"/>
-      <stop offset="100%" style="stop-color:#06b6d4"/>
-    </linearGradient>
-    <!-- Glow filter -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Inner glow -->
-    <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  </defs>
-  
-  <!-- Subtle background glow circle -->
-  <circle cx="200" cy="200" r="150" fill="url(#logoGradient)" opacity="0.1"/>
-  
-  <!-- Left angle bracket < with rounded, flowing design -->
-  <path 
-    d="M 175 70 C 175 70 50 200 50 200 C 50 200 175 330 175 330 C 185 340 175 350 165 340 C 165 340 30 200 30 200 C 30 200 165 60 165 60 C 175 50 185 60 175 70 Z" 
-    fill="url(#logoGradient)" 
-    filter="url(#glow)"
-    opacity="0.9"
-  />
-  
-  <!-- Right angle bracket > with rounded, flowing design -->
-  <path 
-    d="M 225 70 C 225 70 350 200 350 200 C 350 200 225 330 225 330 C 215 340 225 350 235 340 C 235 340 370 200 370 200 C 370 200 235 60 235 60 C 225 50 215 60 225 70 Z" 
-    fill="url(#logoGradient)" 
-    filter="url(#glow)"
-    opacity="0.9"
-  />
-  
-  <!-- Central magic spark/star -->
-  <g transform="translate(200, 200)">
-    <circle r="8" fill="#ffffff" opacity="0.9" filter="url(#innerGlow)"/>
-    <circle r="4" fill="#ffffff"/>
-  </g>
+  <!-- {/* Left angle bracket < */} -->
+  <path d="M 180 80 L 60 200 L 180 320 L 180 260 L 140 200 L 180 140 Z" fill="#8b5cf6" />
+
+  <!-- {/* Right angle bracket > */} -->
+  <path d="M 220 80 L 340 200 L 220 320 L 220 260 L 260 200 L 220 140 Z" fill="#8b5cf6" />
 </svg>
