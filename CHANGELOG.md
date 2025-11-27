@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Rename dotfiles installation plan file and update references
+- Consolidate AI context files into a single source of truth
+- Change how the dotfiles repo is provided to the devcontainer and document the change
 - Restructure main execution flow and encapsulate dotfiles setup in a dedicated function
 - Move the visual identity file to the docs folder
 - Remove rewrites from vercel.json (they are in next.config.ts); add command so vercel ignores the skip ci tag
@@ -33,6 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
+- Add blog post on the pitfalls of over-engineering with AI suggestions
+- Add blog post on using containerEnv vs remoteEnv for Dev Container setup
+- Save outline for potential blog posts and notes on AI context files
+- Archive the comprehensive refactor plan for DevContainer from script to features
+- Update docs
 - Update installation flow with Mermaid diagram and synchronization notes
 - Update changelog [skip ci]
 - Update changelog [skip ci]
