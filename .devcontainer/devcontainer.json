@@ -30,8 +30,10 @@
     // Dotfiles configuration. Override via host environment variables.
     // Set DEVMAGIC_DOTFILES_REPO in your ~/.bashrc or ~/.zshrc to use your own repo.
     // Set to empty string to disable dotfiles: export DEVMAGIC_DOTFILES_REPO=""
-    "DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO:https://github.com/marcelocra/dotfiles.git}",
-    "DEVMAGIC_DOTFILES_BRANCH": "${localEnv:DEVMAGIC_DOTFILES_BRANCH:main}"
+    // Note: Default values are set in devcontainer-setup.sh (not here) because
+    // the ${localEnv:VAR:default} syntax doesn't handle colons in URLs properly.
+    "DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO}",
+    "DEVMAGIC_DOTFILES_BRANCH": "${localEnv:DEVMAGIC_DOTFILES_BRANCH}"
   },
   "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
   "features": {

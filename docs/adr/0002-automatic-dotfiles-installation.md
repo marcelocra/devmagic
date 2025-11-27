@@ -23,7 +23,7 @@ This violates DevMagic's portability goal - containers should work consistently 
 
 ## Decision
 
-Implement automatic dotfiles cloning in `devcontainer-setup.sh` using environment variables configured via `${localEnv:VAR:default}` syntax in `containerEnv`.
+Implement automatic dotfiles cloning in `devcontainer-setup.sh` using environment variables.
 
 **Key design choices:**
 
@@ -32,6 +32,30 @@ Implement automatic dotfiles cloning in `devcontainer-setup.sh` using environmen
 3. **`containerEnv` not `remoteEnv`** - Variables must be available during `postCreateCommand` (before VS Code connects)
 4. **Shallow clone** - `--depth=1` for speed
 5. **Graceful failure** - Log warning and continue if clone fails
+6. **Default values in bash only** - Due to a limitation in the devcontainer spec (see below)
+
+### Important: Default Value Limitation
+
+The devcontainer spec's `${localEnv:VAR:default}` syntax uses colons as delimiters, which **breaks when default values contain colons** (like URLs). There is no escape mechanism.
+
+```jsonc
+// ❌ BROKEN - evaluates to "https" not the full URL
+"DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO:https://github.com/user/dotfiles.git}"
+```
+
+This is a [known spec limitation](https://github.com/devcontainers/spec/issues/565) with no fix as of November 2025.
+
+**Workaround:** Pass variables without defaults in `containerEnv`, handle defaults in bash:
+
+```jsonc
+// devcontainer.json - no default value
+"DEVMAGIC_DOTFILES_REPO": "${localEnv:DEVMAGIC_DOTFILES_REPO}"
+```
+
+```bash
+# devcontainer-setup.sh - default handled here
+local dotfiles_repo="${DEVMAGIC_DOTFILES_REPO:-https://github.com/user/dotfiles.git}"
+```
 
 See [ARCHITECTURE.md](../ARCHITECTURE.md#the-install-script-location) for configuration details and code examples.
 
