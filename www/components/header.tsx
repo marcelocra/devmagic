@@ -2,10 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
   const navLinks = [
     { href: "/getting-started", label: "Getting Started" },
@@ -70,8 +89,85 @@ export function Header() {
             </svg>
           </a>
           <ThemeToggle />
+
+          {/* Mobile menu button - Magic wand icon */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+          >
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {isMobileMenuOpen ? (
+                /* X icon when menu is open */
+                <g className="transition-all duration-300">
+                  <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </g>
+              ) : (
+                /* Magic wand with sparkles when menu is closed */
+                <g className="transition-all duration-300">
+                  {/* Wand body */}
+                  <path
+                    d="M15 4L20 9L9 20L4 15L15 4Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                  {/* Wand handle divider */}
+                  <path d="M12 7L17 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  {/* Sparkle top */}
+                  <path d="M3 3V5M3 3H5M3 3H1M3 3V1" stroke="#8b5cf6" strokeWidth="1.5" strokeLinecap="round" />
+                  {/* Sparkle right */}
+                  <path
+                    d="M21 11V12.5M21 11H22.5M21 11H19.5M21 11V9.5"
+                    stroke="#06b6d4"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </g>
+              )}
+            </svg>
+          </button>
         </div>
       </nav>
+
+      {/* Mobile menu overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 top-[65px] bg-black/20 backdrop-blur-sm md:hidden z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile menu panel */}
+      <div
+        className={`fixed top-[65px] right-0 h-[calc(100vh-65px)] w-64 bg-background/95 backdrop-blur-lg border-l border-border shadow-xl md:hidden z-50 transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <nav className="flex flex-col p-4 space-y-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`relative px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
+                pathname === link.href
+                  ? "text-foreground bg-gradient-to-r from-primary/10 to-accent/10"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              {link.label}
+              {pathname === link.href && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
+              )}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 }
