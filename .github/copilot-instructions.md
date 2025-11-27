@@ -30,12 +30,10 @@ DevMagic provides portable development environments using VS Code Dev Containers
 
 ### Website
 
-- Built with Next.js and React 19
-- Serves setup scripts via dynamic endpoints:
-  - `/install` - latest installation script
-  - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
-- Uses App Router for routing and API routes
-- TypeScript for type safety
+- Built with Next.js 16 App Router
+- Serves setup scripts via API routes:
+    - `/install` - latest installation script
+    - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)
 - Deployed to Vercel
 
 ### Auxiliary Services

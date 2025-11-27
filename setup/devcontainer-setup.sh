@@ -89,6 +89,51 @@ setup_ai_tools() {
 }
 
 # ---------------------------------------------------------------------------
+# Dotfiles Setup
+# ---------------------------------------------------------------------------
+setup_dotfiles() {
+    local dotfiles_dir="$HOME/prj/dotfiles"
+    # Override via host env vars: DEVMAGIC_DOTFILES_REPO, DEVMAGIC_DOTFILES_BRANCH
+    # Set to empty string to disable: export DEVMAGIC_DOTFILES_REPO=""
+    local dotfiles_repo="${DEVMAGIC_DOTFILES_REPO:-https://github.com/marcelocra/dotfiles.git}"
+    local dotfiles_branch="${DEVMAGIC_DOTFILES_BRANCH:-main}"
+
+    log "📦 Checking for dotfiles..."
+
+    # Clone dotfiles if directory doesn't exist
+    if [ ! -d "$dotfiles_dir" ]; then
+        log "   Cloning dotfiles from $dotfiles_repo..."
+        mkdir -p "$(dirname "$dotfiles_dir")"
+        if git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"; then
+            log_success "   Dotfiles cloned successfully"
+        else
+            log_warning "   Failed to clone dotfiles (network issue?). Skipping."
+            return 0
+        fi
+    else
+        log "   Dotfiles directory already exists at $dotfiles_dir"
+    fi
+
+    # Run dotfiles installation script if available
+    local dotfiles_install="$dotfiles_dir/shell/install.sh"
+    if [ -f "$dotfiles_install" ]; then
+        log "🧩 Running dotfiles install script..."
+        # Use bash to run the script for consistency and error handling.
+        # While the script has a shebang and is executable, explicitly using bash:
+        # - Ensures consistent interpreter (user's shebang might differ)
+        # - Allows "bash -x" for debugging if needed
+        # - Works even if execute bit is lost (git clone, file copy)
+        # - Standard practice for CI/CD and automation scripts
+        bash "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
+    else
+        log_warning "⚠️  No dotfiles install script found at $dotfiles_install"
+        log "   Skipping dotfiles installation"
+    fi
+
+    log_success "✅ Dotfiles setup complete"
+}
+
+# ---------------------------------------------------------------------------
 # Main execution
 # ---------------------------------------------------------------------------
 main() {
@@ -101,17 +146,8 @@ main() {
     setup_ai_tools
     echo
 
-    # Run dotfiles installation script if available.
-    local dotfiles_install="$HOME/prj/dotfiles/shell/install.sh"
-    if [ -x "$dotfiles_install" ]; then
-        log "🧩 Running dotfiles install script..."
-        "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
-        echo
-    else
-        log_warning "⚠️  No dotfiles install script found at ~/prj/dotfiles/shell/install.sh"
-        log "   Skipping dotfiles installation"
-        echo
-    fi
+    setup_dotfiles
+    echo
 
     log_success "✅ DevMagic container setup complete!"
     log "ℹ️  Shell history is configured via dotfiles (~/prj/dotfiles/shell/init.sh)"

@@ -61,25 +61,42 @@ The current design is correct:
 - DevMagic = portable dev container infrastructure (works for anyone)
 - Dotfiles = your personal preferences (only applies to you)
 
-The `devcontainer-setup.sh` gracefully handles missing dotfiles:
+The `devcontainer-setup.sh` automatically clones your dotfiles repository during container creation:
 
 ```bash
-if [ -x "$HOME/prj/dotfiles/shell/install.sh" ]; then
-    log "🧩 Running dotfiles install script..."
-    "$HOME/prj/dotfiles/shell/install.sh"
-else
-    log_warning "⚠️  No dotfiles install script found"
-    log "   Skipping dotfiles installation"
+# Clone dotfiles if directory doesn't exist
+if [ ! -d "$dotfiles_dir" ]; then
+    git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"
+fi
+
+# Run install script if it exists
+if [ -f "$dotfiles_dir/shell/install.sh" ]; then
+    bash "$dotfiles_dir/shell/install.sh"
 fi
 ```
 
+You can configure which repository to clone via **host environment variables** (no need to edit devcontainer.json):
+
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional
+```
+
+- `DEVMAGIC_DOTFILES_REPO`: Repository URL (default: marcelocra's dotfiles)
+- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
+
+DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` to read your host environment and pass it to the container.
+
 This means:
 
-- ✅ **Your machine** (with VS Code dotfiles configured): Gets full personal setup
-- ✅ **Someone else using DevMagic**: Gets a working container without your preferences
-- ✅ **No coupling**: DevMagic doesn't depend on any specific dotfiles repo
+- ✅ **Your machine**: Set host env vars once, works for all DevMagic containers
+- ✅ **Someone else using DevMagic**: Gets a working container (can skip dotfiles by setting `DEVMAGIC_DOTFILES_REPO=""`)
+- ✅ **No coupling**: DevMagic works without dotfiles; dotfiles are optional enhancement
 
 ## Installation Flow
+
+<!-- IMPORTANT: Keep this flowchart synchronized with the Mermaid diagram below. -->
 
 ```
 User runs: curl -fsSL https://devmagic.run/install | bash
@@ -103,17 +120,54 @@ postCreateCommand: curl -fsSL https://devmagic.run/setup | bash
 devcontainer-setup.sh:
   ├─ SSH keys setup (from mounted ~/.ssh-from-host)
   ├─ AI CLI tools (aider, claude, gemini, copilot)
-  └─ Calls ~/prj/dotfiles/shell/install.sh (if exists)
-        │
-        ▼
-    install.sh (from dotfiles):
-      ├─ Homebrew installation
-      ├─ fzf (from custom fork for security)
-      ├─ Brew packages (hugo, babashka, bat, ripgrep, etc.)
-      ├─ Zsh plugins (from custom forks)
-      ├─ Shell config symlinks (.zshrc, .bashrc)
-      └─ VS Code config symlinks (settings.json, keybindings.json)
+  └─ Dotfiles setup:
+        ├─ Clone repo if ~/prj/dotfiles doesn't exist
+        └─ Run ~/prj/dotfiles/shell/install.sh
+              │
+              ▼
+          install.sh (from dotfiles):
+            ├─ Homebrew installation
+            ├─ fzf (from custom fork for security)
+            ├─ Brew packages (hugo, babashka, bat, ripgrep, etc.)
+            ├─ Zsh plugins (from custom forks)
+            ├─ Shell config symlinks (.zshrc, .bashrc)
+            └─ VS Code config symlinks (settings.json, keybindings.json)
 ```
+
+<details>
+<summary><b>View as Mermaid diagram</b></summary>
+
+<!-- IMPORTANT: Keep this flowchart synchronized with the diagram above. -->
+
+```mermaid
+flowchart TD
+    A["User runs: curl devmagic.run/install | bash"] --> B["/install endpoint<br/>fetches setup/devmagic.sh"]
+    B --> C["devmagic.sh downloads<br/>.devcontainer/ files"]
+    C --> D["User opens in<br/>VS Code Dev Container"]
+    D --> E["postCreateCommand:<br/>curl devmagic.run/setup | bash"]
+    E --> F["/setup endpoint<br/>fetches devcontainer-setup.sh"]
+    F --> G["devcontainer-setup.sh"]
+
+    G --> H["SSH keys setup"]
+    G --> I["AI CLI tools"]
+    G --> J["Dotfiles setup"]
+
+    J --> K["Clone repo if missing<br/>~/prj/dotfiles"]
+    K --> L["Run install.sh"]
+
+    L --> M["Homebrew installation"]
+    L --> N["fzf from custom fork"]
+    L --> O["Brew packages"]
+    L --> P["Zsh plugins"]
+    L --> Q["Shell config symlinks"]
+    L --> R["VS Code config symlinks"]
+
+    style A fill:#e1f5ff
+    style G fill:#fff4e1
+    style L fill:#f0f0f0
+```
+
+</details>
 
 ## Homebrew vs Conda
 

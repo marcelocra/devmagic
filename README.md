@@ -236,11 +236,31 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## 🔧 Personal Configuration with Dotfiles <a id="dotfiles"></a>
 
-DevMagic integrates with your personal dotfiles repository, keeping container infrastructure separate from personal preferences. When the container starts, it automatically runs `~/prj/dotfiles/shell/install.sh` if it exists.
+DevMagic automatically clones and installs your personal dotfiles repository during container creation, keeping container infrastructure separate from personal preferences.
 
-**Quick setup:**
+**How it works:**
 
-1. Configure VS Code: `"dotfiles.repository": "yourusername/dotfiles"`
-2. Create `shell/install.sh` in your dotfiles for personal tools (Homebrew, fzf, VS Code settings, etc.)
+1. When the container is created, DevMagic checks for a dotfiles repository at `~/prj/dotfiles`
+2. If not found, it clones your dotfiles repository automatically
+3. It then runs `~/prj/dotfiles/shell/install.sh` to set up your personal environment
+
+**Configuration:**
+
+DevMagic reads dotfiles settings from your **host environment variables** (no need to edit devcontainer.json):
+
+```bash
+# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main
+```
+
+- `DEVMAGIC_DOTFILES_REPO`: Your dotfiles repository URL (default: `https://github.com/marcelocra/dotfiles.git`)
+- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
+
+**Disable dotfiles:** Set `export DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
+
+> **How it works:** DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` syntax to read your host environment variables and pass them to the container.
+
+Your `shell/install.sh` script should handle personal tools (Homebrew, fzf, VS Code settings, etc.) and must be idempotent (safe to run multiple times).
 
 For full details, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) or [devmagic.run/docs](https://devmagic.run/docs).

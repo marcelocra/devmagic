@@ -104,8 +104,10 @@ Container starts:
   → postCreateCommand runs devcontainer-setup.sh
     → SSH keys setup
     → AI CLI tools installed
-    → Runs ~/prj/dotfiles/shell/install.sh (if exists)
-      → Your personal tools & config`}</pre>
+    → Dotfiles setup:
+      → Clone repo if ~/prj/dotfiles doesn't exist
+      → Run ~/prj/dotfiles/shell/install.sh
+        → Your personal tools & config`}</pre>
           </div>
         </section>
 
@@ -113,29 +115,37 @@ Container starts:
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4">Dotfiles Integration</h2>
           <p className="text-muted-foreground mb-4">
-            DevMagic automatically runs your dotfiles install script when the container starts.
+            DevMagic automatically clones and installs your dotfiles repository when the container is created.
           </p>
 
           <div className="bg-card border border-primary/20 rounded-lg p-6 mb-4">
-            <h4 className="font-medium mb-3">Quick Setup</h4>
+            <h4 className="font-medium mb-3">Configuration</h4>
+            <p className="text-sm text-muted-foreground mb-3">
+              Set <strong>host environment variables</strong> (no devcontainer.json edits needed):
+            </p>
+            <pre className="bg-muted/50 rounded p-3 text-xs mb-3">{`# Add to your ~/.bashrc or ~/.zshrc
+export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
+export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main`}</pre>
+            <p className="text-xs text-muted-foreground mb-3">
+              DevMagic uses <code className="bg-muted px-1 rounded">{"${localEnv:VAR:default}"}</code> to read your host environment.
+            </p>
             <ol className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <span className="font-medium text-foreground">1. Configure VS Code</span>
-                <pre className="mt-1 bg-muted/50 rounded p-2 text-xs">{`"dotfiles.repository": "yourusername/dotfiles"
-"dotfiles.targetPath": "~/prj/dotfiles"`}</pre>
+                <span className="font-medium text-foreground">1. Container starts</span>
+                <p className="mt-1">DevMagic checks if <code className="bg-muted px-1 rounded">~/prj/dotfiles</code> exists</p>
               </li>
               <li>
-                <span className="font-medium text-foreground">2. Create install script</span>
-                <p className="mt-1">
-                  Add <code className="bg-muted px-1 rounded">shell/install.sh</code> to your dotfiles with your
-                  personal setup
-                </p>
+                <span className="font-medium text-foreground">2. Clone if missing</span>
+                <p className="mt-1">Automatically clones your dotfiles repository (shallow clone for speed)</p>
               </li>
               <li>
-                <span className="font-medium text-foreground">3. Done!</span>
-                <p className="mt-1">DevMagic will run it automatically on container start</p>
+                <span className="font-medium text-foreground">3. Install</span>
+                <p className="mt-1">Runs <code className="bg-muted px-1 rounded">shell/install.sh</code> to set up your personal environment</p>
               </li>
             </ol>
+            <p className="text-xs text-muted-foreground mt-4">
+              Disable dotfiles: <code className="bg-muted px-1 rounded">export DEVMAGIC_DOTFILES_REPO=""</code>
+            </p>
           </div>
         </section>
 
