@@ -73,29 +73,27 @@ Let's learn from this.
 
 **The pattern I've noticed:**
 
-1. You describe a problem
-2. AI generates a sophisticated solution
-3. The solution is technically correct and thorough
-4. It's also 10x more complex than necessary
-5. You implement it because "the AI knows best"
-6. You spend days building and debugging
-7. You realize a one-liner would have worked
+1. You describe a problem. We know that the quality and complexity of the AI's suggestions depend heavily on our prompt.
+1. AI generates a sophisticated solution, which might be because of a bad prompt or not.
+1. The solution is technically correct and thorough, but might be over-engineered.
+1. We implement it because "the AI knows best".
+1. We spend days understanding, building and debugging.
+1. We realize a one-liner would have worked.
+1. We blame the AI and hop the next train.
 
 ## How to Avoid This
 
-1. **Always ask "What's the simplest thing that could work?"** before implementing AI suggestions
-2. **Trust your instincts** when something feels overcomplicated
-3. **Sleep on architectural suggestions** - if it still seems reasonable tomorrow, maybe proceed
-4. **Remember: the best code is code you don't write**
-5. **AI doesn't know your context** - it doesn't know this is a solo project, or that you value simplicity, or that "good enough" is often good enough
+1. **Always asking ourselves "What's the simplest thing that could work?"** before implementing AI suggestions. Ideally, before even asking anything.
+1. **Trust our instincts** when something feels overcomplicated. Asking a simple question to the AI might help confirm our doubts, like in my case.
+1. **Sleep on architectural suggestions** if we can, also known as "hammock driven development" (great video by Rich Hickey, btw).
+1. **Keep in mind that the best code is code we don't write.** Cliché but so true. Less code means less bugs, less maintenance, less cognitive load.
+1. **AI doesn't know our context.** In my case, it doesn't know this is a solo project, or that I value simplicity (yep, should be in my instructions), or that "good enough" is often good enough.
 
 ## The Quote
 
-> "The AI gave me a Ferrari when I needed a bicycle. I chose the bicycle."
+> "Simplicity is prerequisite for reliability." — Edsger W. Dijkstra
 
-The Ferrari would have been impressive. It would have handled edge cases I'll never encounter. It would have been "production-ready" for a scale I'll never reach.
-
-But the bicycle gets me where I need to go, and I can actually maintain it.
+When an AI suggests a Ferrari, remember: you probably need a bicycle. The bicycle gets you where you need to go, and you can actually maintain it.
 
 ## Related
 
