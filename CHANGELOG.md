@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Reorganize VS Code extensions into groups
 - Add architecture decision records for DevMagic project
 - Implement automatic cloning of dotfiles repository in devcontainer setup
 - Create world-class visual identity for DevMagic website (#23)
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Enhance Copilot instructions with current stack and best practices (#10)
 - Update changelog [skip ci]
 - Update changelog [skip ci]
