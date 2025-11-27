@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
+- Update changelog [skip ci]
 - Update documentation to clarify handling of environment variables and default values in DevMagic
 - Update changelog [skip ci]
 - Enhance Copilot instructions with current stack and best practices (#10)
@@ -66,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Button content stacking vertically instead of inline (#26)
 - Revert logo to previous simpler version without animation (#24)
 - Update dotfiles configuration to handle default values in bash due to spec limitation
 - Update docs to mention the correct devcontainer property to consider
