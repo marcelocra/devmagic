@@ -60,44 +60,13 @@ fi
 VARIABLE="${VARIABLE:-default_value}"
 ```
 
-### Website Endpoints
-
-```typescript
-// API routes fetch from GitHub
-import { type NextRequest } from "next/server";
-
-export async function GET(request: NextRequest) {
-    const version = request.nextUrl.searchParams.get("version") || "main";
-    const url = `https://raw.githubusercontent.com/marcelocra/devmagic/${version}/path/to/file`;
-    // Fetch and return
-}
-```
-
-### Component Structure
-
-```tsx
-// React Server Component (default)
-interface Props {
-    title: string;
-    children?: React.ReactNode;
-}
-
-export function Component({ title, children }: Props) {
-    return (
-        <div className="component">
-            <h1>{title}</h1>
-            {children}
-        </div>
-    );
-}
-```
-
 ## Testing Approach
 
 - **Dev container changes:** Rebuild container and verify all mounted credentials work
 - **Website changes:** Run `pnpm run dev` in `www/` directory
 - **Setup scripts:** Test in fresh container, ensure idempotency
-- **Build process:** Run `pnpm run build` and verify output (deployed via Vercel)
+- **Build process:** Run `pnpm run build` and verify output
+- **Linting:** Run `pnpm run lint` to check code style
 
 ## File Organization
 
@@ -176,3 +145,45 @@ git commit -m "feat: add configurable AI CLI tools installation (Gemini, Claude,
 - Teams wanting consistent dev setups across members
 - Projects wanting to provide easy onboarding
 - Anyone tired of "works on my machine" problems
+
+## Security Considerations
+
+- **Credentials:** Never copy secrets into containers - always mount read-only from host
+- **Docker socket:** Dev container needs Docker socket access for auxiliary services (security risk acknowledged)
+- **Environment variables:** Use `.env` files for configuration, never commit secrets
+- **Setup scripts:** Validate all downloaded content before execution
+- **Dependencies:** Regularly update base images and dependencies to patch vulnerabilities
+
+## Common Pitfalls and Known Issues
+
+### Credential Mounting
+- Different base images have different default users
+- The `remoteUser` setting must match the image's user for mounts to work
+- Check `.devcontainer/devcontainer.json` when switching base images
+
+### Docker-in-Docker
+- Requires privileged mode or Docker socket mounting
+- Not all container runtimes support all features identically
+- Podman and Docker may have slight differences in behavior
+
+### Script Idempotency
+- Setup scripts run on every container creation
+- Must check if tools are already installed before installing
+- Use conditional logic: `if ! command -v tool &> /dev/null; then ... fi`
+
+### Build Artifacts
+- Next.js build output should not be committed (`.next/`, `.vercel/`)
+- Ensure `.gitignore` is properly configured
+- Use deployment platforms (Vercel) for production builds
+
+### Pnpm Store
+- Pnpm store can become large over time
+- Excluded via `.gitignore` - don't commit it
+- May need periodic cleanup in development
+
+## CI/CD Information
+
+- **Current setup:** No automated CI/CD workflows (manual deployment)
+- **Future consideration:** GitHub Actions for automated testing and deployment
+- **Deployment:** Website can be deployed to Vercel or similar platforms
+- **Version tagging:** Create git tags for versioned setup scripts
