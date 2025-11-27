@@ -36,6 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Enhance Copilot instructions with current stack and best practices (#10)
+- Update changelog [skip ci]
+- Update changelog [skip ci]
+- Refine insights on over-engineering in AI suggestions
 - Update changelog [skip ci]
 - Add blog post on the pitfalls of over-engineering with AI suggestions
 - Add blog post on using containerEnv vs remoteEnv for Dev Container setup
