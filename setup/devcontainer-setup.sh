@@ -55,9 +55,10 @@ NPM_PACKAGES_UNUSED=(
     "@openai/codex"
 )
 NPM_PACKAGES=(
-    "@google/gemini-cli"
     "@anthropic-ai/claude-code"
+    "@google/gemini-cli"
     "@github/copilot"
+    "@google/jules"
 )
 
 setup_ai_tools() {
