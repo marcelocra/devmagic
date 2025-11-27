@@ -120,7 +120,7 @@ Tailwind CSS default scale is used:
 
 ### Primary Logo
 
-The DevMagic logo consists of **angle brackets** `< >` that symbolize code and containers:
+The DevMagic logo consists of **angle brackets** `< >` that symbolize code and containers. This SVG definition is used consistently across the favicon (`www/public/favicon.svg`) and inline in header/footer components:
 
 ```svg
 <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
