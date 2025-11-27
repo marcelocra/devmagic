@@ -86,7 +86,7 @@ export DEVMAGIC_DOTFILES_BRANCH="main"  # optional
 - `DEVMAGIC_DOTFILES_REPO`: Repository URL (default: marcelocra's dotfiles)
 - `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
 
-DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` to read your host environment and pass it to the container.
+Host environment variables are passed to the container via `${localEnv:VAR}` syntax. Default values are handled in the setup script (not in devcontainer.json) due to a [spec limitation with colons in URLs](https://github.com/devcontainers/spec/issues/565).
 
 This means:
 

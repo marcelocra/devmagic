@@ -127,7 +127,8 @@ Container starts:
 export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
 export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main`}</pre>
             <p className="text-xs text-muted-foreground mb-3">
-              DevMagic uses <code className="bg-muted px-1 rounded">{"${localEnv:VAR:default}"}</code> to read your host environment.
+              Host variables are passed via <code className="bg-muted px-1 rounded">{"${localEnv:VAR}"}</code>. Defaults are in the setup script due to a{" "}
+              <a href="https://github.com/devcontainers/spec/issues/565" className="underline hover:text-foreground">spec limitation</a>.
             </p>
             <ol className="space-y-3 text-sm text-muted-foreground">
               <li>

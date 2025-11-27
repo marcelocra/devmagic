@@ -61,13 +61,12 @@ Switch to `containerEnv`:
 
 Now the setup script can read `$DEVMAGIC_DOTFILES_REPO` during `postCreateCommand`.
 
-## Bonus: The `${localEnv:VAR:default}` Pattern
+## Bonus: The `${localEnv:VAR}` Pattern
 
-Notice the `${localEnv:VAR:default}` syntax. This is powerful:
+Notice the `${localEnv:VAR}` syntax. This is powerful:
 
 1. **Reads from host environment** - Users set the variable once in their `~/.bashrc`
-2. **Provides a fallback** - If not set, uses the default value
-3. **No file edits needed** - Users customize via environment, not by editing devcontainer.json
+2. **No file edits needed** - Users customize via environment, not by editing devcontainer.json
 
 ```bash
 # User's ~/.bashrc
@@ -75,6 +74,8 @@ export DEVMAGIC_DOTFILES_REPO="https://github.com/myuser/dotfiles.git"
 ```
 
 The variable flows: Host shell → `localEnv` → `containerEnv` → Container processes.
+
+> **Note:** The `${localEnv:VAR:default}` syntax exists but [doesn't work with colons in the default value](https://github.com/devcontainers/spec/issues/565) (like URLs). Handle defaults in your scripts instead.
 
 ## When to Use Each
 
@@ -92,8 +93,9 @@ The variable flows: Host shell → `localEnv` → `containerEnv` → Container p
 
 1. **Lifecycle scripts run before VS Code connects** - `remoteEnv` won't help
 2. **`containerEnv` is the safe default** - Works everywhere
-3. **`${localEnv:VAR:default}` is your friend** - Zero-config customization
-4. **Read the spec** - The [devcontainer.json reference](https://containers.dev/implementors/json_reference/) explains this clearly (once you know to look)
+3. **`${localEnv:VAR}` for host variables** - Zero-config customization
+4. **Handle defaults in scripts** - The `:default` syntax [breaks with colons](https://github.com/devcontainers/spec/issues/565)
+5. **Read the spec** - The [devcontainer.json reference](https://containers.dev/implementors/json_reference/) explains this clearly (once you know to look)
 
 ## Related
 

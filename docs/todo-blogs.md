@@ -4,20 +4,22 @@ Ideas for DevMagic blog posts, with outlines to develop later.
 
 ---
 
-## 1. The `${localEnv:VAR:default}` Pattern for Zero-Config Customization
+## 1. The `${localEnv:VAR}` Pattern and Its Limitations
 
-**Status:** Maybe - might be too well-known?
+**Status:** Worth writing - documents a real gotcha!
 
-**Angle:** "Dev Container tip that took me too long to discover"
+**Angle:** "Dev Container tip that took me too long to discover (and its hidden limitation)"
 
 **Outline:**
 - Problem: Want customizable dev containers without forcing users to edit JSON
-- Discovery: The `${localEnv:VAR:default}` substitution pattern
-- How it works: Reads from host environment, falls back to default
+- Discovery: The `${localEnv:VAR}` substitution pattern
+- How it works: Reads from host environment, passes to container
+- **The gotcha:** `${localEnv:VAR:default}` syntax breaks with colons in default values (URLs!)
 - Real example: DevMagic's dotfiles configuration
-- When to use: Any config that varies per-developer but has sane defaults
+- Workaround: Handle defaults in bash scripts, not devcontainer.json
+- Link: [devcontainers/spec#565](https://github.com/devcontainers/spec/issues/565)
 
-**Question for myself:** Is this common knowledge? Check r/devcontainers, Stack Overflow.
+**Why write this:** This is NOT common knowledge. The spec issue has few comments, meaning many people hit this silently.
 
 ---
 

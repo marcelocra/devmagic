@@ -259,7 +259,7 @@ export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main
 
 **Disable dotfiles:** Set `export DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
 
-> **How it works:** DevMagic's `devcontainer.json` uses `${localEnv:VAR:default}` syntax to read your host environment variables and pass them to the container.
+> **How it works:** Host environment variables are passed to the container via `${localEnv:VAR}` syntax. Default values are handled in the setup script (not in devcontainer.json) due to a [spec limitation with colons in URLs](https://github.com/devcontainers/spec/issues/565).
 
 Your `shell/install.sh` script should handle personal tools (Homebrew, fzf, VS Code settings, etc.) and must be idempotent (safe to run multiple times).
 
