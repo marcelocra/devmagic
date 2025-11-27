@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add @google/jules to the default AI installs in devcontainer setup
 - Reorganize VS Code extensions into groups
 - Add architecture decision records for DevMagic project
 - Implement automatic cloning of dotfiles repository in devcontainer setup
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update documentation to clarify handling of environment variables and default values in DevMagic
