@@ -30,7 +30,7 @@ DevMagic provides portable development environments using VS Code Dev Containers
 
 ### Website
 
-- Built with Next.js 15 App Router
+- Built with Next.js 16 App Router
 - Serves setup scripts via API routes:
     - `/install` - latest installation script
     - `/setup` - setup script with optional version pinning (`/setup@v0.1.0`)

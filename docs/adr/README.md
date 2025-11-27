@@ -43,3 +43,4 @@ ADRs are numbered sequentially and use lowercase with dashes:
 - [0001 - Use Dev Container Features](0001-use-dev-container-features.md) - **Accepted**
 - [0002 - Automatic Dotfiles Installation](0002-automatic-dotfiles-installation.md) - **Accepted**
 - [0003 - Adopt Architecture Decision Records](0003-adopt-architecture-decision-records.md) - **Accepted**
+- [0004 - Consolidate AI Context Files](0004-consolidate-ai-context-files.md) - **Accepted**

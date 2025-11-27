@@ -119,6 +119,10 @@ Adopt **Architecture Decision Records (ADRs)** using Michael Nygard's template:
 
 **Template location:** `docs/adr/template.md`
 
+**Related Documentation:**
+- `.github/copilot-instructions.md` - Single source of truth for AI assistant context (see [ADR-0004](0004-consolidate-ai-context-files.md))
+- `docs/ARCHITECTURE.md` - High-level architecture overview
+
 **References:**
 - [Michael Nygard's ADR template](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions)
 - [GitHub ADR organization](https://adr.github.io/)
