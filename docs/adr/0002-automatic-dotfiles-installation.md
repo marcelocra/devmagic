@@ -93,7 +93,7 @@ See [ARCHITECTURE.md](../ARCHITECTURE.md#the-install-script-location) for config
 
 ## Notes
 
-- Planning discussion: `docs/ai-chats/fix-dotfiles-install.md`
+- Planning discussion: `docs/archives/2025-11-fix-dotfiles-install-planning.md`
 - User dotfiles must have `shell/install.sh` at standard location
 - Install script should handle: Homebrew, fzf, zsh plugins, VS Code symlinks
 - Related: [0001 - Use Dev Container Features](0001-use-dev-container-features.md)
