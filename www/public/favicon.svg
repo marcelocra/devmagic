@@ -1,7 +1,7 @@
 <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-  <!-- {/* Left angle bracket < */} -->
+  <!-- Left angle bracket < -->
   <path d="M 180 80 L 60 200 L 180 320 L 180 260 L 140 200 L 180 140 Z" fill="#8b5cf6" />
 
-  <!-- {/* Right angle bracket > */} -->
+  <!-- Right angle bracket > -->
   <path d="M 220 80 L 340 200 L 220 320 L 220 260 L 260 200 L 220 140 Z" fill="#8b5cf6" />
 </svg>
