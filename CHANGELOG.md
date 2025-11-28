@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
+- Update changelog [skip ci]
 - Update documentation to clarify handling of environment variables and default values in DevMagic
 - Update changelog [skip ci]
 - Enhance Copilot instructions with current stack and best practices (#10)
