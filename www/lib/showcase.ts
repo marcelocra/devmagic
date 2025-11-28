@@ -21,7 +21,7 @@ export function loadShowcaseProjects(): ShowcaseProject[] {
 
   try {
     const content = readFileSync(showcasePath, "utf-8");
-    const data = yaml.load(content) as ShowcaseData;
+    const data = yaml.load(content, { schema: yaml.FAILSAFE_SCHEMA }) as ShowcaseData;
     return data?.projects ?? [];
   } catch {
     return [];
