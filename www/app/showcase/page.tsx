@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
 import { Button } from "@/components/button";
+import { loadShowcaseProjects } from "@/lib/showcase";
 
 export const metadata: Metadata = {
   title: "Showcase - DevMagic",
   description: "Projects using DevMagic for their development environments.",
 };
 
-// TODO: Load projects from /data/showcase.yml
-// For now, using empty array until js-yaml is set up
-const projects: Array<{
-  name: string;
-  url: string;
-  description: string;
-  author: string;
-}> = [];
-
 export default function ShowcasePage() {
+  const projects = loadShowcaseProjects();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
