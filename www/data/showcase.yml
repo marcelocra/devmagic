@@ -1,6 +1,6 @@
 # DevMagic Showcase
 # Add your project here! Edit this file on GitHub and submit a PR:
-# https://github.com/marcelocra/devmagic/edit/main/www/src/data/showcase.yml
+# https://github.com/marcelocra/devmagic/edit/main/www/data/showcase.yml
 
 projects:
   # Example entry (remove this when adding real projects):
@@ -20,4 +20,3 @@ projects:
   - name: VSCode Improved
     url: https://github.com/marcelocra/vscode-improved
     author: marcelocra
-  
