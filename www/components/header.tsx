@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { ThemeToggle } from "./theme-toggle";
+import { LanguageSwitcher } from "./language-switcher";
 
 export function Header() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -27,12 +30,12 @@ export function Header() {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { href: "/getting-started", label: "Getting Started" },
-    { href: "/features", label: "Features" },
-    { href: "/docs", label: "Docs" },
-    { href: "/showcase", label: "Showcase" },
-    { href: "/changelog", label: "Changelog" },
-    { href: "/about", label: "About" },
+    { href: "/getting-started", label: t("gettingStarted") },
+    { href: "/features", label: t("features") },
+    { href: "/docs", label: t("docs") },
+    { href: "/showcase", label: t("showcase") },
+    { href: "/changelog", label: t("changelog") },
+    { href: "/about", label: t("about") },
   ];
 
   return (
@@ -72,13 +75,13 @@ export function Header() {
             ))}
           </div>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           <a
             href="https://github.com/marcelocra/devmagic"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
-            aria-label="GitHub"
+            aria-label={t("github")}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -88,6 +91,7 @@ export function Header() {
               />
             </svg>
           </a>
+          <LanguageSwitcher />
           <ThemeToggle />
 
           {/* Mobile menu button - Magic wand icon */}
@@ -95,7 +99,7 @@ export function Header() {
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMobileMenuOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={isMobileMenuOpen}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
