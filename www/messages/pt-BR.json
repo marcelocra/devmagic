@@ -99,7 +99,8 @@
     "learnAboutVersioning": "Aprenda sobre versionamento",
     "readyToGetStarted": "Pronto para Começar?",
     "readyToGetStartedDesc": "Configure seu ambiente de desenvolvimento portátil em minutos. Sem configuração complexa, sem inferno de dependências, apenas um workspace limpo e consistente.",
-    "readTheDocs": "Leia a Documentação"
+    "readTheDocs": "Leia a Documentação",
+    "getStarted": "Começar"
   },
   "gettingStarted": {
     "title": "Primeiros Passos",

@@ -99,7 +99,8 @@
     "learnAboutVersioning": "Learn about versioning",
     "readyToGetStarted": "Ready to Get Started?",
     "readyToGetStartedDesc": "Set up your portable development environment in minutes. No complex configuration, no dependency hell, just a clean, consistent workspace.",
-    "readTheDocs": "Read the Docs"
+    "readTheDocs": "Read the Docs",
+    "getStarted": "Get Started"
   },
   "gettingStarted": {
     "title": "Getting Started",

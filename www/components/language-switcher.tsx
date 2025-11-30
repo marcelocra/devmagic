@@ -28,7 +28,9 @@ export function LanguageSwitcher() {
 
   const handleLocaleChange = (locale: Locale) => {
     // Set cookie for persistence (1 year expiry)
-    document.cookie = `${LOCALE_COOKIE_NAME}=${locale};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+    const cookieValue = `${LOCALE_COOKIE_NAME}=${locale};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+    // eslint-disable-next-line react-hooks/immutability
+    document.cookie = cookieValue;
 
     // Reload the page to apply the new locale
     window.location.reload();
