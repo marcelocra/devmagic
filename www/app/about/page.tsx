@@ -59,16 +59,19 @@ export default async function AboutPage() {
           <div className="flex items-start gap-4">
             <div className="flex-1">
               <p className="text-muted-foreground mb-4">
-                {t("authorDesc1")} <strong>Marcelo Almeida</strong> (
-                <a
-                  href="https://github.com/marcelocra"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  @marcelocra
-                </a>
-                ).
+                {t.rich("authorDesc", {
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                  author: (chunks) => (
+                    <a
+                      href="https://github.com/marcelocra"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {chunks}
+                    </a>
+                  ),
+                })}
               </p>
               <p className="text-muted-foreground">{t("authorDesc2")}</p>
             </div>
@@ -93,16 +96,18 @@ export default async function AboutPage() {
               <div>
                 <h3 className="font-semibold mb-1">{t("contributingGuidelines")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t("contributingGuidelinesDesc")}{" "}
-                  <a
-                    href="https://github.com/marcelocra/devmagic/blob/main/CONTRIBUTING.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    CONTRIBUTING.md
-                  </a>{" "}
-                  {t("contributingGuidelinesDescEnd")}
+                  {t.rich("contributingGuidelinesText", {
+                    link: (chunks) => (
+                      <a
+                        href="https://github.com/marcelocra/devmagic/blob/main/CONTRIBUTING.md"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                  })}
                 </p>
               </div>
             </div>
@@ -119,16 +124,18 @@ export default async function AboutPage() {
               <div>
                 <h3 className="font-semibold mb-1">{t("reportIssues")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t("reportIssuesDesc")}{" "}
-                  <a
-                    href="https://github.com/marcelocra/devmagic/issues/new"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {t("reportIssuesLink")}
-                  </a>{" "}
-                  {t("reportIssuesDescEnd")}
+                  {t.rich("reportIssuesText", {
+                    link: (chunks) => (
+                      <a
+                        href="https://github.com/marcelocra/devmagic/issues/new"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                  })}
                 </p>
               </div>
             </div>
@@ -145,11 +152,13 @@ export default async function AboutPage() {
               <div>
                 <h3 className="font-semibold mb-1">{t("shareProject")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {t("shareProjectDesc")}{" "}
-                  <Link href="/showcase" className="text-primary hover:underline">
-                    {t("shareProjectLink")}
-                  </Link>{" "}
-                  {t("shareProjectDescEnd")}
+                  {t.rich("shareProjectText", {
+                    link: (chunks) => (
+                      <Link href="/showcase" className="text-primary hover:underline">
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
                 </p>
               </div>
             </div>
@@ -160,7 +169,9 @@ export default async function AboutPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-4">{t("license")}</h2>
           <p className="text-muted-foreground mb-4">
-            {t("licenseDesc")} <strong>Apache License 2.0</strong>. {t("licenseDescEnd")}
+            {t.rich("licenseText", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
           <ul className="space-y-2 text-sm text-muted-foreground mb-4">
             <li className="flex items-start gap-2">
@@ -181,16 +192,18 @@ export default async function AboutPage() {
             </li>
           </ul>
           <p className="text-sm text-muted-foreground">
-            {t("licenseFull")}{" "}
-            <a
-              href="https://github.com/marcelocra/devmagic/blob/main/LICENSE.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              LICENSE.md
-            </a>{" "}
-            {t("licenseFullEnd")}
+            {t.rich("licenseFullText", {
+              link: (chunks) => (
+                <a
+                  href="https://github.com/marcelocra/devmagic/blob/main/LICENSE.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
         </section>
 
