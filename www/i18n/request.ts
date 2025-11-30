@@ -39,7 +39,8 @@ function parseAcceptLanguage(header: string): string | null {
     .map((lang) => {
       const [code, qValue] = lang.trim().split(";q=");
       return {
-        code: code.trim(),
+        // Normalize the code (lowercase, handle both - and _ separators)
+        code: code.trim().toLowerCase().replace("_", "-"),
         q: qValue ? parseFloat(qValue) : 1,
       };
     })
@@ -47,13 +48,18 @@ function parseAcceptLanguage(header: string): string | null {
 
   // Find the best match from our supported locales
   for (const { code } of languages) {
-    // Check exact match
-    if (locales.includes(code as Locale)) {
-      return code;
+    // Check exact match (case-insensitive)
+    const exactMatch = locales.find((locale) => locale.toLowerCase() === code);
+    if (exactMatch) {
+      return exactMatch;
     }
+
     // Check language-only match (e.g., 'pt' matches 'pt-BR')
     const langOnly = code.split("-")[0];
-    const matchedLocale = locales.find((locale) => locale.startsWith(langOnly + "-") || locale === langOnly);
+    const matchedLocale = locales.find((locale) => {
+      const localeLang = locale.toLowerCase().split("-")[0];
+      return localeLang === langOnly;
+    });
     if (matchedLocale) {
       return matchedLocale;
     }
