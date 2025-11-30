@@ -1,30 +1,33 @@
 import type { Metadata } from "next";
 import { Button } from "@/components/button";
 import { loadShowcaseProjects } from "@/lib/showcase";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Showcase - DevMagic",
-  description: "Projects using DevMagic for their development environments.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("showcase");
+  return {
+    title: `${t("title")} - DevMagic`,
+    description: t("subtitle"),
+  };
+}
 
-export default function ShowcasePage() {
+export default async function ShowcasePage() {
+  const t = await getTranslations("showcase");
   const projects = loadShowcaseProjects();
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Showcase</h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Projects using DevMagic for their development environments
-          </p>
+          <h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
+          <p className="text-xl text-muted-foreground mb-8">{t("subtitle")}</p>
           <Button
             href="https://github.com/marcelocra/devmagic/edit/main/www/data/showcase.yml"
             variant="primary"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Add Your Project
+            {t("addYourProject")}
           </Button>
         </div>
 
@@ -54,7 +57,9 @@ export default function ShowcasePage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-muted-foreground">by {project.author}</span>
+                  <span className="text-muted-foreground">
+                    {t("by")} {project.author}
+                  </span>
                 </div>
                 <a
                   href={project.url}
@@ -62,7 +67,7 @@ export default function ShowcasePage() {
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex items-center text-sm text-primary hover:underline"
                 >
-                  View project
+                  {t("viewProject")}
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -87,28 +92,26 @@ export default function ShowcasePage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-semibold mb-2">No projects yet</h2>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Be the first to showcase your project using DevMagic! Click the button above to add your project.
-            </p>
+            <h2 className="text-2xl font-semibold mb-2">{t("noProjects")}</h2>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">{t("noProjectsDesc")}</p>
             <div className="bg-muted/50 rounded-lg p-6 max-w-2xl mx-auto text-left">
-              <h3 className="font-semibold mb-3">How to add your project:</h3>
+              <h3 className="font-semibold mb-3">{t("howToAdd")}</h3>
               <ol className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="font-semibold text-foreground">1.</span>
-                  <span>Click the &quot;Add Your Project&quot; button above</span>
+                  <span>{t("howToAddStep1")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold text-foreground">2.</span>
-                  <span>GitHub will guide you to fork the repository (if needed)</span>
+                  <span>{t("howToAddStep2")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold text-foreground">3.</span>
-                  <span>Add your project details following the YAML format</span>
+                  <span>{t("howToAddStep3")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="font-semibold text-foreground">4.</span>
-                  <span>Submit a pull request - that&apos;s it!</span>
+                  <span>{t("howToAddStep4")}</span>
                 </li>
               </ol>
             </div>
@@ -117,7 +120,7 @@ export default function ShowcasePage() {
 
         {/* Why Showcase */}
         <section className="mt-16 bg-muted/50 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-4 text-center">Why showcase your project?</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">{t("whyShowcase")}</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -136,8 +139,8 @@ export default function ShowcasePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-semibold mb-2">Visibility</h3>
-              <p className="text-sm text-muted-foreground">Show others how you&apos;re using DevMagic</p>
+              <h3 className="font-semibold mb-2">{t("visibility")}</h3>
+              <p className="text-sm text-muted-foreground">{t("visibilityDesc")}</p>
             </div>
 
             <div className="text-center">
@@ -151,8 +154,8 @@ export default function ShowcasePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-semibold mb-2">Community</h3>
-              <p className="text-sm text-muted-foreground">Connect with other DevMagic users</p>
+              <h3 className="font-semibold mb-2">{t("community")}</h3>
+              <p className="text-sm text-muted-foreground">{t("communityDesc")}</p>
             </div>
 
             <div className="text-center">
@@ -161,8 +164,8 @@ export default function ShowcasePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="font-semibold mb-2">Inspiration</h3>
-              <p className="text-sm text-muted-foreground">Help others discover new use cases</p>
+              <h3 className="font-semibold mb-2">{t("inspiration")}</h3>
+              <p className="text-sm text-muted-foreground">{t("inspirationDesc")}</p>
             </div>
           </div>
         </section>
