@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add Docker extension (docker.docker) to devcontainer configuration
 - Create a custom agent as Designer and Brand Expert
 - Add @google/jules to the default AI installs in devcontainer setup
 - Reorganize VS Code extensions into groups
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
