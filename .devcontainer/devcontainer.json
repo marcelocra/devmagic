@@ -114,6 +114,7 @@
         "ms-vscode.remote-server",
 
         // Containers & Docker
+        "docker.docker",
         "ms-azuretools.vscode-containers",
         "ms-azuretools.vscode-docker",
 
