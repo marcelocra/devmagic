@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Configure Dependabot for npm updates
 - Add Docker extension (docker.docker) to devcontainer configuration
 - Create a custom agent as Designer and Brand Expert
 - Add @google/jules to the default AI installs in devcontainer setup
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
