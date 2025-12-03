@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="border-t border-border mt-auto relative overflow-hidden">
       {/* Subtle gradient overlay */}
@@ -19,20 +24,20 @@ export function Footer() {
                 DevMagic
               </span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Portable development environments for everyone. Zero friction, infinite possibilities.
-            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{t("tagline")}</p>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Product</h3>
+            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+              {t("product")}
+            </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   href="/getting-started"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Getting Started
+                  {t("gettingStarted")}
                 </Link>
               </li>
               <li>
@@ -40,7 +45,7 @@ export function Footer() {
                   href="/features"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Features
+                  {t("features")}
                 </Link>
               </li>
               <li>
@@ -48,7 +53,7 @@ export function Footer() {
                   href="/docs"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Documentation
+                  {t("documentation")}
                 </Link>
               </li>
               <li>
@@ -56,14 +61,16 @@ export function Footer() {
                   href="/changelog"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Changelog
+                  {t("changelog")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Community</h3>
+            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+              {t("community")}
+            </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <a
@@ -72,7 +79,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  GitHub Repository
+                  {t("githubRepository")}
                 </a>
               </li>
               <li>
@@ -82,7 +89,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Issue Tracker
+                  {t("issueTracker")}
                 </a>
               </li>
               <li>
@@ -90,7 +97,7 @@ export function Footer() {
                   href="/showcase"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Showcase
+                  {t("showcase")}
                 </Link>
               </li>
               <li>
@@ -98,14 +105,14 @@ export function Footer() {
                   href="/about"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  About
+                  {t("about")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Legal</h3>
+            <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">{t("legal")}</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <a
@@ -114,7 +121,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
-                  Apache 2.0 License
+                  {t("license")}
                 </a>
               </li>
             </ul>
@@ -122,9 +129,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} DevMagic. Made with ✨ for developers.
-          </p>
+          <p className="text-sm text-muted-foreground">{t("copyright", { year: new Date().getFullYear() })}</p>
           <div className="flex items-center space-x-4">
             <a
               href="https://github.com/marcelocra/devmagic"

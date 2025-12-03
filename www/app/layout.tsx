@@ -1,44 +1,55 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
-import { ThemeProvider } from '@/components/theme-provider'
+import type { Metadata } from "next";
+import "./globals.css";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { ThemeProvider } from "@/components/theme-provider";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: 'DevMagic - Your Development Environment, Anywhere',
-  description: 'DevMagic - Your Development Environment, Anywhere',
-  metadataBase: new URL('https://devmagic.run'),
-  icons: {
-    icon: '/favicon.svg',
-  },
-  openGraph: {
-    type: 'website',
-    title: 'DevMagic - Your Development Environment, Anywhere',
-    description: 'DevMagic - Your Development Environment, Anywhere',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'DevMagic - Your Development Environment, Anywhere',
-    description: 'DevMagic - Your Development Environment, Anywhere',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("metadata");
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    metadataBase: new URL("https://devmagic.run"),
+    icons: {
+      icon: "/favicon.svg",
+    },
+    openGraph: {
+      type: "website",
+      title: t("title"),
+      description: t("description"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+    },
+  };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body>
-        <ThemeProvider>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,40 +1,45 @@
 import type { Metadata } from "next";
 import { parseChangelog } from "@/lib/changelog";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Changelog - DevMagic",
-  description: "Version history and changes for DevMagic.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("changelog");
+  return {
+    title: `${t("title")} - DevMagic`,
+    description: t("subtitle"),
+  };
+}
 
-export default function ChangelogPage() {
+export default async function ChangelogPage() {
+  const t = await getTranslations("changelog");
   const entries = parseChangelog();
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Changelog</h1>
-        <p className="text-xl text-muted-foreground mb-8">All notable changes to DevMagic are documented here.</p>
+        <h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
+        <p className="text-xl text-muted-foreground mb-8">{t("subtitle")}</p>
 
         <div className="bg-card border border-primary/20 rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">📋 View Full Changelog</h2>
+          <h2 className="text-2xl font-semibold mb-4">{t("viewFullChangelog")}</h2>
           <p className="text-muted-foreground mb-6">
-            The changelog follows the{" "}
+            {t("followsFormat")}{" "}
             <a
               href="https://keepachangelog.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              Keep a Changelog
+              {t("keepAChangelog")}
             </a>{" "}
-            format and{" "}
+            {t("formatAnd")}{" "}
             <a
               href="https://semver.org/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              Semantic Versioning
+              {t("semanticVersioning")}
             </a>
             .
           </p>
@@ -51,20 +56,12 @@ export default function ChangelogPage() {
               </svg>
               CHANGELOG.md
             </a>
-            {/* <a
-              href="https://github.com/marcelocra/devmagic/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-muted text-foreground px-6 py-3 rounded-lg font-medium hover:bg-muted/80 transition-colors"
-            >
-              GitHub Releases →
-            </a> */}
           </div>
         </div>
 
         {/* Versions from CHANGELOG.md */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Versions</h2>
+          <h2 className="text-xl font-semibold">{t("versions")}</h2>
 
           {entries.map((entry, index) => (
             <article
@@ -73,13 +70,13 @@ export default function ChangelogPage() {
             >
               <div className="flex items-baseline gap-3 mb-2">
                 <h3 className="text-lg font-bold">
-                  {entry.version === "Unreleased" ? entry.version : `v${entry.version}`}
+                  {entry.version === "Unreleased" ? t("unreleased") : `v${entry.version}`}
                 </h3>
                 {entry.date ? (
                   <time className="text-sm text-muted-foreground">{entry.date}</time>
                 ) : (
                   <span className="text-xs bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 px-2 py-0.5 rounded">
-                    in development
+                    {t("inDevelopment")}
                   </span>
                 )}
               </div>
@@ -110,7 +107,7 @@ export default function ChangelogPage() {
                     ))}
                     {section.items.length > 5 && (
                       <li className="text-xs text-muted-foreground/70 italic">
-                        ...and {section.items.length - 5} more
+                        {t("andMore", { count: section.items.length - 5 })}
                       </li>
                     )}
                   </ul>
@@ -121,14 +118,14 @@ export default function ChangelogPage() {
 
           {entries.length === 0 && (
             <p className="text-muted-foreground">
-              No changelog entries found. See the{" "}
+              {t("noEntries")}{" "}
               <a
                 href="https://github.com/marcelocra/devmagic/blob/main/CHANGELOG.md"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                CHANGELOG.md on GitHub
+                {t("onGitHub")}
               </a>
               .
             </p>
