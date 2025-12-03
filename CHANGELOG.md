@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add i18n support with next-intl for English and Brazilian Portuguese (#35)
 - Configure Dependabot for npm updates
 - Add Docker extension (docker.docker) to devcontainer configuration
 - Create a custom agent as Designer and Brand Expert
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
