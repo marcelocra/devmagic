@@ -175,9 +175,10 @@
         "marcelocra.vscode-improved",
         "ms-vscode.vscode-speech-language-pack-pt-br",
         "ms-vscode.vscode-speech",
-        "redhat.vscode-yaml",
 
         // Other
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools",
         "ms-vscode.powershell"
       ]
     }
