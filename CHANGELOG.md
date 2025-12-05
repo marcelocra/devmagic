@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add make/just language support
 - Add Roo Code, improve comments
 - Add i18n support with next-intl for English and Brazilian Portuguese (#35)
 - Configure Dependabot for npm updates
@@ -44,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
