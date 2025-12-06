@@ -8,7 +8,7 @@ DevMagic uses Dependabot to automatically keep dependencies up to date across mu
 
 ## Configuration Structure
 
-The configuration monitors four distinct ecosystems:
+The configuration monitors five distinct ecosystems:
 
 ### 1. Root Workspace (`/`)
 
@@ -66,12 +66,33 @@ The configuration monitors four distinct ecosystems:
 
 **Rationale**: GitHub Actions updates are less frequent and typically more stable, so monthly updates are sufficient.
 
-### 4. Docker (`/.devcontainer/devcontainers/alpine`)
+### 4. Dev Containers (`/`)
 
-**Purpose**: Monitors base Docker images used in dev containers.
+**Purpose**: Monitors Dev Container Features in the main devcontainer configuration.
 
 **What it includes**:
-- `mcr.microsoft.com/devcontainers/base:alpine-3.21` - Alpine Linux base image
+- `ghcr.io/devcontainers/features/common-utils` - Common utilities and shell configuration
+- `ghcr.io/devcontainers/features/docker-in-docker` - Docker-in-Docker support
+- `ghcr.io/devcontainers/features/git-lfs` - Git Large File Storage
+- `ghcr.io/devcontainers/features/git` - Git installation
+- `ghcr.io/devcontainers/features/github-cli` - GitHub CLI
+
+**Update strategy**:
+- **Schedule**: Monthly on Monday at 9 AM (São Paulo time)
+- **PR limit**: Maximum 2 open PRs
+- **Commit prefix**: `chore:` (appears in changelog under "Maintenance" section)
+- **Labels**: `dependencies`, `devcontainer`
+
+**Rationale**: Dev Container Features are stable and updates are infrequent. Monthly checks ensure we benefit from new features and security fixes without excessive noise.
+
+**Note**: The `devcontainers` ecosystem monitors Features but does not currently monitor the `image` field in devcontainer.json. The base image (`mcr.microsoft.com/devcontainers/typescript-node:24-bookworm`) must be updated manually.
+
+### 5. Docker (`/.devcontainer/devcontainers/alpine`)
+
+**Purpose**: Monitors base Docker images in the Alpine devcontainer Dockerfile.
+
+**What it includes**:
+- `mcr.microsoft.com/devcontainers/base:alpine-3.21` - Alpine Linux base image in Dockerfile
 
 **Update strategy**:
 - **Schedule**: Monthly on Monday at 9 AM (São Paulo time)
@@ -121,6 +142,7 @@ The configuration monitors four distinct ecosystems:
 
 - Minor and patch updates for npm dependencies
 - All GitHub Actions updates (any version)
+- All Dev Container Features updates (any version)
 - All Docker base image updates (any version)
 
 ### ⚠️ Separate PRs (Require Individual Review)
@@ -166,10 +188,33 @@ After merging this configuration:
 With this configuration, expect approximately:
 
 - **Weekly**: 2-4 PRs (grouped npm updates for root + www)
-- **Monthly**: 1-3 PRs (GitHub Actions + Docker updates)
+- **Monthly**: 1-4 PRs (GitHub Actions + Dev Containers Features + Docker updates)
 - **Ad-hoc**: Major version updates as they're released
 
 **Total**: ~12-20 PRs per month (down from potentially 50+ without grouping)
+
+## Frequently Asked Questions
+
+### Why use "npm" instead of "pnpm" for package-ecosystem?
+
+Even though DevMagic uses pnpm as its package manager, the Dependabot configuration must use `"npm"` as the `package-ecosystem` value. This is intentional and correct!
+
+Dependabot automatically detects pnpm from the presence of `pnpm-lock.yaml` files in your repository. Using `"pnpm"` as the ecosystem value will cause schema validation errors.
+
+**Key points:**
+- ✅ Use `package-ecosystem: "npm"` in dependabot.yml
+- ✅ Dependabot detects pnpm from `pnpm-lock.yaml` automatically
+- ❌ Do NOT use `package-ecosystem: "pnpm"` (not a valid value)
+
+### Why doesn't Dependabot update the image field in devcontainer.json?
+
+The `devcontainers` ecosystem currently monitors Dev Container Features (like `ghcr.io/devcontainers/features/*`) but does not automatically update the `image` field in devcontainer.json.
+
+**What this means:**
+- ✅ Features will be updated automatically (e.g., `docker-in-docker`, `git`, `github-cli`)
+- ❌ Base image must be updated manually (e.g., `mcr.microsoft.com/devcontainers/typescript-node:24-bookworm`)
+
+For Dockerfiles with `FROM` statements (like the Alpine devcontainer), Dependabot can update the base image using the `docker` ecosystem.
 
 ## Future Improvements
 
@@ -185,3 +230,5 @@ Potential enhancements to consider:
 - [Dependabot Configuration Options](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
 - [Grouping Dependency Updates](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups)
 - [Conventional Commits](https://www.conventionalcommits.org/)
+- [Dev Containers Dependabot Support](https://containers.dev/guide/dependabot)
+- [Dependabot pnpm Support](https://github.blog/changelog/2023-06-12-dependabot-version-updates-now-supports-pnpm/)

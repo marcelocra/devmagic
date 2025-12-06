@@ -87,7 +87,23 @@ updates:
       - "dependencies"
       - "github-actions"
 
-  # Docker - monitor base images in devcontainer configuration
+  # Dev Containers - monitor Features in main devcontainer configuration
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    open-pull-requests-limit: 2
+    labels:
+      - "dependencies"
+      - "devcontainer"
+
+  # Docker - monitor base images in Alpine devcontainer Dockerfile
   - package-ecosystem: "docker"
     directory: "/.devcontainer/devcontainers/alpine"
     schedule:
