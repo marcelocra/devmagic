@@ -1,8 +1,16 @@
 name: Changelog
 
 on:
+  workflow_dispatch: # Manual trigger
   push:
     branches: [main]
+    paths:
+      - "src/**"
+      - "www/**"
+      - "setup/**"
+      - ".devcontainer/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
 
 permissions:
   contents: write
