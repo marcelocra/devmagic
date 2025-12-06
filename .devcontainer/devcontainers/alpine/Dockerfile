@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:alpine-3.21
+FROM mcr.microsoft.com/devcontainers/base:alpine-3.22
 
 # Use zsh for all RUN instructions during build.
 SHELL ["/bin/zsh", "-c"]
