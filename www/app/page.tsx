@@ -43,7 +43,14 @@ export default async function Home() {
             </p>
 
             <div className="mb-10">
-              <CodeBlock code="curl -fsSL https://devmagic.run/install | bash" className="max-w-2xl mx-auto" />
+              <CodeBlock
+                code="curl -fsSL https://devmagic.run/install | bash"
+                className="max-w-2xl mx-auto"
+                alternatives={[
+                  { label: t("curlLabel"), code: "curl -fsSL https://devmagic.run/install | bash" },
+                  { label: t("wgetLabel"), code: "wget -qO- https://devmagic.run/install | bash" },
+                ]}
+              />
               <p className="text-sm text-muted-foreground mt-3">
                 {t("inspectScript")}{" "}
                 <Link href="/install" className="text-primary hover:underline transition-colors">
@@ -306,10 +313,12 @@ export default async function Home() {
                 {t("installation")}
               </h3>
               <CodeBlock
-                code={`git clone https://github.com/marcelocra/devmagic.git
-cd devmagic
-${t("installationComment")}`}
+                code="curl -fsSL https://devmagic.run/install | bash"
                 className="mb-6"
+                alternatives={[
+                  { label: t("curlLabel"), code: "curl -fsSL https://devmagic.run/install | bash" },
+                  { label: t("wgetLabel"), code: "wget -qO- https://devmagic.run/install | bash" },
+                ]}
               />
 
               <p className="text-muted-foreground text-center">{t("installationSuccess")}</p>

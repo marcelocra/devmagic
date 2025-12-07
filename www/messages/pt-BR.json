@@ -23,6 +23,8 @@
     "inspectScript": "(Sempre recomendado",
     "inspectScriptLink": "inspecionar o script",
     "inspectScriptEnd": "primeiro)",
+    "curlLabel": "curl",
+    "wgetLabel": "wget",
     "getStarted": "Começar",
     "viewOnGitHub": "Ver no GitHub",
     "whyDevMagic": "Por que DevMagic?",
