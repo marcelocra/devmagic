@@ -47,22 +47,8 @@ export function LanguageSwitcher() {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        {/* 
-          Official Language Icon from languageicon.org
-          Design: Two overlapping speech bubbles representing multilingual communication
-          Source: https://languageicon.org/
-        */}
-        <svg className="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Back speech bubble (filled) */}
-          <path d="M15 20 L55 20 L55 55 L35 55 L25 70 L25 55 L15 55 Z" fill="currentColor" />
-          {/* Front speech bubble (outlined/white fill) */}
-          <path
-            d="M45 35 L85 35 L85 70 L75 70 L75 85 L65 70 L45 70 Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-        </svg>
+        {/* Official Language Icon from languageicon.org */}
+        <img src="/language-icon.svg" alt="Language" className="w-5 h-5" />
         <span className="text-sm font-medium hidden sm:inline">{currentLocale === "en" ? "EN" : "PT"}</span>
         {/* Dropdown arrow */}
         <svg
