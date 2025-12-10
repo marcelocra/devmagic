@@ -45,41 +45,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update documentation to clarify handling of environment variables and default values in DevMagic
-- Update changelog [skip ci]
 - Enhance Copilot instructions with current stack and best practices (#10)
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Refine insights on over-engineering in AI suggestions
-- Update changelog [skip ci]
 - Add blog post on the pitfalls of over-engineering with AI suggestions
 - Add blog post on using containerEnv vs remoteEnv for Dev Container setup
 - Save outline for potential blog posts and notes on AI context files
 - Archive the comprehensive refactor plan for DevContainer from script to features
 - Update docs
 - Update installation flow with Mermaid diagram and synchronization notes
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update Copilot instructions with commit message guidelines and changelog automation details
 
 ### Fixed
