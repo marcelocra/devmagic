@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - "www/**"
-      - "www/**"
+
       - "setup/**"
       - ".devcontainer/**"
       - "package.json"
