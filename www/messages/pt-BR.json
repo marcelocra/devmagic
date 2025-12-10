@@ -4,10 +4,10 @@
     "description": "DevMagic - Seu Ambiente de Desenvolvimento, Onde Você Estiver"
   },
   "nav": {
-    "gettingStarted": "Primeiros Passos",
+    "gettingStarted": "Começar",
     "features": "Recursos",
     "docs": "Documentação",
-    "showcase": "Quem está usando",
+    "showcase": "Showcase",
     "changelog": "Changelog",
     "about": "Sobre",
     "openMenu": "Abrir menu",
@@ -277,7 +277,7 @@
     "reportIssues": "Reportar Problemas",
     "reportIssuesText": "Achou um bug ou tem uma sugestão? <link>Abra uma issue</link> no GitHub.",
     "shareProject": "Compartilhe Seu Projeto",
-    "shareProjectText": "Usando o DevMagic? <link>Adicione seu projeto aos projetos em destaque</link> para ajudar outros a descobrir novos casos de uso.",
+    "shareProjectText": "Usando o DevMagic? <link>Adicione seu projeto ao showcase</link> para ajudar outros a descobrir novos casos de uso.",
     "license": "Licença",
     "licenseText": "O DevMagic é licenciado sob a <strong>Licença Apache 2.0</strong>. Isso significa que você pode:",
     "licenseCommercial": "Usar comercialmente",
@@ -296,7 +296,7 @@
     "changelogLinkDesc": "Histórico de versões e atualizações"
   },
   "showcase": {
-    "title": "Projetos",
+    "title": "Showcase",
     "subtitle": "Projetos usando o DevMagic para seus ambientes de desenvolvimento",
     "addYourProject": "Adicionar Seu Projeto",
     "by": "por",
@@ -341,7 +341,7 @@
     "community": "Comunidade",
     "githubRepository": "GitHub",
     "issueTracker": "Issues",
-    "showcase": "Projetos",
+    "showcase": "Showcase",
     "about": "Sobre",
     "legal": "Legal",
     "license": "Licença Apache 2.0",
