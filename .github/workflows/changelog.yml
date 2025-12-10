@@ -1,16 +1,7 @@
 name: Changelog
 
 on:
-  workflow_dispatch: # Manual trigger
-  push:
-    branches: [main]
-    paths:
-      - "www/**"
-
-      - "setup/**"
-      - ".devcontainer/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
+  workflow_dispatch: # Manual trigger only
 
 permissions:
   contents: write
@@ -27,7 +18,7 @@ jobs:
         uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
-          args: -o CHANGELOG.md
+          args: --unreleased --prepend CHANGELOG.md
 
       - name: Commit changelog
         uses: stefanzweifel/git-auto-commit-action@v7

@@ -63,6 +63,9 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 
+# Skip tags to preserve manually curated history
+skip_tags = "v0\\.1\\.0|v0\\.2\\.0|v0\\.2\\.1"
+
 # Commit parsers for grouping
 commit_parsers = [
   { message = "(?i)^docs.*\\[skip ci\\]", skip = true },
