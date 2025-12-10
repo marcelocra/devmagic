@@ -68,8 +68,7 @@ skip_tags = "v0\\.1\\.0|v0\\.2\\.0|v0\\.2\\.1"
 
 # Commit parsers for grouping
 commit_parsers = [
-  { message = "(?i)^docs.*\\[skip ci\\]", skip = true },
-  { message = "(?i)^docs.*update changelog", skip = true },
+  { message = "(?i)^docs.*(?:update changelog|\\[skip ci\\])", skip = true },
   { message = "^chore\\(release\\)", skip = true },
   { message = "^chore\\(deps\\)", skip = true },
   { message = "^ci", skip = true },
