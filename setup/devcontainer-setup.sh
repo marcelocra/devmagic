@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # DevMagic Container Setup Script
-# Handles SSH keys, AI CLI tools installation, and other container-specific setup
+# Handles AI CLI tools installation, and other container-specific setup
 # This runs once when the container is created (postCreateCommand)
 
 set -e
@@ -27,22 +27,6 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}$1${NC}"
-}
-
-# ---------------------------------------------------------------------------
-# SSH Key Setup
-# ---------------------------------------------------------------------------
-setup_ssh_keys() {
-    [ ! -d "$HOME/.ssh-from-host" ] && {
-        log_warning "ℹ️  No SSH keys to copy (no .ssh-from-host directory found)"
-        return 0
-    }
-
-    log "🔑 Setting up SSH keys..."
-    cp -r ~/.ssh-from-host/. ~/.ssh
-    chmod 700 ~/.ssh
-    find ~/.ssh -type f -exec chmod 600 {} \;
-    log_success "✅ SSH keys configured"
 }
 
 # ---------------------------------------------------------------------------
@@ -139,9 +123,6 @@ setup_dotfiles() {
 # ---------------------------------------------------------------------------
 main() {
     log "🔧 Running DevMagic container setup..."
-    echo
-
-    setup_ssh_keys
     echo
 
     setup_ai_tools
