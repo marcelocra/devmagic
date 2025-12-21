@@ -108,7 +108,15 @@
   "forwardPorts": [],
 
   // Set custom hostname for the container.
-  "runArgs": ["--hostname=automaton"],
+  // tmpfs for /tmp: Creates an isolated, writable /tmp in the container to avoid
+  // Podman rootless SELinux restrictions. This is standard and doesn't reduce security—
+  // tmpfs is ephemeral (cleared on container stop) and isolated from the host.
+  // mode=1777 explicitly sets world-writable + sticky bit (standard /tmp permissions).
+  "runArgs": [
+    "--hostname=automaton",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,mode=1777"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
