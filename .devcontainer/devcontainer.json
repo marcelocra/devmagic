@@ -48,7 +48,7 @@
     },
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
     "ghcr.io/devcontainers/features/git-lfs:1": {},
