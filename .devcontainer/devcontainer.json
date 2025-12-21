@@ -19,14 +19,18 @@
     "TZ": "${localEnv:TZ:America/Sao_Paulo}",
     "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
     "LANG": "${localEnv:LANG:en_US.UTF-8}",
+
     // Shell history directory. You must mount have a mounted ~/.shell_histories
     // directory for the history to persist across containers and WSL sessions.
     // Otherwise, history will be lost when the container is removed.
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
+
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
+
     // Ollama host URL for local LLM development.
-    "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}",
+    // "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}",
+
     // Dotfiles configuration. Override via host environment variables.
     // Set DEVMAGIC_DOTFILES_REPO in your ~/.bashrc or ~/.zshrc to use your own repo.
     // Set to empty string to disable dotfiles: export DEVMAGIC_DOTFILES_REPO=""
@@ -91,7 +95,7 @@
     // - Linux/macOS: HOME (USERPROFILE is empty)
 
     // Share Ollama models with host.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
+    // "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
 
     // Shell history shared across all containers and WSL.
     // In WSL: ln -s /mnt/c/Users/{username}/OneDrive/shell_histories ~/.shell_histories
