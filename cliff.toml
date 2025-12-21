@@ -68,9 +68,13 @@ skip_tags = "v0\\.1\\.0|v0\\.2\\.0|v0\\.2\\.1"
 
 # Commit parsers for grouping
 commit_parsers = [
+  # Skip automated changelog update commits to prevent recursive entries
   { message = "(?i)^docs.*(?:update changelog|\\[skip ci\\])", skip = true },
+  # Skip release preparation commits
   { message = "^chore\\(release\\)", skip = true },
+  # Skip dependency update commits from Dependabot
   { message = "^chore\\(deps\\)", skip = true },
+  # Skip all CI-related commits
   { message = "^ci", skip = true },
   { message = "^feat", group = "Added" },
   { message = "^fix", group = "Fixed" },

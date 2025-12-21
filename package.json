@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "changelog": "git-cliff --unreleased",
+    "changelog": "git-cliff -o CHANGELOG.md",
     "cl": "pnpm run changelog",
-    "changelog:update": "git-cliff --unreleased --prepend CHANGELOG.md",
+    "changelog:unreleased": "git-cliff --unreleased",
     "prepare": "husky"
   },
   "devDependencies": {
