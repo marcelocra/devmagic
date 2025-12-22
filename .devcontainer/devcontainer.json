@@ -55,7 +55,12 @@
     // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {
+      // If you don't have git lfs in your regular workflow and in your .gitconfig,
+      // turn this to true or remove it, but BEWARE: this might NOT work properly
+      // if you are using pre/post commit hooks.
+      "autoPull": false
+    },
     
     // Alpine, Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apk, apt, yum, dnf, or microdnf package manager installed.
     "ghcr.io/devcontainers/features/git:1": {},
