@@ -1,0 +1,22 @@
+# DevMagic Install Scripts
+# These scripts can be run with: curl -fsSL https://devmagic.run/install/{script} | bash
+# Query parameters:
+#   - pm: package manager (pnpm, npm, yarn, bun) - defaults to pnpm
+
+scripts:
+  - id: prettier
+    name: Prettier
+    description: Install and configure Prettier with Husky and lint-staged for automatic code formatting
+    scriptPath: setup/install-prettier.sh
+    supportsPackageManagers: true
+    steps:
+      - Install Prettier with exact version
+      - Create .prettierrc and .prettierignore files
+      - Create .editorconfig file
+      - Install and configure Husky
+      - Install and configure lint-staged
+      - Add lint-staged configuration to package.json
+      - Create GitHub Actions workflow for format checking
+    requirements:
+      - Node.js project with package.json
+      - Git repository (for Husky)
