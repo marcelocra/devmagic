@@ -273,14 +273,14 @@ if grep -q '"lint-staged"[[:space:]]*:[[:space:]]*{' package.json; then
 else
     # Use node to add lint-staged config to package.json
     node --eval "
-    const fs = require('fs');
-    const pkgPath = 'package.json';
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    pkg['lint-staged'] = {
-      '**/*': 'prettier --write --ignore-unknown'
-    };
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-    "
+const fs = require('fs');
+const pkgPath = 'package.json';
+const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+pkg['lint-staged'] = {
+  '**/*': 'prettier --write --ignore-unknown'
+};
+fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+"
     echo -e "${GREEN}✓ lint-staged configured in package.json${NC}"
 fi
 echo
@@ -299,9 +299,7 @@ else
     # Determine the install command for CI
     case "$PACKAGE_MANAGER" in
         pnpm)
-            SETUP_STEP='      - uses: pnpm/action-setup@v4
-        with:
-          version: 9'
+            SETUP_STEP='      - uses: pnpm/action-setup@v4'
             INSTALL_CMD_CI='pnpm install --frozen-lockfile'
             CHECK_CMD='pnpm exec prettier --check .'
             ;;
