@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
+- Update changelog [skip ci]
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
 - Update changelog [skip ci]
 - Update changelog [skip ci]
