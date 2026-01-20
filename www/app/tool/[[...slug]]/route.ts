@@ -6,9 +6,10 @@ const TOOL_REPO_PATH: Record<string, string> = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug?: string[] } }
+  { params }: { params: Promise<{ slug?: string[] }> }
 ) {
-  const slug = params.slug?.[0]
+  const { slug: slugArray } = await params
+  const slug = slugArray?.[0]
   
   // If no slug, return list of available tools
   if (!slug) {
