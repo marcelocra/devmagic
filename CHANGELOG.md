@@ -81,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
+- Update changelog [skip ci]
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
 - Update changelog [skip ci]
 - Update changelog [skip ci]
@@ -112,6 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Use git as main alias for gitconfig
 - Use correct API
 - Delete incorrect tool/route.ts (pt. 2 - final)
 - Create route.ts for /tool in the correct place for dynamic routes (pt. 1)
