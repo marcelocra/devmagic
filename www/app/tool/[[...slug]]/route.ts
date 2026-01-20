@@ -8,7 +8,7 @@ const TOOL_REPO_PATH: Record<string, string> = {
   curl: 'shell/.curlrc',
   ec: '.editorconfig',
   aider: 'shell/aider.conf.yml',
-  gitc: 'git/.gitconfig',
+  git: 'git/.gitconfig',
   gita: '.gitattributes',
 }
 
@@ -24,8 +24,9 @@ const ALIASES: Record<string, string> = {
   'editorconfig': 'ec',
   '.editorconfig': 'ec',
   'aider.conf': 'aider',
-  'gitconfig': 'gitc',
-  '.gitconfig': 'gitc',
+  'gitc': 'git',
+  'gitconfig': 'git',
+  '.gitconfig': 'git',
   'gitattributes': 'gita',
   '.gitattributes': 'gita',
 }
