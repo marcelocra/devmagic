@@ -1,7 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const TOOL_REPO_PATH: Record<string, string> = {
+  init: 'setup/install.bash',
   tmux: 'shell/tmux.conf',
+  'zsh-theme': 'shell/marcelocra.zsh-theme',
+  zsh: 'shell/init.sh',
+  curl: 'shell/.curlrc',
+  ec: '.editorconfig',
+  aider: 'shell/aider.conf.yml',
+  gitc: 'git/.gitconfig',
+  gita: '.gitattributes',
+}
+
+const ALIASES: Record<string, string> = {
+  linux: 'init',
+  install: 'init',
+  tmx: 'tmux',
+  'tmux.conf': 'tmux',
+  '.tmux.conf': 'tmux',
+  zshrc: 'zsh',
+  '.zshrc': 'zsh',
+  '.curlrc': 'curl',
+  'editorconfig': 'ec',
+  '.editorconfig': 'ec',
+  'aider.conf': 'aider',
+  'gitconfig': 'gitc',
+  '.gitconfig': 'gitc',
+  'gitattributes': 'gita',
+  '.gitattributes': 'gita',
+}
+
+function getToolList(): string {
+  // Group aliases by tool
+  const aliasInfo = Object.entries(ALIASES)
+    .reduce((acc, [alias, tool]) => {
+      acc[tool] = acc[tool] || []
+      acc[tool].push(alias)
+      return acc
+    }, {} as Record<string, string[]>)
+
+  const toolList = Object.keys(TOOL_REPO_PATH)
+    .map(tool => {
+      const aliases = aliasInfo[tool]
+      const aliasList = aliases ? ` (aliases: ${aliases.join(', ')})` : ''
+      return `- ${tool}${aliasList}: /tool/${tool}`
+    })
+    .join('\n')
+
+  return `Available tools:\n\n${toolList}\n\nUsage: /tool/{name} or /tool/{name}@{version}`
 }
 
 export async function GET(
@@ -11,29 +57,23 @@ export async function GET(
   const { slug: slugArray } = await params
   const slug = slugArray?.[0]
   
-  // If no slug, return list of available tools
   if (!slug) {
-    const toolList = Object.keys(TOOL_REPO_PATH)
-      .map(tool => `- ${tool}: /tool/${tool}`)
-      .join('\n')
-    
-    return new NextResponse(
-      `Available tools:\n\n${toolList}\n\nUsage: /tool/{name} or /tool/{name}@{version}`,
-      {
-        status: 200,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-      }
-    )
+    return new NextResponse(getToolList(), {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   }
 
-  // Extract tool and version from slug (e.g., "tmux@v0.1.0")
-  const [tool, version] = slug.split('@')
+  const [toolName, version] = slug.split('@')
   const ref = version || 'main'
+  
+  // Resolve alias to actual tool name
+  const tool = ALIASES[toolName] || toolName
   
   const toolPath = TOOL_REPO_PATH[tool]
   
   if (!toolPath) {
-    return new NextResponse(`Unknown tool: '${tool}'`, {
+    return new NextResponse(`Unknown tool: '${toolName}'`, {
       status: 404,
       headers: { 'Content-Type': 'text/plain' },
     })
@@ -45,7 +85,7 @@ export async function GET(
     const response = await fetch(toolUrl)
 
     if (!response.ok) {
-      return new NextResponse(`'${tool}' not found in version '${ref}'`, {
+      return new NextResponse(`'${toolName}' not found in version '${ref}'`, {
         status: 404,
         headers: { 'Content-Type': 'text/plain' },
       })
