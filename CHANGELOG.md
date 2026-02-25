@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump the dev-dependencies group across 1 directory with 3 updates (#66)
 - Cleanup credential bindings in devcontainer.json; comment unused extensions
 - Update next.js version
 - Rename dotfiles installation plan file and update references
@@ -56,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
 - Update changelog [skip ci]
