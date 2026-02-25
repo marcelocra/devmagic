@@ -48,7 +48,7 @@ export function LanguageSwitcher() {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <Image src="/language-icon.svg" alt="" aria-hidden width={20} height={20} className="w-5 h-5" />
+        <Image src="/language-icon.svg" alt="" aria-hidden width={24} height={24} className="w-6 h-6" />
         <span className="text-sm font-medium hidden sm:inline">{currentLocale === "en" ? "EN" : "PT"}</span>
         {/* Dropdown arrow */}
         <svg
