@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add aliases to simplify getting a file
+- Create route.ts for a new tool endpoint
+- Refactor devcontainer setup script to remove AI tools
 - Configure git-lfs feature with autoPull setting
 - Comment out ollama stuff
 - Comment out docker-in-docker feature in devcontainer
@@ -40,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump the dev-dependencies group across 1 directory with 3 updates (#66)
 - Cleanup credential bindings in devcontainer.json; comment unused extensions
 - Update next.js version
 - Rename dotfiles installation plan file and update references
@@ -53,55 +57,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update documentation to clarify handling of environment variables and default values in DevMagic
-- Update changelog [skip ci]
 - Enhance Copilot instructions with current stack and best practices (#10)
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Refine insights on over-engineering in AI suggestions
-- Update changelog [skip ci]
 - Add blog post on the pitfalls of over-engineering with AI suggestions
 - Add blog post on using containerEnv vs remoteEnv for Dev Container setup
 - Save outline for potential blog posts and notes on AI context files
 - Archive the comprehensive refactor plan for DevContainer from script to features
 - Update docs
 - Update installation flow with Mermaid diagram and synchronization notes
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
-- Update changelog [skip ci]
 - Update Copilot instructions with commit message guidelines and changelog automation details
 
 ### Fixed
 
+- Use git as main alias for gitconfig
+- Use correct API
+- Delete incorrect tool/route.ts (pt. 2 - final)
+- Create route.ts for /tool in the correct place for dynamic routes (pt. 1)
 - Make it work without dind
 - Load showcase projects from www/data/showcase.yml (#33)
 - Button content stacking vertically instead of inline (#26)
@@ -111,119 +84,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update dotfiles integration with conditional automatic cloning and installation during container setup
 - Update changelog script to output to CHANGELOG.md instead of prepending
 - Comment out GitHub Releases link in ChangelogPage as we don't use releases for now
-## [0.2.1] - 2025-11-25
-
-### Added
-
-- Update devcontainer setup script to install correct AI CLI tools
-
-### Fixed
-
-- Devcontainer build and AI tool packages
-- Comment out Node.js feature in devcontainer configuration, as image already has node
-## [0.2.0] - 2025-11-25
-
-### Added
-
-- Enhance documentation with architecture details and dotfiles integration
-- Add dotfiles installation script execution to container setup
-- Update changelog and getting started pages for improved project setup instructions
-- Update devcontainer setup script and routes for AI CLI tools installation
-- Do most of the migration work (see TODO.md)
-- The config script is too long. reviewed and decided to refactor to use devcontainer features instead
-
-### Changed
-
-- Prepare v0.2.0 release
-- Make consumer mode the default
-- Reorder features and add more docs
-- Add pnpm workspace configuration and turbo.json for task management
-- Remove devcontainer.json, as it was moved to the .devcontainer folder
-
-### Documentation
-
-- Improve documentation
-## [0.1.0] - 2025-11-20
-
-### Added
-
-- Add devcontainer setup configuration and update setup scripts
-- Add Git CLI support to devcontainer configuration
-- Add .editorconfig, .gitignore, package.json, and pnpm-lock.yaml for project configuration (prettier only respects md formatting with 4 spaces in version 3+)
-- Add OpenAI ChatGPT extensions to devcontainer configuration
-- Add .env.example for setup configuration and update README for customization instructions
-- Mention quick and interactive modes in the devcontainer.json
-- Add showcase entries for multiple projects
-- Delete www/public/CNAME
-- Add CNAME file for custom domain
-- Build site in docs folder
-- Add logo to header, purple theme, and working dark mode toggle
-- Add complete DevMagic documentation website and project files
-- Add devmagic setup script for submodule-based development environment
-- Update shell history configuration for WSL and Windows in devcontainer.json
-- Add environment variables for shell history and workspace folder in devcontainer.json
-- Remove container name; remove unused ports; clean up comments
-- Add more extensions that I use and refactor them in devcontainer.json
-- Add git lfs as devcontainer feature
-- Restructure devcontainer setup with new Dockerfiles and configuration
-- Use a smaller image by default
-- Add Table of Contents to README
-- Revise README for improved clarity on usage
-- Add standalone usage to usage instructions
-- Enhance README with usage instructions (consumer/self-usage)
-- Add devcontainer configuration for DevMagic
-- Add claude code and gemini cli companion extensions
-- Disable mise by default. not necessary now
-- Improve README with DevMagic usage instructions
-- Add tailwind extension
-- Update files to latest version
-- Update devcontainer
-- Add reference devcotnainer, docker-compose and dockerfile
-
-### Changed
-
-- Update file download structure in setup script, along with names
-- Improve git check in devmagic.sh setup script
-- Replace submodule approach with direct file downloads
-- Migrate website from Astro to Next.js 16
-- Update LICENSE.md to include full Apache License text and formatting improvements
-- Update author name in about page
-- Update lockfile
-- Migrate from GitHub Pages to Vercel with dynamic routes
-- Deploy website for c9eb606
-- Deploy website for b8b5fc6
-- Deploy website for f15a133
-- Deploy website for c7751e5
-- Update site
-- Use pnpm instead of npm
-- Add .gitattributes to prevent merge conflicts in auto-generated docs folder
-- Update pnpm version to 10.9.0
-- Update to Node.js 22 and pnpm 10, modernize copyright
-- Upgrade to Tailwind CSS v4 and pnpm
-- Update README for clarity and consistency in usage instructions
-
-### Documentation
-
-- Add documentation for handling auto-generated docs folder
-- Improve comments for user settings and environment variables in devcontainer.json
-
-### Fixed
-
-- Update copyright attribution in LICENSE.md
-- Update author name in About page
-- Get tailwind to work correctly
-- Update customization link in devcontainer setup script
-- Update to version 0.1.0 and add /install@version support
-- Update setup script URLs to use devmagic.run for consistency
-- Resolve /setup route and theme toggle issues
-- Configure Tailwind v4 @theme to generate custom color utilities
-- Resolve build errors and complete Tailwind v4 migration
-- Correct PostgreSQL environment variable name in docker-compose.yml
-- Update comments and correct image version in devcontainer configuration
-- Remove devcontainer with invalid setting and update documentation
-- Update README links to use correct anchors
-[unreleased]: https://github.com/marcelocra/devmagic/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/marcelocra/devmagic/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/marcelocra/devmagic/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/marcelocra/devmagic/releases/tag/v0.1.0
 
