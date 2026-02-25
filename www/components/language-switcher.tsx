@@ -47,21 +47,17 @@ export function LanguageSwitcher() {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        {/* 
+        {/*
           Official Language Icon from languageicon.org
-          Design: Two overlapping speech bubbles representing multilingual communication
+          Design: Globe with intersecting meridians representing world languages
           Source: https://languageicon.org/
+          Adapted for theme support using currentColor
         */}
-        <svg className="w-5 h-5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Back speech bubble (filled) */}
-          <path d="M15 20 L55 20 L55 55 L35 55 L25 70 L25 55 L15 55 Z" fill="currentColor" />
-          {/* Front speech bubble (outlined) */}
-          <path
-            d="M45 35 L85 35 L85 70 L75 70 L75 85 L65 70 L45 70 Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
+        <svg className="w-5 h-5" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="64" cy="64" r="60" fill="currentColor" opacity="0.15" />
+          <path d="M64 16v96M16 64h96" stroke="currentColor" strokeWidth="8" fill="none" />
+          <ellipse cx="64" cy="64" rx="40" ry="18" fill="none" stroke="currentColor" strokeWidth="8" />
+          <ellipse cx="64" cy="64" rx="18" ry="40" fill="none" stroke="currentColor" strokeWidth="8" />
         </svg>
         <span className="text-sm font-medium hidden sm:inline">{currentLocale === "en" ? "EN" : "PT"}</span>
         {/* Dropdown arrow */}
