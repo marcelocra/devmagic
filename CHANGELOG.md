@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Use correct file from languageicon.org (#57)
 - Use git as main alias for gitconfig
 - Use correct API
 - Delete incorrect tool/route.ts (pt. 2 - final)
