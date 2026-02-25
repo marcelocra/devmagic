@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add aliases to simplify getting a file
+- Create route.ts for a new tool endpoint
+- Refactor devcontainer setup script to remove AI tools
+- Configure git-lfs feature with autoPull setting
+- Comment out ollama stuff
+- Comment out docker-in-docker feature in devcontainer
+- Remove unused and unnecessary files
+- Remove SSH key setup from devcontainer script
+- Add curl/wget toggle and fix copy button visibility (#53)
+- Optimize Dependabot configuration to reduce PR noise (#42)
 - Add make/just language support
 - Add Roo Code, improve comments
 - Add i18n support with next-intl for English and Brazilian Portuguese (#35)
@@ -33,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump the dev-dependencies group across 1 directory with 3 updates (#66)
+- Cleanup credential bindings in devcontainer.json; comment unused extensions
 - Update next.js version
 - Rename dotfiles installation plan file and update references
 - Consolidate AI context files into a single source of truth
@@ -59,6 +71,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Use git as main alias for gitconfig
+- Use correct API
+- Delete incorrect tool/route.ts (pt. 2 - final)
+- Create route.ts for /tool in the correct place for dynamic routes (pt. 1)
+- Make it work without dind
 - Load showcase projects from www/data/showcase.yml (#33)
 - Button content stacking vertically instead of inline (#26)
 - Revert logo to previous simpler version without animation (#24)

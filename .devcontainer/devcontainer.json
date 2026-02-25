@@ -19,14 +19,18 @@
     "TZ": "${localEnv:TZ:America/Sao_Paulo}",
     "LC_ALL": "${localEnv:LC_ALL:en_US.UTF-8}",
     "LANG": "${localEnv:LANG:en_US.UTF-8}",
+
     // Shell history directory. You must mount have a mounted ~/.shell_histories
     // directory for the history to persist across containers and WSL sessions.
     // Otherwise, history will be lost when the container is removed.
     "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
+
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
+
     // Ollama host URL for local LLM development.
-    "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}",
+    // "OLLAMA_HOST": "${localEnv:OLLAMA_HOST:http://host.docker.internal:11434}",
+
     // Dotfiles configuration. Override via host environment variables.
     // Set DEVMAGIC_DOTFILES_REPO in your ~/.bashrc or ~/.zshrc to use your own repo.
     // Set to empty string to disable dotfiles: export DEVMAGIC_DOTFILES_REPO=""
@@ -48,10 +52,15 @@
     },
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    "ghcr.io/devcontainers/features/git-lfs:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {
+      // If you don't have git lfs in your regular workflow and in your .gitconfig,
+      // turn this to true or remove it, but BEWARE: this might NOT work properly
+      // if you are using pre/post commit hooks.
+      "autoPull": false
+    },
     
     // Alpine, Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apk, apt, yum, dnf, or microdnf package manager installed.
     "ghcr.io/devcontainers/features/git:1": {},
@@ -90,22 +99,8 @@
     // - Windows: USERPROFILE (HOME is empty)
     // - Linux/macOS: HOME (USERPROFILE is empty)
 
-    // SSH credentials for Git operations and SSH-based authentication/signing.
-    // Mount as read-only to prevent accidental modification of host SSH keys.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh-from-host,type=bind,readonly",
-
-    // GitHub CLI credentials for seamless GitHub integration.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/gh,target=/home/node/.config/gh,type=bind,consistency=cached",
-
-    // Gemini CLI credentials for AI assistance tools.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gemini,target=/home/node/.gemini,type=bind,consistency=cached",
-
-    // Claude credentials and configuration for AI development tools.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
-
     // Share Ollama models with host.
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
+    // "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ollama,target=/home/node/.ollama,type=bind,consistency=cached",
 
     // Shell history shared across all containers and WSL.
     // In WSL: ln -s /mnt/c/Users/{username}/OneDrive/shell_histories ~/.shell_histories
@@ -118,7 +113,15 @@
   "forwardPorts": [],
 
   // Set custom hostname for the container.
-  "runArgs": ["--hostname=automaton"],
+  // tmpfs for /tmp: Creates an isolated, writable /tmp in the container to avoid
+  // Podman rootless SELinux restrictions. This is standard and doesn't reduce security—
+  // tmpfs is ephemeral (cleared on container stop) and isolated from the host.
+  // mode=1777 explicitly sets world-writable + sticky bit (standard /tmp permissions).
+  "runArgs": [
+    "--hostname=automaton",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,mode=1777"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -151,12 +154,12 @@
         "ms-azuretools.vscode-docker",
 
         // Python
-        "charliermarsh.ruff",
-        "ms-python.black-formatter",
-        "ms-python.debugpy",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-python.vscode-python-envs",
+        // "charliermarsh.ruff",
+        // "ms-python.black-formatter",
+        // "ms-python.debugpy",
+        // "ms-python.python",
+        // "ms-python.vscode-pylance",
+        // "ms-python.vscode-python-envs",
 
         // JavaScript/TypeScript & Web
         "bradlc.vscode-tailwindcss",
@@ -166,8 +169,8 @@
 
         // Testing
         "ms-playwright.playwright",
-        "ms-vscode.extension-test-runner",
-        "ms-vscode.test-adapter-converter",
+        // "ms-vscode.extension-test-runner",
+        // "ms-vscode.test-adapter-converter",
 
         // Editor Enhancements
         "editorconfig.editorconfig",
@@ -179,7 +182,7 @@
         // Other
         "redhat.vscode-yaml",
         "ms-vscode.makefile-tools",
-        "ms-vscode.powershell"
+        // "ms-vscode.powershell"
       ]
     }
   }
