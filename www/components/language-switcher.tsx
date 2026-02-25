@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { locales, localeNames, type Locale } from "@/i18n/config";
@@ -47,18 +48,7 @@ export function LanguageSwitcher() {
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        {/*
-          Official Language Icon from languageicon.org
-          Design: Globe with intersecting meridians representing world languages
-          Source: https://languageicon.org/
-          Adapted for theme support using currentColor
-        */}
-        <svg className="w-5 h-5" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="64" cy="64" r="60" fill="currentColor" opacity="0.15" />
-          <path d="M64 16v96M16 64h96" stroke="currentColor" strokeWidth="8" fill="none" />
-          <ellipse cx="64" cy="64" rx="40" ry="18" fill="none" stroke="currentColor" strokeWidth="8" />
-          <ellipse cx="64" cy="64" rx="18" ry="40" fill="none" stroke="currentColor" strokeWidth="8" />
-        </svg>
+        <Image src="/language-icon.svg" alt="" aria-hidden width={20} height={20} className="w-5 h-5" />
         <span className="text-sm font-medium hidden sm:inline">{currentLocale === "en" ? "EN" : "PT"}</span>
         {/* Dropdown arrow */}
         <svg
