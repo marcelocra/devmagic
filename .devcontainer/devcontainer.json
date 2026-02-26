@@ -66,13 +66,30 @@
     "ghcr.io/devcontainers/features/git:1": {},
     
     // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-    
-    // Debian/Ubuntu-based distributions with the apt package manager installed.    
-    // "ghcr.io/devcontainers/features/dotnet:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+
+    // Bun JavaScript runtime (borrowing from the Rails devcontainer repository).
+    "ghcr.io/rails/devcontainer/features/bun:1": {
+      "version": "latest"
+    },
 
     // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
-    // "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+
+    // This Feature should work on recent versions of Debian/Ubuntu-based distributions with the apt package manager installed.
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "3.4"
+    },
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.23"
+    }
+
+    // Debian/Ubuntu-based distributions with the apt package manager installed.    
+    // "ghcr.io/devcontainers/features/dotnet:2": {},
 
     // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
     // "ghcr.io/devcontainers/features/java:1": {},
@@ -83,12 +100,6 @@
 
     // Debian/Ubuntu-based distributions with the apt package manager installed.
     // "ghcr.io/devcontainers/features/php:1": {},
-
-    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
-    // "ghcr.io/devcontainers/features/python:1": {}
-
-    // This Feature should work on recent versions of Debian/Ubuntu-based distributions with the apt package manager installed.
-    // "ghcr.io/devcontainers/features/ruby:1": {},
 
     // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, RockyLinux and Mariner distributions with the apt, yum, dnf, microdnf and tdnf package manager installed.
     // Note: Alpine is not supported because the rustup-init binary requires glibc to run, but Alpine Linux does not include glibc by default. Instead, it uses musl libc, which is not binary-compatible with glibc.
