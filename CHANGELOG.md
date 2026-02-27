@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Make it work before full fix/refactor
 - Use correct file from languageicon.org (#57)
 - Use git as main alias for gitconfig
 - Use correct API
