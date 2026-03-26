@@ -1,0 +1,178 @@
+<workflow_instructions>
+  <mode_overview>
+    This mode specializes in cross-platform dotfiles automation and development
+    environment configuration. It focuses on creating robust, idempotent scripts
+    that work seamlessly across Linux, WSL2, macOS, and Windows (Git Bash).
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <action>Analyze the user's request and target platforms</action>
+      <details>
+        Identify:
+        - Target platforms (Linux, WSL2, macOS, Windows Git Bash)
+        - Type of automation (installation, configuration, setup)
+        - Required tools and dependencies
+        - Security requirements and constraints
+      </details>
+    </step>
+
+    <step number="2">
+      <action>Review existing project structure</action>
+      <tools>
+        <tool>list_files - Understand directory layout</tool>
+        <tool>read_file - Examine existing scripts and configurations</tool>
+        <tool>search_files - Find related patterns and implementations</tool>
+      </tools>
+    </step>
+
+    <step number="3">
+      <action>Plan the implementation approach</action>
+      <considerations>
+        <consideration>Idempotency requirements</consideration>
+        <consideration>Platform-specific variations</consideration>
+        <consideration>Error handling and rollback strategies</consideration>
+        <consideration>Security implications</consideration>
+      </considerations>
+    </step>
+  </initialization_steps>
+
+  <main_workflow>
+    <phase name="platform_detection">
+      <description>Implement robust platform detection</description>
+      <steps>
+        <step>Detect OS type (Linux, macOS, Windows)</step>
+        <step>Identify environment (native, WSL, container, Git Bash)</step>
+        <step>Check available tools and package managers</step>
+        <step>Determine appropriate paths and conventions</step>
+      </steps>
+      <code_pattern><![CDATA[
+# Platform detection pattern
+detect_platform() {
+    case "$(uname -s)" in
+        Linux*)
+            if grep -qi microsoft /proc/version 2>/dev/null; then
+                echo "wsl"
+            elif [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+                echo "container"
+            else
+                echo "linux"
+            fi
+            ;;
+        Darwin*)
+            echo "macos"
+            ;;
+        MINGW*|MSYS*|CYGWIN*)
+            echo "windows"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+      ]]></code_pattern>
+    </phase>
+
+    <phase name="idempotent_implementation">
+      <description>Implement changes with idempotency guarantees</description>
+      <steps>
+        <step>Check current state before making changes</step>
+        <step>Use guard clauses to skip already-completed operations</step>
+        <step>Implement atomic operations where possible</step>
+        <step>Log all operations for debugging</step>
+      </steps>
+      <code_pattern><![CDATA[
+# Idempotent installation pattern
+install_tool() {
+    local tool="$1"
+
+    # Guard: Check if already installed
+    if command -v "$tool" &>/dev/null; then
+        log_info "$tool is already installed"
+        return 0
+    fi
+
+    # Attempt installation
+    log_info "Installing $tool..."
+    if ! perform_installation "$tool"; then
+        log_error "Failed to install $tool"
+        return 1
+    fi
+
+    # Verify installation
+    if command -v "$tool" &>/dev/null; then
+        log_success "$tool installed successfully"
+        return 0
+    else
+        log_error "$tool installation verification failed"
+        return 1
+    fi
+}
+      ]]></code_pattern>
+    </phase>
+
+    <phase name="shim_implementation">
+      <description>Create shims for cross-platform compatibility</description>
+      <steps>
+        <step>Identify commands that need platform abstraction</step>
+        <step>Create wrapper functions or scripts</step>
+        <step>Implement fallback chains for missing commands</step>
+        <step>Test shims on all target platforms</step>
+      </steps>
+      <code_pattern><![CDATA[
+# Shim pattern for cross-platform commands
+# Example: clipboard shim
+clipboard_copy() {
+    case "$(detect_platform)" in
+        macos)
+            pbcopy
+            ;;
+        linux|wsl)
+            if command -v xclip &>/dev/null; then
+                xclip -selection clipboard
+            elif command -v xsel &>/dev/null; then
+                xsel --clipboard --input
+            elif [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy &>/dev/null; then
+                wl-copy
+            else
+                log_warning "No clipboard tool available"
+                return 1
+            fi
+            ;;
+        windows)
+            clip
+            ;;
+    esac
+}
+      ]]></code_pattern>
+    </phase>
+
+    <phase name="security_review">
+      <description>Apply zero-trust security practices</description>
+      <steps>
+        <step>Validate all inputs and environment variables</step>
+        <step>Ensure no secrets are hardcoded</step>
+        <step>Use secure defaults</step>
+        <step>Implement proper permission handling</step>
+      </steps>
+    </phase>
+
+    <phase name="testing_and_validation">
+      <description>Verify the implementation</description>
+      <steps>
+        <step>Test idempotency by running script multiple times</step>
+        <step>Verify behavior on each target platform</step>
+        <step>Check error handling paths</step>
+        <step>Validate security requirements</step>
+      </steps>
+    </phase>
+  </main_workflow>
+
+  <completion_criteria>
+    <criterion>Script runs successfully on all target platforms</criterion>
+    <criterion>Idempotency verified (multiple runs produce same result)</criterion>
+    <criterion>Error handling covers all failure modes</criterion>
+    <criterion>Security best practices followed</criterion>
+    <criterion>Code is well-documented and maintainable</criterion>
+  </completion_criteria>
+</workflow_instructions>

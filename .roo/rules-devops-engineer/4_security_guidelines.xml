@@ -1,0 +1,321 @@
+<security_guidelines>
+  <overview>
+    Zero-trust security practices for dotfiles automation and shell scripting.
+    These guidelines ensure scripts are secure by default and protect against
+    common attack vectors.
+  </overview>
+
+  <core_principles>
+    <principle name="least_privilege">
+      <description>
+        Scripts should request only the minimum permissions necessary.
+        Never run scripts as root unless absolutely required.
+      </description>
+      <implementation>
+        <rule>Never use sudo in scripts unless explicitly documented</rule>
+        <rule>Use user-level installations when possible (e.g., --user flag)</rule>
+        <rule>Install to user directories (~/.local/bin) not system directories</rule>
+        <rule>Fail gracefully when elevated permissions are unavailable</rule>
+      </implementation>
+      <code_example><![CDATA[
+# Prefer user-local installations
+install_binary() {
+    local binary="$1"
+    local install_dir="${HOME}/.local/bin"
+
+    # Ensure user bin directory exists
+    mkdir -p "$install_dir"
+
+    # Install to user directory, not /usr/local/bin
+    mv "$binary" "$install_dir/"
+    chmod 755 "$install_dir/$binary"
+
+    # Ensure PATH includes user bin
+    if [[ ":$PATH:" != *":$install_dir:"* ]]; then
+        log_warning "Add $install_dir to your PATH"
+    fi
+}
+      ]]></code_example>
+    </principle>
+
+    <principle name="input_validation">
+      <description>
+        Never trust input from any source - environment variables, arguments,
+        files, or network resources.
+      </description>
+      <implementation>
+        <rule>Validate all environment variables before use</rule>
+        <rule>Sanitize file paths to prevent traversal attacks</rule>
+        <rule>Use allowlists, not denylists for validation</rule>
+        <rule>Quote all variable expansions</rule>
+      </implementation>
+      <code_example><![CDATA[
+# Validate environment variable
+validate_path() {
+    local path="${1:-}"
+
+    # Reject empty paths
+    if [[ -z "$path" ]]; then
+        log_error "Path cannot be empty"
+        return 1
+    fi
+
+    # Reject path traversal attempts
+    if [[ "$path" == *".."* ]]; then
+        log_error "Path traversal not allowed"
+        return 1
+    fi
+
+    # Reject absolute paths outside expected areas
+    if [[ "$path" == /* ]] && [[ "$path" != "$HOME"* ]] && [[ "$path" != "/tmp"* ]]; then
+        log_error "Path must be within home directory or /tmp"
+        return 1
+    fi
+
+    # Validate characters (allowlist approach)
+    if [[ ! "$path" =~ ^[a-zA-Z0-9_./-]+$ ]]; then
+        log_error "Path contains invalid characters"
+        return 1
+    fi
+
+    return 0
+}
+      ]]></code_example>
+    </principle>
+
+    <principle name="secret_management">
+      <description>
+        Never store secrets in scripts, environment files, or version control.
+        Use secure secret management practices.
+      </description>
+      <implementation>
+        <rule>Never hardcode passwords, tokens, or API keys</rule>
+        <rule>Use environment variables from secure sources</rule>
+        <rule>Prefer secret managers (1Password CLI, pass, etc.)</rule>
+        <rule>Add .env files to .gitignore</rule>
+        <rule>Use .env.example with placeholder values only</rule>
+      </implementation>
+      <code_example><![CDATA[
+# Secure secret retrieval pattern
+get_secret() {
+    local secret_name="${1:?Secret name required}"
+
+    # Priority: secret manager > environment > prompt
+    if command -v op &>/dev/null; then
+        # 1Password CLI
+        op read "op://Private/${secret_name}" 2>/dev/null && return 0
+    fi
+
+    if command -v pass &>/dev/null; then
+        # pass (password-store)
+        pass show "${secret_name}" 2>/dev/null && return 0
+    fi
+
+    # Fall back to environment variable (should be set securely)
+    local env_var
+    env_var=$(echo "$secret_name" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    if [[ -n "${!env_var:-}" ]]; then
+        echo "${!env_var}"
+        return 0
+    fi
+
+    # Interactive prompt (last resort)
+    if [[ -t 0 ]]; then
+        read -rsp "Enter ${secret_name}: " secret
+        echo >&2
+        echo "$secret"
+        return 0
+    fi
+
+    log_error "Cannot retrieve secret: $secret_name"
+    return 1
+}
+
+# Example: .env.example (committed to git)
+# DATABASE_URL=postgres://user:password@localhost:5432/db
+# API_KEY=your-api-key-here
+      ]]></code_example>
+    </principle>
+
+    <principle name="safe_defaults">
+      <description>
+        Default behavior should be the safest option. Destructive or risky
+        operations should require explicit opt-in.
+      </description>
+      <implementation>
+        <rule>Default to dry-run mode for destructive operations</rule>
+        <rule>Require confirmation for irreversible actions</rule>
+        <rule>Create backups before modifying existing files</rule>
+        <rule>Use --force or similar flags for override, never default</rule>
+      </implementation>
+      <code_example><![CDATA[
+# Safe removal with backup
+safe_remove() {
+    local target="${1:?Target required}"
+    local force="${2:-false}"
+    local backup_dir="${HOME}/.trash"
+
+    if [[ ! -e "$target" ]]; then
+        log_info "Target does not exist: $target"
+        return 0
+    fi
+
+    # Require confirmation unless forced
+    if [[ "$force" != "true" ]]; then
+        read -rp "Remove $target? [y/N] " confirm
+        if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+            log_info "Skipped: $target"
+            return 0
+        fi
+    fi
+
+    # Create backup
+    mkdir -p "$backup_dir"
+    local backup_name
+    backup_name="${backup_dir}/$(basename "$target").$(date +%Y%m%d_%H%M%S)"
+    mv "$target" "$backup_name"
+    log_success "Moved to backup: $backup_name"
+}
+      ]]></code_example>
+    </principle>
+
+    <principle name="supply_chain_security">
+      <description>
+        Protect against compromised dependencies and supply chain attacks.
+        Use custom forks for security-critical tools.
+      </description>
+      <implementation>
+        <rule>Fork security-critical tools to personal repositories</rule>
+        <rule>Verify checksums for downloaded binaries</rule>
+        <rule>Pin specific versions, avoid "latest"</rule>
+        <rule>Review code changes before updating forks</rule>
+        <rule>Use GPG-signed commits and releases when available</rule>
+      </implementation>
+      <code_example><![CDATA[
+# Installing from custom fork with verification
+install_from_fork() {
+    local repo="$1"          # e.g., "username/fzf"
+    local version="$2"       # e.g., "v0.44.0"
+    local binary="$3"        # e.g., "fzf"
+    local checksum="$4"      # SHA256 checksum
+
+    local url="https://github.com/${repo}/releases/download/${version}/${binary}"
+
+    # Download to temp location
+    local temp_file
+    temp_file=$(mktemp)
+    trap 'rm -f "$temp_file"' RETURN
+
+    log_step "Downloading ${binary} from trusted fork..."
+    curl -fsSL "$url" -o "$temp_file"
+
+    # Verify checksum
+    local actual_sum
+    actual_sum=$(sha256sum "$temp_file" | cut -d' ' -f1)
+    if [[ "$actual_sum" != "$checksum" ]]; then
+        log_error "Checksum verification failed!"
+        log_error "Expected: $checksum"
+        log_error "Got:      $actual_sum"
+        return 1
+    fi
+
+    log_success "Checksum verified"
+    install_binary "$temp_file" "$binary"
+}
+
+# Example: Installing fzf from custom fork
+# install_from_fork "marcelocra/fzf" "v0.44.0" "fzf-linux-amd64" \
+#     "abc123def456..."
+      ]]></code_example>
+    </principle>
+  </core_principles>
+
+  <security_checklist>
+    <category name="script_review">
+      <item>No hardcoded secrets, tokens, or passwords</item>
+      <item>All inputs validated before use</item>
+      <item>All variables properly quoted</item>
+      <item>No unnecessary sudo or root requirements</item>
+      <item>Destructive operations require confirmation</item>
+      <item>Temporary files cleaned up properly</item>
+    </category>
+
+    <category name="dependency_review">
+      <item>Dependencies from trusted sources only</item>
+      <item>Checksums verified for downloaded binaries</item>
+      <item>Versions pinned (no "latest")</item>
+      <item>Security-critical tools forked and audited</item>
+    </category>
+
+    <category name="environment_review">
+      <item>.env files in .gitignore</item>
+      <item>Secrets loaded from secure sources</item>
+      <item>No secrets in shell history</item>
+      <item>Appropriate file permissions (600 for secrets, 755 for scripts)</item>
+    </category>
+  </security_checklist>
+
+  <common_vulnerabilities>
+    <vulnerability name="shell_injection">
+      <description>Unquoted variables allow command injection</description>
+      <example_bad><![CDATA[
+# DANGEROUS: If user_input contains "; rm -rf /"
+eval "process $user_input"
+      ]]></example_bad>
+      <example_good><![CDATA[
+# Safe: Properly quoted
+process "$user_input"
+      ]]></example_good>
+    </vulnerability>
+
+    <vulnerability name="path_traversal">
+      <description>User input used directly in file paths</description>
+      <example_bad><![CDATA[
+# DANGEROUS: User can access ../../etc/passwd
+cat "$config_dir/$user_file"
+      ]]></example_bad>
+      <example_good><![CDATA[
+# Safe: Validate and sanitize
+validate_filename() {
+    local name="$1"
+    [[ "$name" =~ ^[a-zA-Z0-9_.-]+$ ]] && [[ "$name" != *".."* ]]
+}
+if validate_filename "$user_file"; then
+    cat "$config_dir/$user_file"
+fi
+      ]]></example_good>
+    </vulnerability>
+
+    <vulnerability name="insecure_temp_files">
+      <description>Predictable temporary file names allow attacks</description>
+      <example_bad><![CDATA[
+# DANGEROUS: Predictable path, race condition
+echo "data" > /tmp/myapp.tmp
+      ]]></example_bad>
+      <example_good><![CDATA[
+# Safe: Use mktemp with cleanup
+temp_file=$(mktemp)
+trap 'rm -f "$temp_file"' EXIT
+echo "data" > "$temp_file"
+      ]]></example_good>
+    </vulnerability>
+
+    <vulnerability name="curl_pipe_bash">
+      <description>Piping curl to bash without verification</description>
+      <example_bad><![CDATA[
+# DANGEROUS: No verification
+curl -fsSL https://example.com/install.sh | bash
+      ]]></example_bad>
+      <example_good><![CDATA[
+# Better: Download, review, then execute
+curl -fsSL https://example.com/install.sh -o install.sh
+# Review the script
+less install.sh
+# Verify checksum if provided
+echo "expected_sha256 install.sh" | sha256sum -c
+# Then execute
+bash install.sh
+      ]]></example_good>
+    </vulnerability>
+  </common_vulnerabilities>
+</security_guidelines>

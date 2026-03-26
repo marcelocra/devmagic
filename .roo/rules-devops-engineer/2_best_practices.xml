@@ -1,0 +1,311 @@
+<best_practices>
+  <general_principles>
+    <principle priority="critical">
+      <name>Idempotency First</name>
+      <description>
+        Every script and operation must be safe to run multiple times without
+        causing unintended side effects or errors.
+      </description>
+      <rationale>
+        Users should be able to re-run setup scripts to ensure their environment
+        is in the correct state without fear of breaking things.
+      </rationale>
+      <example>
+        <scenario>Installing a package</scenario>
+        <good><![CDATA[
+# Check before installing
+if ! command -v ripgrep &>/dev/null; then
+    brew install ripgrep
+fi
+        ]]></good>
+        <bad><![CDATA[
+# Always tries to install, may error if already present
+brew install ripgrep
+        ]]></bad>
+      </example>
+    </principle>
+
+    <principle priority="critical">
+      <name>Zero Trust Security</name>
+      <description>
+        Never trust input, environment variables, or external dependencies
+        without validation. Assume everything can be compromised.
+      </description>
+      <rationale>
+        Scripts run with user privileges and can cause significant damage if
+        exploited. Defense in depth prevents security breaches.
+      </rationale>
+      <example>
+        <scenario>Using environment variables for paths</scenario>
+        <good><![CDATA[
+# Validate and sanitize path
+readonly INSTALL_DIR="${HOME}/.local/bin"
+if [[ ! "$INSTALL_DIR" =~ ^[a-zA-Z0-9_./-]+$ ]]; then
+    log_error "Invalid installation directory"
+    exit 1
+fi
+mkdir -p "$INSTALL_DIR"
+        ]]></good>
+        <bad><![CDATA[
+# Blindly trusting user input
+mkdir -p $INSTALL_DIR  # Unquoted, vulnerable to injection
+        ]]></bad>
+      </example>
+    </principle>
+
+    <principle priority="high">
+      <name>Explicit Over Implicit</name>
+      <description>
+        Make all behaviors explicit. Avoid hidden defaults or assumptions
+        about the environment.
+      </description>
+      <rationale>
+        Cross-platform scripts fail when they assume specific behaviors.
+        Being explicit ensures consistent behavior across platforms.
+      </rationale>
+      <example>
+        <scenario>Setting shell options</scenario>
+        <good><![CDATA[
+#!/usr/bin/env bash
+set -euo pipefail  # Explicit error handling
+shopt -s nullglob  # Explicit glob behavior
+        ]]></good>
+        <bad><![CDATA[
+#!/bin/bash
+# Relying on default shell behavior
+        ]]></bad>
+      </example>
+    </principle>
+
+    <principle priority="high">
+      <name>Graceful Degradation</name>
+      <description>
+        When optional dependencies are unavailable, continue with reduced
+        functionality rather than failing completely.
+      </description>
+      <rationale>
+        Different platforms have different available tools. Scripts should
+        work as well as possible given the available resources.
+      </rationale>
+      <example>
+        <scenario>Using colored output</scenario>
+        <good><![CDATA[
+# Check terminal capability
+if [[ -t 1 ]] && command -v tput &>/dev/null; then
+    RED=$(tput setaf 1)
+    NC=$(tput sgr0)
+else
+    RED=""
+    NC=""
+fi
+echo "${RED}Error${NC}: Something went wrong"
+        ]]></good>
+        <bad><![CDATA[
+# Assumes ANSI colors always work
+echo -e "\033[0;31mError\033[0m: Something went wrong"
+        ]]></bad>
+      </example>
+    </principle>
+  </general_principles>
+
+  <code_conventions>
+    <convention category="variables">
+      <rule>Use readonly for constants and declare local variables explicitly</rule>
+      <examples>
+        <good><![CDATA[
+readonly VERSION="1.0.0"
+readonly CONFIG_DIR="${HOME}/.config/myapp"
+
+my_function() {
+    local input="$1"
+    local result=""
+    # ...
+}
+        ]]></good>
+        <bad><![CDATA[
+VERSION=1.0.0  # Not readonly, can be accidentally modified
+CONFIG_DIR=~/.config/myapp  # Tilde may not expand in all contexts
+
+my_function() {
+    input=$1  # Global variable pollution
+}
+        ]]></bad>
+      </examples>
+    </convention>
+
+    <convention category="quoting">
+      <rule>Always quote variables unless word splitting is intentional</rule>
+      <examples>
+        <good><![CDATA[
+file_path="$HOME/my file.txt"
+if [[ -f "$file_path" ]]; then
+    cat "$file_path"
+fi
+        ]]></good>
+        <bad><![CDATA[
+file_path=$HOME/my file.txt  # Will fail
+if [ -f $file_path ]; then   # Will fail with spaces
+    cat $file_path
+fi
+        ]]></bad>
+      </examples>
+    </convention>
+
+    <convention category="conditionals">
+      <rule>Use [[ ]] for conditionals in Bash, [ ] for POSIX sh</rule>
+      <examples>
+        <good><![CDATA[
+# Bash script
+if [[ -n "$var" && "$var" == "value" ]]; then
+    echo "Match"
+fi
+
+# POSIX sh script
+if [ -n "$var" ] && [ "$var" = "value" ]; then
+    echo "Match"
+fi
+        ]]></good>
+        <bad><![CDATA[
+# Mixing styles or using == in [ ]
+if [ -n $var ] && [ $var == "value" ]; then
+    echo "Match"
+fi
+        ]]></bad>
+      </examples>
+    </convention>
+
+    <convention category="error_handling">
+      <rule>Use trap for cleanup and handle errors at every step</rule>
+      <examples>
+        <good><![CDATA[
+#!/usr/bin/env bash
+set -euo pipefail
+
+cleanup() {
+    rm -f "$TEMP_FILE"
+}
+trap cleanup EXIT
+
+TEMP_FILE=$(mktemp)
+# Work with temp file...
+        ]]></good>
+        <bad><![CDATA[
+#!/bin/bash
+TEMP_FILE=$(mktemp)
+# Work with temp file...
+rm -f "$TEMP_FILE"  # May not run if script exits early
+        ]]></bad>
+      </examples>
+    </convention>
+
+    <convention category="functions">
+      <rule>Use descriptive function names and document parameters</rule>
+      <examples>
+        <good><![CDATA[
+# Install a package using the appropriate package manager
+# Arguments:
+#   $1 - Package name
+# Returns:
+#   0 on success, 1 on failure
+install_package() {
+    local package="${1:?Package name required}"
+    # Implementation...
+}
+        ]]></good>
+        <bad><![CDATA[
+inst() {
+    pkg=$1
+    # What does this do?
+}
+        ]]></bad>
+      </examples>
+    </convention>
+  </code_conventions>
+
+  <common_pitfalls>
+    <pitfall>
+      <description>Using backticks for command substitution</description>
+      <why_problematic>Backticks don't nest well and are harder to read</why_problematic>
+      <correct_approach><![CDATA[
+# Use $() instead
+result=$(command1 $(command2))
+
+# NOT
+result=`command1 \`command2\``
+      ]]></correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Parsing ls output</description>
+      <why_problematic>ls output is locale-dependent and breaks on special characters</why_problematic>
+      <correct_approach><![CDATA[
+# Use globs or find instead
+for file in "$dir"/*; do
+    [[ -f "$file" ]] && process "$file"
+done
+
+# Or with find
+find "$dir" -maxdepth 1 -type f -exec process {} \;
+      ]]></correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Not handling empty arrays</description>
+      <why_problematic>In Bash, empty arrays with set -u cause unbound variable errors</why_problematic>
+      <correct_approach><![CDATA[
+# Use array length check
+if [[ ${#my_array[@]} -gt 0 ]]; then
+    for item in "${my_array[@]}"; do
+        echo "$item"
+    done
+fi
+
+# Or use ${array[@]+"${array[@]}"} pattern
+for item in ${my_array[@]+"${my_array[@]}"}; do
+    echo "$item"
+done
+      ]]></correct_approach>
+    </pitfall>
+
+    <pitfall>
+      <description>Assuming HOME is always set</description>
+      <why_problematic>In some environments (cron, minimal containers) HOME may not be set</why_problematic>
+      <correct_approach><![CDATA[
+# Provide fallback
+readonly HOME_DIR="${HOME:-$(getent passwd "$(id -un)" | cut -d: -f6)}"
+
+# Or fail explicitly
+if [[ -z "${HOME:-}" ]]; then
+    log_error "HOME environment variable not set"
+    exit 1
+fi
+      ]]></correct_approach>
+    </pitfall>
+  </common_pitfalls>
+
+  <quality_checklist>
+    <category name="before_starting">
+      <item>Identify all target platforms (Linux, WSL2, macOS, Windows)</item>
+      <item>Review existing scripts for patterns to follow</item>
+      <item>List all required and optional dependencies</item>
+      <item>Define success criteria and error conditions</item>
+    </category>
+
+    <category name="during_implementation">
+      <item>Add guard clauses for idempotency</item>
+      <item>Quote all variables</item>
+      <item>Use explicit error handling (set -euo pipefail)</item>
+      <item>Add meaningful log messages</item>
+      <item>Handle platform differences with detection functions</item>
+      <item>Validate all inputs before use</item>
+    </category>
+
+    <category name="before_completion">
+      <item>ShellCheck passes with no warnings</item>
+      <item>Script runs multiple times without errors (idempotency test)</item>
+      <item>All error paths tested</item>
+      <item>Documentation is complete and accurate</item>
+      <item>No secrets or credentials in code</item>
+    </category>
+  </quality_checklist>
+</best_practices>
