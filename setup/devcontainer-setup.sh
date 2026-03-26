@@ -1,140 +1,169 @@
 #!/usr/bin/env bash
-# DevMagic Container Setup Script
-# Handles AI CLI tools installation, and other container-specific setup
-# This runs once when the container is created (postCreateCommand)
+# Container-only bootstrap for devcontainers
+# Extracted from dotfiles setup intent, intentionally minimal and safe.
 
-set -e
+LOG_TAG="dotfiles-container"
+source ~/bin/lib.bash && assert_executed || return 1
+set -euo pipefail
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.config/dotfiles}"
+USER_BIN_DIR="${USER_BIN_DIR:-$HOME/bin}"
 
-# Logging helpers
-log() {
-    echo -e "${BLUE}$1${NC}"
-}
+# -----------------------------------------------------------------------------
+# helpers
+# -----------------------------------------------------------------------------
 
-log_success() {
-    echo -e "${GREEN}$1${NC}"
-}
-
-log_warning() {
-    echo -e "${YELLOW}$1${NC}"
-}
-
-log_error() {
-    echo -e "${RED}$1${NC}"
-}
-
-# ---------------------------------------------------------------------------
-# AI CLI Tools Installation
-# ---------------------------------------------------------------------------
-
-# NPM packages to install globally (using pnpm)
-# Move packages between arrays as needed
-NPM_PACKAGES_UNUSED=(
-    "@openai/codex"
-)
-NPM_PACKAGES=(
-    "@anthropic-ai/claude-code"
-    "@google/gemini-cli"
-    "@github/copilot"
-    "@google/jules"
-)
-
-setup_ai_tools() {
-    log "🤖 Installing AI CLI tools..."
-
-    # Configure pnpm global store
-    log "   Configuring pnpm global store..."
-    export PNPM_HOME="$HOME/.local/share/pnpm"
-    mkdir -p "$PNPM_HOME"
-    case ":$PATH:" in
-        *":$PNPM_HOME:"*) ;;
-        *) export PATH="$PNPM_HOME:$PATH" ;;
-    esac
-
-    # Install NPM packages globally using pnpm
-    if command -v pnpm &> /dev/null; then
-        for package in "${NPM_PACKAGES[@]}"; do
-            log "   Installing $package..."
-            pnpm add -g "$package" || log_warning "   Failed to install $package"
-        done
+format_duration() {
+    local seconds="$1"
+    if ((seconds < 60)); then
+        echo "${seconds}s"
     else
-        log_warning "   pnpm not found, skipping NPM packages"
+        echo "$((seconds / 60))m $((seconds % 60))s"
+    fi
+}
+
+timed() {
+    local name="$1"
+    local func="$2"
+    local start_time=$SECONDS
+
+    "$func"
+    local exit_code=$?
+
+    local elapsed=$((SECONDS - start_time))
+    if ((elapsed > 0)); then
+        log_info "⏱️  $name took $(format_duration "$elapsed")"
     fi
 
-    # Install aider via official installer (includes uv + Python 3.12 if needed)
-    log "   💡 To install aider: curl -LsSf https://aider.chat/install.sh | sh"
-
-    log_success "✅ AI CLI tools setup complete"
+    return "$exit_code"
 }
 
-# ---------------------------------------------------------------------------
-# Dotfiles Setup
-# ---------------------------------------------------------------------------
-setup_dotfiles() {
-    local dotfiles_dir="$HOME/prj/dotfiles"
-    # Override via host env vars: DEVMAGIC_DOTFILES_REPO, DEVMAGIC_DOTFILES_BRANCH
-    # Set to empty string to disable: export DEVMAGIC_DOTFILES_REPO=""
-    local dotfiles_repo="${DEVMAGIC_DOTFILES_REPO:-https://github.com/marcelocra/dotfiles.git}"
-    local dotfiles_branch="${DEVMAGIC_DOTFILES_BRANCH:-main}"
+load_path() {
+    if [[ -d "$USER_BIN_DIR" ]]; then
+        export PATH="$USER_BIN_DIR:$PATH"
+    fi
+    if [[ -d "$HOME/.local/bin" ]]; then
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+    local pnpm_home="${PNPM_HOME:-$HOME/.local/share/pnpm}"
+    if [[ -d "$pnpm_home" ]]; then
+        export PNPM_HOME="$pnpm_home"
+        export PATH="$PNPM_HOME:$PATH"
+    fi
+}
 
-    log "📦 Checking for dotfiles..."
+# -----------------------------------------------------------------------------
+# container-focused install steps
+# -----------------------------------------------------------------------------
 
-    # Clone dotfiles if directory doesn't exist
-    if [ ! -d "$dotfiles_dir" ]; then
-        log "   Cloning dotfiles from $dotfiles_repo..."
-        mkdir -p "$(dirname "$dotfiles_dir")"
-        if git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"; then
-            log_success "   Dotfiles cloned successfully"
+install_system_packages() {
+    if ! command_exists apt-get; then
+        log_info "ℹ️ apt-get not found; skipping system packages"
+        return 0
+    fi
+
+    log_info "📦 Installing container system packages..."
+    export DEBIAN_FRONTEND=noninteractive
+
+    sudo apt-get update -y
+    sudo apt-get install -y \
+        ca-certificates \
+        curl \
+        git \
+        jq \
+        wget \
+        zsh \
+        unzip \
+        zip \
+        ripgrep \
+        fd-find \
+        xclip \
+        pipx || log_warning "Some packages failed to install"
+
+    log_success "✅ System packages done"
+}
+
+install_oh_my_zsh() {
+    if [[ -d "$HOME/.oh-my-zsh" ]]; then
+        log_info "✅ oh-my-zsh already installed"
+        return 0
+    fi
+    log_info "📦 Installing oh-my-zsh..."
+    curl --proto '=https' --tlsv1.2 -fsSL -o- \
+      https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh \
+      | sh -s -- --unattended
+    log_success "✅ oh-my-zsh installed"
+}
+
+install_fzf() {
+    local fzf_dir="$HOME/.fzf"
+    local fzf_bin="$USER_BIN_DIR/fzf"
+    local fzf_repo="${FORK_FZF_REPO:-https://github.com/marcelocra/fzf.git}"
+
+    if command_exists fzf && [[ -L "$fzf_bin" ]]; then
+        log_info "✅ fzf already installed"
+        return 0
+    fi
+
+    log_info "📦 Installing fzf..."
+    if [[ -d "$fzf_dir" ]]; then
+        (cd "$fzf_dir" && git pull) || true
+    else
+        git clone --depth 1 "$fzf_repo" "$fzf_dir"
+    fi
+
+    "$fzf_dir/install" --bin
+    mkdir -p "$USER_BIN_DIR"
+    ln -sf "$fzf_dir/bin/fzf" "$fzf_bin"
+    log_success "✅ fzf installed"
+}
+
+link_shell_init() {
+    if [[ ! -d "$DOTFILES_DIR" ]]; then
+        log_warning "DOTFILES_DIR not found ($DOTFILES_DIR), skipping shell links"
+        return 0
+    fi
+
+    log_info "🔗 Linking shell init..."
+    local init_source="source $DOTFILES_DIR/shell/init.sh"
+
+    for rc in "$HOME/.zshrc" "$HOME/.bashrc"; do
+        if [[ -f "$rc" ]]; then
+            if ! grep -q "source.*shell/init.sh" "$rc"; then
+                {
+                    echo ""
+                    echo "# Dotfiles initialization"
+                    echo "$init_source"
+                } >>"$rc"
+            fi
         else
-            log_warning "   Failed to clone dotfiles (network issue?). Skipping."
-            return 0
+            {
+                echo "# Dotfiles initialization"
+                echo "$init_source"
+            } >"$rc"
         fi
-    else
-        log "   Dotfiles directory already exists at $dotfiles_dir"
-    fi
+    done
 
-    # Run dotfiles installation script if available
-    local dotfiles_install="$dotfiles_dir/shell/install.sh"
-    if [ -f "$dotfiles_install" ]; then
-        log "🧩 Running dotfiles install script..."
-        # Use bash to run the script for consistency and error handling.
-        # While the script has a shebang and is executable, explicitly using bash:
-        # - Ensures consistent interpreter (user's shebang might differ)
-        # - Allows "bash -x" for debugging if needed
-        # - Works even if execute bit is lost (git clone, file copy)
-        # - Standard practice for CI/CD and automation scripts
-        bash "$dotfiles_install" || log_warning "⚠️  Dotfiles install script failed"
-    else
-        log_warning "⚠️  No dotfiles install script found at $dotfiles_install"
-        log "   Skipping dotfiles installation"
-    fi
-
-    log_success "✅ Dotfiles setup complete"
+    log_success "✅ Shell init linked"
 }
 
-# ---------------------------------------------------------------------------
-# Main execution
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# main
+# -----------------------------------------------------------------------------
+
 main() {
-    log "🔧 Running DevMagic container setup..."
-    echo
+    load_path
+    local total_start=$SECONDS
 
-    setup_ai_tools
-    echo
+    log_info "🚀 Starting container bootstrap..."
 
-    setup_dotfiles
-    echo
+    timed "System packages" install_system_packages
+    timed "oh-my-zsh" install_oh_my_zsh
+    timed "fzf" install_fzf
+    timed "Shell init links" link_shell_init
 
-    log_success "✅ DevMagic container setup complete!"
-    log "ℹ️  Shell history is configured via dotfiles (~/prj/dotfiles/shell/init.sh)"
-    log "ℹ️  Editor configuration is handled via dotfiles"
+    local total_elapsed=$((SECONDS - total_start))
+    log_success "🎉 Container bootstrap complete in $(format_duration "$total_elapsed")"
 }
 
-# Run main function
-main
+main "$@"
