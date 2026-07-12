@@ -33,6 +33,10 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# The devcontainer env only holds the Compose project name — keep it in git.
+!.devcontainer/.env
+!.devcontainer/.env.example
+
 # vercel
 .vercel
 

@@ -14,10 +14,10 @@
 DevMagic can be used in **three different ways**:
 
 1. **Add to Your Project (recommended)** — use the installer to add DevMagic to any existing project with one command.
-2. **Standalone Environment** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Podman/Docker + VS Code).
+2. **Standalone Environment** — use this repo directly as a portable dev environment (no need to install development tools on your host; just Docker + VS Code).
 3. **Contribute to DevMagic** — work on `devmagic.run` itself (the website in the `www` folder), using its wrapper `.devcontainer`.
 
-It also supports optional auxiliary services (see `docker-compose.yml` for available options).
+It also supports optional auxiliary services (see `.devcontainer/docker-compose.yml` for available options).
 
 ## Table of Contents
 
@@ -50,11 +50,13 @@ The easiest way to use DevMagic is to add it to your existing project:
 curl -fsSL https://devmagic.run/install | bash
 ```
 
-This will:
+This will download **all files** into a `.devcontainer/` folder in the current directory:
 
-1. Create a `.devcontainer/` directory in your project
-2. Download the DevMagic configuration files
-3. Set up auxiliary services configuration (optional)
+1. `devcontainer.json` — the Dev Container definition (Docker Compose based)
+2. `docker-compose.yml` — the `dev` service plus optional auxiliary services (PostgreSQL, Redis, MongoDB, MinIO, Ollama) behind [Compose profiles](https://docs.docker.com/compose/how-tos/profiles/)
+3. `Dockerfile` — the dev image (Node.js/TypeScript base with tmux, Neovim, ripgrep, fd)
+4. `.env.example` — documented template for the Compose settings
+5. `.env` — **generated** with `COMPOSE_PROJECT_NAME` set to your project folder name
 
 After running the installer:
 
@@ -64,21 +66,27 @@ After running the installer:
 
 The dev container includes:
 
-- Node.js with pnpm and yarn
-- Git with Git LFS and GitHub CLI
-- Docker-in-Docker for running containers
-- Zsh with Oh My Zsh
-- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
-- VS Code extensions for AI development (Cline, Continue.dev)
+- Node.js 24 with TypeScript (Microsoft's `typescript-node` dev container image, pinned)
+- Git, GitHub CLI and Zsh with Oh My Zsh
+- tmux, Neovim, ripgrep and fd
+- Timezone and locale **forwarded from your host** via `${localEnv:*}` (with sane fallbacks)
+- Your `~/.config/dotfiles` folder mounted into the container (optional)
+- A fast, isolated in-memory `/tmp` (tmpfs)
+- VS Code extensions for AI-assisted development (Claude Code, GitHub Copilot)
+
+> [!NOTE]
+> This setup targets **Docker**. It should also work with Podman, but building
+> through the Compose `build:` block can be unreliable there — see the note at
+> the top of `.devcontainer/docker-compose.yml` for the manual-build alternative.
 
 ### Customizing Your Setup
 
-After installation, you can customize `.devcontainer/devcontainer.json`:
+Each file has a clear responsibility:
 
-- Add or remove [Dev Container Features](https://containers.dev/features)
-- Adjust environment variables
-- Configure VS Code extensions
-- Set up credential mounts
+- `.devcontainer/Dockerfile` — system packages and the base image
+- `.devcontainer/docker-compose.yml` — mounts, auxiliary services, container runtime options
+- `.devcontainer/devcontainer.json` — [Dev Container Features](https://containers.dev/features), VS Code extensions, environment variables (prefer `${localEnv:VAR:fallback}` so host settings flow into the container)
+- `.devcontainer/.env` — the Compose project name (must match your project folder name)
 
 See the [official features list](https://github.com/devcontainers/features) for available options.
 
@@ -92,7 +100,7 @@ You can use this repository **directly as your dev environment**. This is useful
 
 ### Requirements
 
-- A container runtime (e.g. [Podman Desktop](https://podman-desktop.io) or Docker)
+- [Docker](https://www.docker.com/) (the setup targets Docker; [Podman](https://podman-desktop.io) works with a manually built image — see `.devcontainer/docker-compose.yml`)
 - [Visual Studio Code](https://code.visualstudio.com/) (or any devcontainer‑compatible editor)
 
 ### Getting Started
@@ -117,20 +125,21 @@ You can use this repository **directly as your dev environment**. This is useful
 
 ### Customizing the Setup
 
-The environment uses [Dev Container Features](https://containers.dev/features) for setup. To customize:
+The environment is defined by three small files (plus `.env`):
 
-1. Edit `.devcontainer/devcontainer.json` and modify the `features` section
-2. Add or remove features as needed (official features at [ghcr.io/devcontainers/features](https://github.com/devcontainers/features))
-3. Rebuild the container for changes to take effect
+1. `.devcontainer/Dockerfile` — add system packages or change the base image, then rebuild
+2. `.devcontainer/docker-compose.yml` — mounts, auxiliary services, runtime options
+3. `.devcontainer/devcontainer.json` — [Dev Container Features](https://containers.dev/features), VS Code extensions and environment variables (use `${localEnv:VAR:fallback}` to forward host values)
+
+Rebuild the container for changes to take effect.
 
 The devcontainer includes:
 
-- Node.js with pnpm and yarn
-- Git with Git LFS and GitHub CLI
-- Docker-in-Docker
-- Zsh with Oh My Zsh
-- AI CLI tools (aider, GitHub Copilot CLI, Gemini CLI, Claude CLI)
-- VS Code extensions for AI development (Cline, Continue.dev)
+- Node.js 24 with TypeScript
+- Git, GitHub CLI and Zsh with Oh My Zsh
+- tmux, Neovim, ripgrep and fd
+- Timezone/locale forwarded from your host via `${localEnv:*}`
+- VS Code extensions for AI-assisted development (Claude Code, GitHub Copilot)
 
 ### Temporary Workspace Workflow
 
@@ -152,7 +161,7 @@ between machines or use on a fresh OS in minutes.
 
 This environment is designed to be modular. The main dev container starts by default, and you can bring up additional services on demand.
 
-See `docker-compose.yml` for the full list of available services and their configuration. Below are some examples of how to use them.
+See `.devcontainer/docker-compose.yml` for the full list of available services and their configuration. Below are some examples of how to use them.
 
 This process starts **after** you have already opened your project in the dev container.
 
@@ -162,16 +171,16 @@ Open a new terminal inside VS Code (`Terminal > New Terminal`). You will be runn
 
 ### Step 2: Start an Auxiliary Service
 
-Your `docker-compose.yml` file is in your workspace, and because you have Docker installed in your container, you can use the `docker compose` command.
+The compose file lives at `.devcontainer/docker-compose.yml` in your workspace. To use `docker compose` from _inside_ the dev container, enable the `docker-in-docker` feature in `devcontainer.json` first (it ships commented out); alternatively, run these commands from your host at the project root.
 
-Services are organized by profiles. Check `docker-compose.yml` to see available profiles. Examples:
+Services are organized by profiles. Check `.devcontainer/docker-compose.yml` to see available profiles. Examples:
 
 ```bash
 # Start AI services (e.g., Ollama)
-docker compose --profile ai up -d
+docker compose -f .devcontainer/docker-compose.yml --profile ai up -d
 
 # Start database services (e.g., PostgreSQL)
-docker compose --profile postgres up -d
+docker compose -f .devcontainer/docker-compose.yml --profile postgres up -d
 ```
 
 - `--profile <name>`: This flag tells Compose to only start services marked with that profile name.
@@ -191,7 +200,7 @@ You will see your main devcontainer and the new service container(s). They are o
 
 From inside your main dev container, you can access services using their service name as the hostname.
 
-For connection details (hostnames, ports, credentials), refer to the service definitions in `docker-compose.yml`.
+For connection details (hostnames, ports, credentials), refer to the service definitions in `.devcontainer/docker-compose.yml`.
 
 Examples:
 
@@ -205,11 +214,11 @@ When you are finished, you can stop service(s) without affecting your main dev c
 
 ```bash
 # Stop services by profile
-docker compose --profile <profile-name> down
+docker compose -f .devcontainer/docker-compose.yml --profile <profile-name> down
 
 # Examples:
-docker compose --profile ai down
-docker compose --profile postgres down
+docker compose -f .devcontainer/docker-compose.yml --profile ai down
+docker compose -f .devcontainer/docker-compose.yml --profile postgres down
 ```
 
 ## 🛠️ Contribute to DevMagic <a id="maintainer"></a>
@@ -236,31 +245,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## 🔧 Personal Configuration with Dotfiles <a id="dotfiles"></a>
 
-DevMagic automatically clones and installs your personal dotfiles repository during container creation, keeping container infrastructure separate from personal preferences.
+DevMagic mounts your personal dotfiles from the host into the container, keeping container infrastructure separate from personal preferences.
 
 **How it works:**
 
-1. When the container is created, DevMagic checks for a dotfiles repository at `~/prj/dotfiles`
-2. If not found, it clones your dotfiles repository automatically
-3. It then runs `~/prj/dotfiles/shell/install.sh` to set up your personal environment
+1. `docker-compose.yml` bind-mounts `~/.config/dotfiles` (host) to `/home/node/.config/dotfiles` (container)
+2. Changes flow both ways instantly — no cloning, no syncing, and the same dotfiles work on your host and in every container
+3. Optionally, enable the commented `postCreateCommand` in `devcontainer.json` (`curl -fsSL https://devmagic.run/setup | bash`) to install extras (oh-my-zsh, fzf) and link `shell/init.sh` from your dotfiles into the container's `.bashrc`/`.zshrc`
 
-**Configuration:**
+**Don't keep dotfiles at `~/.config/dotfiles`?** Adjust (or remove) the mount in `.devcontainer/docker-compose.yml`. If the folder doesn't exist on the host, Docker just creates it empty — harmless.
 
-DevMagic reads dotfiles settings from your **host environment variables** (no need to edit devcontainer.json):
-
-```bash
-# Add to your ~/.bashrc or ~/.zshrc
-export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
-export DEVMAGIC_DOTFILES_BRANCH="main"  # optional, defaults to main
-```
-
-- `DEVMAGIC_DOTFILES_REPO`: Your dotfiles repository URL (default: `https://github.com/marcelocra/dotfiles.git`)
-- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
-
-**Disable dotfiles:** Set `export DEVMAGIC_DOTFILES_REPO=""` to skip dotfiles installation entirely.
-
-> **How it works:** Host environment variables are passed to the container via `${localEnv:VAR}` syntax. Default values are handled in the setup script (not in devcontainer.json) due to a [spec limitation with colons in URLs](https://github.com/devcontainers/spec/issues/565).
-
-Your `shell/install.sh` script should handle personal tools (Homebrew, fzf, VS Code settings, etc.) and must be idempotent (safe to run multiple times).
+Your dotfiles' `shell/init.sh` (if you use the setup script) should be idempotent (safe to source multiple times).
 
 For full details, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) or [devmagic.run/docs](https://devmagic.run/docs).

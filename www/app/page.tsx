@@ -271,12 +271,12 @@ export default async function Home() {
                   <span>
                     {t("containerRuntime")}
                     <a
-                      href="https://podman-desktop.io"
+                      href="https://www.docker.com/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline"
                     >
-                      Podman Desktop
+                      Docker
                     </a>
                     {t("containerRuntimeOr")}
                   </span>

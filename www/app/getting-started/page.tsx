@@ -33,12 +33,12 @@ export default function GettingStartedPage() {
               <div>
                 <strong>{t("containerRuntime")}</strong> {t("install")}{" "}
                 <a
-                  href="https://podman-desktop.io"
+                  href="https://www.docker.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  Podman Desktop
+                  Docker
                 </a>{" "}
                 {t("orDocker")}
               </div>
@@ -130,7 +130,10 @@ export default function GettingStartedPage() {
                     code={`your-project/
 ├── .devcontainer/
 │   ├── devcontainer.json
-│   └── docker-compose.yml
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── .env            # generated with your project folder name
+│   └── .env.example
 ├── src/
 └── ...`}
                     lang="plaintext"
