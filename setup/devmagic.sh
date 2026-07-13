@@ -112,10 +112,16 @@ EOF
 echo -e "${GREEN}     ✓ .devcontainer/.env (COMPOSE_PROJECT_NAME=${PROJECT_NAME})${NC}"
 
 if [ "$PROJECT_NAME" != "$FOLDER_NAME" ]; then
+    # devcontainer.json derives workspaceFolder from the folder name, which
+    # would no longer match the Compose mount path — pin it to the sanitized
+    # name so VS Code opens the right path. (-i.bak + rm keeps this portable
+    # across GNU and BSD sed.)
+    sed -i.bak "s|/workspaces/\${localWorkspaceFolderBasename}|/workspaces/${PROJECT_NAME}|" .devcontainer/devcontainer.json
+    rm -f .devcontainer/devcontainer.json.bak
     echo
-    echo -e "${YELLOW}⚠️  Your folder name '${FOLDER_NAME}' isn't a valid Compose project name,${NC}"
-    echo -e "${YELLOW}   so '${PROJECT_NAME}' was used instead. Set \"workspaceFolder\" in${NC}"
-    echo -e "${YELLOW}   .devcontainer/devcontainer.json to \"/workspaces/${PROJECT_NAME}\" to match.${NC}"
+    echo -e "${YELLOW}ℹ️  Your folder name '${FOLDER_NAME}' isn't a valid Compose project name,${NC}"
+    echo -e "${YELLOW}   so '${PROJECT_NAME}' was used instead. \"workspaceFolder\" in${NC}"
+    echo -e "${YELLOW}   .devcontainer/devcontainer.json was set to \"/workspaces/${PROJECT_NAME}\" to match.${NC}"
 fi
 
 echo

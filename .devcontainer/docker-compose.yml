@@ -23,7 +23,11 @@ services:
       # Personal dotfiles from the host (optional). If the folder doesn't
       # exist on the host, Docker creates it empty — harmless, but remove this
       # line if you don't keep dotfiles there.
-      - ${HOME}/.config/dotfiles:/home/node/.config/dotfiles
+      #
+      # ${HOME}${USERPROFILE} is a cross-platform home path: exactly one of
+      # them is set (HOME on Linux/macOS, USERPROFILE on Windows) and the
+      # other expands to empty.
+      - ${HOME}${USERPROFILE}/.config/dotfiles:/home/node/.config/dotfiles
 
     # Mount a temporary in-memory filesystem (tmpfs) at /tmp inside the
     # container, with permissions set to allow read/write, execution, and
@@ -62,7 +66,7 @@ services:
     volumes:
       - ollama-data:/root/.ollama
       # Mount host ollama folder to persist models across containers.
-      - ${HOME}/.ollama:/root/.ollama-host:cached
+      - ${HOME}${USERPROFILE}/.ollama:/root/.ollama-host:cached
     networks:
       - dev-network
     environment:
@@ -85,7 +89,7 @@ services:
       - "11435:11434" # Different port to avoid conflict with GPU version.
     volumes:
       - ollama-data:/root/.ollama
-      - ${HOME}/.ollama:/root/.ollama-host:cached
+      - ${HOME}${USERPROFILE}/.ollama:/root/.ollama-host:cached
     networks:
       - dev-network
     profiles: [ai-cpu]
