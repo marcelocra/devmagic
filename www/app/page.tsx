@@ -58,6 +58,27 @@ export default async function Home() {
                 </Link>{" "}
                 {t("inspectScriptEnd")}
               </p>
+              <p className="text-sm text-muted-foreground mt-4">
+                <span className="font-semibold text-foreground/80">{t("quickStartLabel")}</span> {t("quickStartHint1")}
+                <a
+                  href="https://www.docker.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Docker
+                </a>
+                {t("quickStartHint2")}
+                <a
+                  href="https://code.visualstudio.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  VS Code
+                </a>
+                {t("quickStartHint3")}
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -188,141 +209,12 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-
-            <details className="group glass rounded-2xl overflow-hidden">
-              <summary className="p-6 cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between">
-                <span className="text-lg font-semibold">{t("otherWays")}</span>
-                <svg
-                  className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <div className="border-t border-border p-6 space-y-6 bg-muted/20">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-muted text-foreground rounded-xl flex items-center justify-center font-bold flex-shrink-0">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">{t("standaloneEnv")}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">{t("standaloneEnvDesc")}</p>
-                    <code className="text-xs bg-muted px-3 py-1.5 rounded-lg font-mono">{t("standaloneEnvCode")}</code>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-muted text-foreground rounded-xl flex items-center justify-center font-bold flex-shrink-0">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">{t("contributeToDevMagic")}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">{t("contributeToDevMagicDesc")}</p>
-                    <code className="text-xs bg-muted px-3 py-1.5 rounded-lg font-mono">
-                      {t("contributeToDevMagicCode")}
-                    </code>
-                  </div>
-                </div>
-              </div>
-            </details>
           </div>
 
           <div className="text-center mt-10">
             <Button href="/getting-started" variant="primary" size="lg">
               {t("getStarted")}
             </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Start */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
-
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("quickStart")}</h2>
-              <p className="text-muted-foreground text-lg">{t("quickStartSubtitle")}</p>
-            </div>
-
-            <div className="glass rounded-2xl p-8 md:p-10">
-              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {t("prerequisites")}
-              </h3>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                  </div>
-                  <span>
-                    {t("containerRuntime")}
-                    <a
-                      href="https://www.docker.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      Docker
-                    </a>
-                    {t("containerRuntimeOr")}
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                  </div>
-                  <span>
-                    <a
-                      href="https://code.visualstudio.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      Visual Studio Code
-                    </a>
-                    {t("editorReq")}
-                  </span>
-                </li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                  />
-                </svg>
-                {t("installation")}
-              </h3>
-              <CodeBlock
-                code="curl -fsSL https://devmagic.run/install | bash"
-                className="mb-6"
-                alternatives={[
-                  { label: t("curlLabel"), code: "curl -fsSL https://devmagic.run/install | bash" },
-                  { label: t("wgetLabel"), code: "wget -qO- https://devmagic.run/install | bash" },
-                ]}
-              />
-
-              <p className="text-muted-foreground text-center">{t("installationSuccess")}</p>
-            </div>
           </div>
         </div>
       </section>

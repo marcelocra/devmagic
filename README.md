@@ -53,10 +53,10 @@ curl -fsSL https://devmagic.run/install | bash
 This will download **all files** into a `.devcontainer/` folder in the current directory:
 
 1. `devcontainer.json` — the Dev Container definition (Docker Compose based)
-2. `docker-compose.yml` — the `dev` service plus optional auxiliary services (PostgreSQL, Redis, MongoDB, MinIO, Ollama) behind [Compose profiles](https://docs.docker.com/compose/how-tos/profiles/)
+2. `docker-compose.yml` — the `dev` service, plus a commented example showing how to add auxiliary services (databases, AI tools, ...) behind [Compose profiles](https://docs.docker.com/compose/how-tos/profiles/)
 3. `Dockerfile` — the dev image (Node.js/TypeScript base with tmux, Neovim, ripgrep, fd)
-4. `.env.example` — documented template for the Compose settings
-5. `.env` — **generated** with `COMPOSE_PROJECT_NAME` set to your project folder name
+4. `.env.example` — the reference for every value shared between the devcontainer files
+5. `.env` — **generated** with `COMPOSE_PROJECT_NAME` set to your project folder name (not meant to be committed by DevMagic itself; commit yours if your team should share it)
 
 After running the installer:
 
@@ -159,67 +159,21 @@ between machines or use on a fresh OS in minutes.
 
 ## Using Auxiliary Services <a id="aux"></a>
 
-This environment is designed to be modular. The main dev container starts by default, and you can bring up additional services on demand.
+The dev container is the only service that starts by default. `.devcontainer/docker-compose.yml` ships with a commented PostgreSQL example showing the pattern for adding more services: define the service, attach it to `dev-network`, and put it behind a [Compose profile](https://docs.docker.com/compose/how-tos/profiles/) so it only runs when you ask for it.
 
-See `.devcontainer/docker-compose.yml` for the full list of available services and their configuration. Below are some examples of how to use them.
+To use one:
 
-This process starts **after** you have already opened your project in the dev container.
+1. Uncomment (or add) the service in `.devcontainer/docker-compose.yml`.
+2. Start and stop it on demand:
 
-### Step 1: Open a Terminal in VS Code
+    ```bash
+    docker compose -f .devcontainer/docker-compose.yml --profile postgres up -d
+    docker compose -f .devcontainer/docker-compose.yml --profile postgres down
+    ```
 
-Open a new terminal inside VS Code (`Terminal > New Terminal`). You will be running commands from within your main dev container.
+    Run this from the host at the project root, or from a terminal inside the dev container if you enable the `docker-in-docker` feature in `devcontainer.json` (it ships commented out).
 
-### Step 2: Start an Auxiliary Service
-
-The compose file lives at `.devcontainer/docker-compose.yml` in your workspace. To use `docker compose` from _inside_ the dev container, enable the `docker-in-docker` feature in `devcontainer.json` first (it ships commented out); alternatively, run these commands from your host at the project root.
-
-Services are organized by profiles. Check `.devcontainer/docker-compose.yml` to see available profiles. Examples:
-
-```bash
-# Start AI services (e.g., Ollama)
-docker compose -f .devcontainer/docker-compose.yml --profile ai up -d
-
-# Start database services (e.g., PostgreSQL)
-docker compose -f .devcontainer/docker-compose.yml --profile postgres up -d
-```
-
-- `--profile <name>`: This flag tells Compose to only start services marked with that profile name.
-- `up -d`: Creates and starts the container(s) in the background.
-
-### Step 3: Verify the Service is Running
-
-You now have multiple containers running side-by-side. You can verify this by running:
-
-```bash
-docker ps
-```
-
-You will see your main devcontainer and the new service container(s). They are on the same Docker network and can communicate with each other using their service names (e.g., `ollama`, `postgres`).
-
-### Step 4: Connect to the Service
-
-From inside your main dev container, you can access services using their service name as the hostname.
-
-For connection details (hostnames, ports, credentials), refer to the service definitions in `.devcontainer/docker-compose.yml`.
-
-Examples:
-
-- Services typically use their service name as hostname (e.g., `http://ollama:11434`, `postgres:5432`)
-- Default credentials and database names are defined in the compose file
-- Port mappings allow access from your host machine as well
-
-### Step 5: Stopping a Service
-
-When you are finished, you can stop service(s) without affecting your main dev container.
-
-```bash
-# Stop services by profile
-docker compose -f .devcontainer/docker-compose.yml --profile <profile-name> down
-
-# Examples:
-docker compose -f .devcontainer/docker-compose.yml --profile ai down
-docker compose -f .devcontainer/docker-compose.yml --profile postgres down
-```
+3. Connect from the dev container using the service name as hostname (e.g. `postgres:5432`) — both containers share `dev-network`. `docker ps` shows everything running side by side, and stopping a service never affects your dev container.
 
 ## 🛠️ Contribute to DevMagic <a id="maintainer"></a>
 

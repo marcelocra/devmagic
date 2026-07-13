@@ -5,9 +5,9 @@
 # (e.g. `podman build -t localhost/my-dev:latest .devcontainer`) and replace
 # `build:` below with `image: localhost/my-dev:latest`.
 #
-# COMPOSE_PROJECT_NAME comes from the `.env` file next to this one and MUST
-# match your project folder name, so the workspace mount below lines up with
-# `workspaceFolder` in devcontainer.json (see `.env.example`).
+# COMPOSE_PROJECT_NAME comes from the `.env` file next to this one — see
+# `.env.example`, the reference for every value shared between this file and
+# devcontainer.json.
 name: ${COMPOSE_PROJECT_NAME:-devmagic}
 
 services:
@@ -16,6 +16,15 @@ services:
       context: .
       dockerfile: Dockerfile
     image: devmagic-dev:${COMPOSE_PROJECT_NAME:-devmagic}
+
+    # Besides being used for interpolation in this file, `.env` values are
+    # also injected into the container's runtime environment, so scripts and
+    # shells inside the container can read them. (devcontainer.json still
+    # can't read `.env` — its ${localEnv:*} reads host environment variables.)
+    env_file:
+      - path: .env
+        required: false
+
     volumes:
       # Your project, mounted where devcontainer.json expects it.
       - ..:/workspaces/${COMPOSE_PROJECT_NAME:-devmagic}
@@ -44,125 +53,42 @@ services:
       - dev-network
 
   # ---------------------------------------------------------------------------
-  # Optional auxiliary services.
+  # Auxiliary services (optional).
   #
-  # Nothing below starts by default: each service sits behind a Compose
-  # profile. Start/stop them on demand, from the host or from a terminal
-  # inside the dev container (the latter requires the docker-in-docker
-  # feature — see devcontainer.json):
+  # Add any service you need next to the example below. Put it behind a
+  # Compose profile so it never starts with the dev container — you bring it
+  # up on demand, from the host or from a terminal inside the dev container
+  # (the latter requires the docker-in-docker feature — see devcontainer.json):
   #
-  #   docker compose --profile postgres up -d
-  #   docker compose --profile postgres down
+  #   docker compose -f .devcontainer/docker-compose.yml --profile postgres up -d
+  #   docker compose -f .devcontainer/docker-compose.yml --profile postgres down
   #
-  # Services share the dev-network, so the dev container reaches them by
-  # service name (e.g. postgres:5432, http://ollama:11434).
+  # Services on dev-network are reachable from the dev container by service
+  # name (e.g. postgres:5432).
   # ---------------------------------------------------------------------------
 
-  # Ollama for local AI/LLM development (GPU).
-  ollama:
-    image: docker.io/ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama-data:/root/.ollama
-      # Mount host ollama folder to persist models across containers.
-      - ${HOME}${USERPROFILE}/.ollama:/root/.ollama-host:cached
-    networks:
-      - dev-network
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    # GPU support - requires the NVIDIA container runtime on the host.
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    profiles: [ai]
-
-  # Ollama CPU-only version (alternative to the GPU version above).
-  # Choose either 'ai' profile (GPU) OR 'ai-cpu' profile (CPU-only), not both.
-  ollama-cpu:
-    image: docker.io/ollama/ollama:latest
-    ports:
-      - "11435:11434" # Different port to avoid conflict with GPU version.
-    volumes:
-      - ollama-data:/root/.ollama
-      - ${HOME}${USERPROFILE}/.ollama:/root/.ollama-host:cached
-    networks:
-      - dev-network
-    profiles: [ai-cpu]
-
-  # PostgreSQL for database experiments.
-  postgres:
-    image: docker.io/library/postgres:16-alpine
-    environment:
-      - POSTGRES_DB=devdb
-      - POSTGRES_USER=devmagic
-      - POSTGRES_PASSWORD=${DEVMAGIC_DB_PASSWORD:-DevTime2024!coding}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      # Optional: initialize database with custom script.
-      # - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - dev-network
-    profiles: [postgres]
-
-  # Redis for caching experiments.
-  redis:
-    image: docker.io/library/redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - dev-network
-    profiles: [redis]
-
-  # MongoDB for document database experiments.
-  mongodb:
-    image: docker.io/library/mongo:7
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=devmagic
-      - MONGO_INITDB_ROOT_PASSWORD=${DEVMAGIC_DB_PASSWORD:-DevTime2024!coding}
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-    networks:
-      - dev-network
-    profiles: [mongodb]
-
-  # MinIO for S3-compatible object storage experiments.
-  minio:
-    image: docker.io/minio/minio:latest
-    command: server /data --console-address ":9001"
-    environment:
-      - MINIO_ROOT_USER=devmagic
-      - MINIO_ROOT_PASSWORD=${DEVMAGIC_DB_PASSWORD:-DevTime2024!coding}
-    ports:
-      - "9000:9000" # API.
-      - "9001:9001" # Console.
-    volumes:
-      - minio-data:/data
-    networks:
-      - dev-network
-    profiles: [minio]
+  # Example: PostgreSQL. Uncomment (and the volume below) to use.
+  # postgres:
+  #   image: docker.io/library/postgres:16-alpine
+  #   environment:
+  #     - POSTGRES_DB=devdb
+  #     - POSTGRES_USER=devmagic
+  #     - POSTGRES_PASSWORD=${DEVMAGIC_DB_PASSWORD:-DevTime2024!coding}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   networks:
+  #     - dev-network
+  #   profiles: [postgres]
 
 # Named volumes persist data across container rebuilds and restarts. Only
-# removed when running `docker compose down -v`. This section defines WHAT
-# volumes exist; the services above define WHERE they're mounted.
-volumes:
-  ollama-data:
-  postgres-data:
-  redis-data:
-  mongodb-data:
-  minio-data:
+# removed when running `docker compose down -v`.
+# volumes:
+#   postgres-data:
 
 networks:
   dev-network:
-    # Bridge network: isolated network for container communication.
+    # Bridge network: isolated network for container communication. Needed as
+    # soon as you run more than one service (dev + a database, for example).
     driver: bridge
