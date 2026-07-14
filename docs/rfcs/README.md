@@ -33,3 +33,13 @@ Write one when:
 ## Index
 
 - [0001 - Unify Installer Implementation (Scripts vs. Generated Templates)](0001-unify-installer-implementation.md) — **Exploring**
+
+## Further Reading
+
+The RFC vs. ADR distinction above (and this whole convention) is drawn from these:
+
+- [Engineering Planning with RFCs, Design Documents and ADRs](https://newsletter.pragmaticengineer.com/p/rfcs-and-design-docs) — the RFC/ADR workflow this directory follows: write the RFC, review async, decide, write a short ADR the same day.
+- [Companies Using RFCs or Design Docs and Examples of These](https://blog.pragmaticengineer.com/rfcs-and-design-docs/) — real templates and examples from Airbnb, Amazon, and others, including Stedi's lightweight "Decision Records" format.
+- [Notes on technical design documentation practices (RFCs, ADRs, decision logs)](https://gist.github.com/0xdevalias/7fbbed02d61190c617393e2e51372a11) — a broad, continuously-updated survey of the space.
+- [Document your technical decisions using RFC and ADR](https://emanuelcasco.vercel.app/blog/document-with-rfc-and-adr) — a concise walkthrough of using both together.
+- [OpenBMC design doc guidelines](https://github.com/openbmc/docs/blob/master/designs/design-template.md) — source of the "not everything needs one" guidance above, plus a full design doc template from an active open-source project.
