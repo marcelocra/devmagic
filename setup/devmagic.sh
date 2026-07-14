@@ -1,4 +1,8 @@
 #!/bin/bash
+# TODO(agent): rename this file to devcontainer.bash and use bashisms
+# throughout. Not done yet to avoid mixing a file rename with content changes
+# in the same PR, which would make history harder to track.
+#
 # DevMagic - Development environment setup
 # Usage:
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
@@ -77,7 +81,7 @@ fi
 
 # Container username, filled into every generated file for consistency. Must
 # exist in the base image used by the Dockerfile (typescript-node ships `node`).
-REMOTE_USER="node"
+CONTAINER_USER="node"
 
 # --- Download Templates and Generate Files ---
 echo -e "${BLUE}⚙️ Generating DevMagic environment for '${PROJECT_NAME}'...${NC}"
@@ -99,7 +103,7 @@ for FILE in "${FILES[@]}"; do
     if TEMPLATE=$(curl -fsSL "$URL"); then
         # Fill the placeholders and write the ready-to-use file.
         printf '%s\n' "$TEMPLATE" \
-            | sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" -e "s/{{REMOTE_USER}}/${REMOTE_USER}/g" \
+            | sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" -e "s/{{USER}}/${CONTAINER_USER}/g" \
             > ".devcontainer/${FILE}"
         echo -e "${GREEN}     ✓ .devcontainer/${FILE}${NC}"
     else

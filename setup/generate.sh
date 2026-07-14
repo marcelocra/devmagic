@@ -18,7 +18,7 @@ DEST="${2:-${REPO_ROOT}/.devcontainer}"
 
 # Container username. Must exist in the base image used by the Dockerfile
 # (typescript-node ships `node`). Filled everywhere for consistency.
-REMOTE_USER="${DEVMAGIC_REMOTE_USER:-node}"
+CONTAINER_USER="${DEVMAGIC_USER:-node}"
 
 # Compose project names only allow lowercase letters, digits, dashes and
 # underscores.
@@ -33,7 +33,7 @@ fi
 
 mkdir -p "$DEST"
 for FILE in devcontainer.json docker-compose.yml Dockerfile; do
-    sed -e "s/{{PROJECT_NAME}}/${SANITIZED}/g" -e "s/{{REMOTE_USER}}/${REMOTE_USER}/g" \
+    sed -e "s/{{PROJECT_NAME}}/${SANITIZED}/g" -e "s/{{USER}}/${CONTAINER_USER}/g" \
         "${TEMPLATES_DIR}/${FILE}" > "${DEST}/${FILE}"
     echo "  ✓ ${DEST}/${FILE}"
 done

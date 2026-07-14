@@ -25,7 +25,7 @@ The first iteration synced them at runtime: a `.env` file next to the compose fi
 
 Generate the devcontainer files from templates at install time, baking every shared value in:
 
-1. Templates live in `templates/devcontainer/` (`devcontainer.json`, `docker-compose.yml`, `Dockerfile`) with two placeholders: `{{PROJECT_NAME}}` (project folder name) and `{{REMOTE_USER}}` (container username, `node` for the current base image — filled everywhere so paths, `remoteUser`, `user:` and the Dockerfile stay consistent).
+1. Templates live in `templates/devcontainer/` (`devcontainer.json`, `docker-compose.yml`, `Dockerfile`) with two placeholders: `{{PROJECT_NAME}}` (project folder name) and `{{USER}}` (container username, `node` for the current base image — filled everywhere so paths, `remoteUser`, `user:` and the Dockerfile stay consistent).
 2. The installer (`setup/devmagic.sh`, served at `devmagic.run/install`) downloads the templates, replaces the placeholders (project name sanitized to Compose naming rules), and writes ready-to-use files into `.devcontainer/`. No placeholders or env files are left behind.
 3. This repository commits a **filled copy** in `.devcontainer/` (generated for the name `devmagic`), so the standalone and contribute-to-DevMagic workflows keep working with a plain clone + "Reopen in Container".
 4. `setup/generate.sh` fills the templates locally — used to regenerate this repo's `.devcontainer/` after editing the templates, or by anyone working from a checkout.

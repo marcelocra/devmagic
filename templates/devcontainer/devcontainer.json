@@ -16,7 +16,7 @@
 
   // Must exist in the image built from the Dockerfile (the typescript-node
   // base image ships the `node` user).
-  "remoteUser": "{{REMOTE_USER}}",
+  "remoteUser": "{{USER}}",
 
   // Must match the workspace mount in docker-compose.yml (generated together).
   "workspaceFolder": "/workspaces/{{PROJECT_NAME}}",
@@ -34,7 +34,7 @@
     // Shell history directory. Pair it with the ~/.shell_histories mount in
     // docker-compose.yml so history persists across containers and WSL
     // sessions; otherwise history is lost when the container is removed.
-    "MCRA_HISTORY_DIR": "/home/{{REMOTE_USER}}/.shell_histories",
+    "MCRA_HISTORY_DIR": "/home/{{USER}}/.shell_histories",
 
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}"

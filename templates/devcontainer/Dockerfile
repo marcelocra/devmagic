@@ -24,5 +24,5 @@ RUN apt-get update \
 # The username comes from the base image (typescript-node ships `node`) and is
 # kept consistent with devcontainer.json and docker-compose.yml by the
 # generator. If you change the base image, make sure this user exists in it.
-RUN chsh -s /usr/bin/zsh {{REMOTE_USER}}
-USER {{REMOTE_USER}}
+RUN chsh -s /usr/bin/zsh {{USER}}
+USER {{USER}}
