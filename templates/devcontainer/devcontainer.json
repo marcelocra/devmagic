@@ -9,7 +9,7 @@
   // ---------------------------------------------------------------------------
 
   // Name shown in the VS Code title bar.
-  "name": "devmagic",
+  "name": "{{PROJECT_NAME}}",
 
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
@@ -17,7 +17,7 @@
   "remoteUser": "node",
 
   // Must match the workspace mount in docker-compose.yml (generated together).
-  "workspaceFolder": "/workspaces/devmagic",
+  "workspaceFolder": "/workspaces/{{PROJECT_NAME}}",
 
   "containerEnv": {
     // Essential locale and timezone settings. Change but DO NOT REMOVE.

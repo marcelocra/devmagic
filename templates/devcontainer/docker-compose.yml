@@ -11,17 +11,17 @@
 # the `build:` block can be unreliable; in that case build the image manually
 # (e.g. `podman build -t localhost/my-dev:latest .devcontainer`) and replace
 # `build:` below with `image: localhost/my-dev:latest`.
-name: "devmagic"
+name: "{{PROJECT_NAME}}"
 
 services:
   dev:
     build:
       context: .
       dockerfile: Dockerfile
-    image: devmagic-dev:devmagic
+    image: devmagic-dev:{{PROJECT_NAME}}
     volumes:
       # Your project, mounted where devcontainer.json expects it.
-      - ..:/workspaces/devmagic
+      - ..:/workspaces/{{PROJECT_NAME}}
 
       # Personal dotfiles from the host (optional). If the folder doesn't
       # exist on the host, Docker creates it empty — harmless, but remove this
@@ -39,8 +39,8 @@ services:
     # container restart.
     tmpfs:
       - /tmp:rw,exec,nosuid,nodev,mode=1777
-    working_dir: /workspaces/devmagic
-    hostname: "devmagic"
+    working_dir: /workspaces/{{PROJECT_NAME}}
+    hostname: "{{PROJECT_NAME}}"
     user: node # Default user of the image built from the Dockerfile.
     command: sleep infinity
     networks:

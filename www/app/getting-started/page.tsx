@@ -128,12 +128,10 @@ export default function GettingStartedPage() {
                   </p>
                   <CodeBlock
                     code={`your-project/
-├── .devcontainer/
-│   ├── devcontainer.json
-│   ├── docker-compose.yml
-│   ├── Dockerfile
-│   ├── .env            # generated with your project folder name
-│   └── .env.example
+├── .devcontainer/          # generated from templates, ready to use
+│   ├── devcontainer.json   # your project name baked in
+│   ├── docker-compose.yml  # same values, always in sync
+│   └── Dockerfile
 ├── src/
 └── ...`}
                     lang="plaintext"

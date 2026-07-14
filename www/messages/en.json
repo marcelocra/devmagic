@@ -218,7 +218,7 @@
     "separationPortable": "<strong>Portable</strong>: Dotfiles work anywhere, not just containers",
     "separationNoLockIn": "<strong>No lock-in</strong>: Works with VS Code, Neovim, Cursor, etc.",
     "installationFlow": "Installation Flow",
-    "installationFlowCode": "curl -fsSL https://devmagic.run/install | bash\n  → downloads devcontainer.json, docker-compose.yml,\n    Dockerfile and .env.example into .devcontainer/\n  → generates .devcontainer/.env with your project folder name\n  → you open in VS Code and \"Reopen in Container\"\n\nContainer starts:\n  → Docker Compose builds the image from the Dockerfile\n  → devcontainer.json forwards host TZ/locale via localEnv\n  → ~/.config/dotfiles is mounted from your host (optional)\n  → optional postCreateCommand: oh-my-zsh, fzf, dotfiles shell init",
+    "installationFlowCode": "curl -fsSL https://devmagic.run/install | bash\n  → downloads the templates (templates/devcontainer/)\n  → fills in your project folder name and writes\n    devcontainer.json, docker-compose.yml and Dockerfile\n    into .devcontainer/ — all shared values baked in, in sync\n  → you open in VS Code and \"Reopen in Container\"\n\nContainer starts:\n  → Docker Compose builds the image from the Dockerfile\n  → devcontainer.json forwards host TZ/locale via localEnv\n  → ~/.config/dotfiles is mounted from your host (optional)\n  → optional postCreateCommand: oh-my-zsh, fzf, dotfiles shell init",
     "dotfilesIntegration": "Dotfiles Integration",
     "dotfilesIntro": "DevMagic bind-mounts your dotfiles folder from the host into the container — no cloning, no syncing, always up to date.",
     "dotfilesConfiguration": "Configuration",

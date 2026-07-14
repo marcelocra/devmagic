@@ -4,9 +4,11 @@
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
 #   Specific version: curl -fsSL https://devmagic.run/install@v0.2.1 | bash
 #
-# Downloads the full DevMagic dev container setup (devcontainer.json,
-# docker-compose.yml, Dockerfile, .env) into a `.devcontainer/` folder in the
-# current directory.
+# Downloads the DevMagic dev container templates (devcontainer.json,
+# docker-compose.yml, Dockerfile), fills in your project name, and writes the
+# result into a `.devcontainer/` folder in the current directory. No
+# placeholders or env files are left behind — the generated files are ready
+# to use and every value that must match across them is baked in consistently.
 
 set -e
 
@@ -58,31 +60,44 @@ if [ -d ".devcontainer" ]; then
     rm -rf .devcontainer
 fi
 
-# --- Download Files ---
-echo -e "${BLUE}⚙️ Downloading DevMagic environment files...${NC}"
+# --- Project Name ---
+# The folder name is baked into the generated files (workspace mount path,
+# Compose project name, hostname, image tag). Compose project names only
+# allow lowercase letters, digits, dashes and underscores.
+FOLDER_NAME=$(basename "$PWD")
+PROJECT_NAME=$(echo "$FOLDER_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g; s/^[-_]+//')
+if [ -z "$PROJECT_NAME" ]; then
+    PROJECT_NAME="devmagic"
+fi
+if [ "$PROJECT_NAME" != "$FOLDER_NAME" ]; then
+    echo -e "${YELLOW}ℹ️  Folder name '${FOLDER_NAME}' isn't a valid Compose project name;${NC}"
+    echo -e "${YELLOW}   using '${PROJECT_NAME}' instead (both files stay consistent).${NC}"
+    echo
+fi
 
-# Create directory structure
+# --- Download Templates and Generate Files ---
+echo -e "${BLUE}⚙️ Generating DevMagic environment for '${PROJECT_NAME}'...${NC}"
+
 mkdir -p .devcontainer
 
-# Files to download into .devcontainer/ (paths are the same in the repo).
 FILES=(
-    ".devcontainer/devcontainer.json"
-    ".devcontainer/docker-compose.yml"
-    ".devcontainer/Dockerfile"
-    ".devcontainer/.env.example"
+    "devcontainer.json"
+    "docker-compose.yml"
+    "Dockerfile"
 )
 
-# Download each file
 FAILED=0
-for FILE_PATH in "${FILES[@]}"; do
-    URL="${BASE_URL}/${FILE_PATH}"
+for FILE in "${FILES[@]}"; do
+    URL="${BASE_URL}/templates/devcontainer/${FILE}"
 
-    echo -e "${BLUE}  📥 Downloading ${FILE_PATH}...${NC}"
+    echo -e "${BLUE}  📥 ${FILE}...${NC}"
 
-    if curl -fsSL "$URL" -o "$FILE_PATH"; then
-        echo -e "${GREEN}     ✓ ${FILE_PATH}${NC}"
+    if TEMPLATE=$(curl -fsSL "$URL"); then
+        # Fill the placeholder and write the ready-to-use file.
+        printf '%s\n' "$TEMPLATE" | sed "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" > ".devcontainer/${FILE}"
+        echo -e "${GREEN}     ✓ .devcontainer/${FILE}${NC}"
     else
-        echo -e "${RED}     ✗ Failed to download ${FILE_PATH}${NC}"
+        echo -e "${RED}     ✗ Failed to download ${FILE}${NC}"
         FAILED=1
     fi
 done
@@ -95,37 +110,8 @@ if [ $FAILED -eq 1 ]; then
     exit 1
 fi
 
-# --- Generate .env ---
-# COMPOSE_PROJECT_NAME must match the project folder name (devcontainer.json
-# mounts the workspace at /workspaces/<folder name>). Compose project names
-# only allow lowercase letters, digits, dashes and underscores.
-FOLDER_NAME=$(basename "$PWD")
-PROJECT_NAME=$(echo "$FOLDER_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g; s/^[-_]+//')
-if [ -z "$PROJECT_NAME" ]; then
-    PROJECT_NAME="devmagic"
-fi
-
-cat > .devcontainer/.env <<EOF
-# Must match the project folder name. See .env.example for details.
-COMPOSE_PROJECT_NAME=${PROJECT_NAME}
-EOF
-echo -e "${GREEN}     ✓ .devcontainer/.env (COMPOSE_PROJECT_NAME=${PROJECT_NAME})${NC}"
-
-if [ "$PROJECT_NAME" != "$FOLDER_NAME" ]; then
-    # devcontainer.json derives workspaceFolder from the folder name, which
-    # would no longer match the Compose mount path — pin it to the sanitized
-    # name so VS Code opens the right path. (-i.bak + rm keeps this portable
-    # across GNU and BSD sed.)
-    sed -i.bak "s|/workspaces/\${localWorkspaceFolderBasename}|/workspaces/${PROJECT_NAME}|" .devcontainer/devcontainer.json
-    rm -f .devcontainer/devcontainer.json.bak
-    echo
-    echo -e "${YELLOW}ℹ️  Your folder name '${FOLDER_NAME}' isn't a valid Compose project name,${NC}"
-    echo -e "${YELLOW}   so '${PROJECT_NAME}' was used instead. \"workspaceFolder\" in${NC}"
-    echo -e "${YELLOW}   .devcontainer/devcontainer.json was set to \"/workspaces/${PROJECT_NAME}\" to match.${NC}"
-fi
-
 echo
-echo -e "${GREEN}✅ DevMagic environment files downloaded successfully!${NC}"
+echo -e "${GREEN}✅ DevMagic environment generated successfully!${NC}"
 echo
 
 # --- Next Steps ---
@@ -133,16 +119,14 @@ echo -e "${PURPLE}🚀 Your DevMagic environment is ready!${NC}"
 echo
 echo -e "${YELLOW}Next steps:${NC}"
 
-echo "• Review the downloaded files:"
+echo "• Review the generated files:"
 echo -e "  ${GREEN}ls -la .devcontainer/${NC}"
 echo
 
 if [ "$IS_GIT_REPO" = "true" ]; then
     echo "• (Optional) Commit the files to your repository:"
-    echo -e "  ${GREEN}git add -f .devcontainer${NC}"
+    echo -e "  ${GREEN}git add .devcontainer${NC}"
     echo -e "  ${GREEN}git commit -m \"feat: add DevMagic development environment\"${NC}"
-    echo "  (-f ensures .devcontainer/.env is added even if your .gitignore excludes .env files;"
-    echo "   it only contains the Compose project name, no secrets)"
     echo
 fi
 

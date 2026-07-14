@@ -50,13 +50,13 @@ The easiest way to use DevMagic is to add it to your existing project:
 curl -fsSL https://devmagic.run/install | bash
 ```
 
-This will download **all files** into a `.devcontainer/` folder in the current directory:
+This downloads the DevMagic templates (from [`templates/devcontainer/`](templates/devcontainer)), fills in your project name, and writes **ready-to-use files** into a `.devcontainer/` folder in the current directory:
 
 1. `devcontainer.json` — the Dev Container definition (Docker Compose based)
 2. `docker-compose.yml` — the `dev` service, plus a commented example showing how to add auxiliary services (databases, AI tools, ...) behind [Compose profiles](https://docs.docker.com/compose/how-tos/profiles/)
 3. `Dockerfile` — the dev image (Node.js/TypeScript base with tmux, Neovim, ripgrep, fd)
-4. `.env.example` — the reference for every value shared between the devcontainer files
-5. `.env` — **generated** with `COMPOSE_PROJECT_NAME` set to your project folder name (not meant to be committed by DevMagic itself; commit yours if your team should share it)
+
+Every value that must match across the files (workspace mount path, Compose project name, hostname, image tag) is **generated in sync** from your project folder name — no `.env` files, no placeholders, nothing to keep aligned by hand.
 
 After running the installer:
 
@@ -86,7 +86,8 @@ Each file has a clear responsibility:
 - `.devcontainer/Dockerfile` — system packages and the base image
 - `.devcontainer/docker-compose.yml` — mounts, auxiliary services, container runtime options
 - `.devcontainer/devcontainer.json` — [Dev Container Features](https://containers.dev/features), VS Code extensions, environment variables (prefer `${localEnv:VAR:fallback}` so host settings flow into the container)
-- `.devcontainer/.env` — the Compose project name (must match your project folder name)
+
+If you rename your project folder, rerun the installer (or edit the project name consistently in both `devcontainer.json` and `docker-compose.yml` — the file headers list the affected values).
 
 See the [official features list](https://github.com/devcontainers/features) for available options.
 
@@ -125,13 +126,13 @@ You can use this repository **directly as your dev environment**. This is useful
 
 ### Customizing the Setup
 
-The environment is defined by three small files (plus `.env`):
+The environment is defined by three small files:
 
 1. `.devcontainer/Dockerfile` — add system packages or change the base image, then rebuild
 2. `.devcontainer/docker-compose.yml` — mounts, auxiliary services, runtime options
 3. `.devcontainer/devcontainer.json` — [Dev Container Features](https://containers.dev/features), VS Code extensions and environment variables (use `${localEnv:VAR:fallback}` to forward host values)
 
-Rebuild the container for changes to take effect.
+These files are generated from the templates in `templates/devcontainer/` (this repo's copy is pre-filled for the name `devmagic`; regenerate it with `./setup/generate.sh` after editing the templates). Rebuild the container for changes to take effect.
 
 The devcontainer includes:
 
