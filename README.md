@@ -104,6 +104,18 @@ If you rename your project folder, rerun the installer (or edit the project name
 
 See the [official features list](https://github.com/devcontainers/features) for available options.
 
+### More Project Templates
+
+The devcontainer isn't the only thing DevMagic can set up. The same endpoint installs other new-project defaults from [`templates/`](templates) — an `.editorconfig`, a Node `.gitignore`, Prettier config, git-cliff changelog tooling, and more:
+
+```bash
+curl -fsSL https://devmagic.run/install/editorconfig | bash
+curl -fsSL https://devmagic.run/install/gitignore | bash
+curl -fsSL https://devmagic.run/install/changelog | bash
+```
+
+Existing files are never overwritten unless you add `?force=1` to the URL. Browse the full catalog at [devmagic.run/install-scripts](https://devmagic.run/install-scripts).
+
 ## 💻 Standalone Usage (Portable Dev Environment) <a id="standalone"></a>
 
 You can use this repository **directly as your dev environment**. This is useful if:

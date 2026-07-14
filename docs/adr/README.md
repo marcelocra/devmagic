@@ -45,3 +45,4 @@ ADRs are numbered sequentially and use lowercase with dashes:
 - [0003 - Adopt Architecture Decision Records](0003-adopt-architecture-decision-records.md) - **Accepted**
 - [0004 - Consolidate AI Context Files](0004-consolidate-ai-context-files.md) - **Accepted**
 - [0005 - Generate Devcontainer Files from Templates](0005-generate-devcontainer-files-from-templates.md) - **Accepted**
+- [0006 - Serve Generic Project Templates Through the Installer Registry](0006-generic-template-installer.md) - **Accepted**

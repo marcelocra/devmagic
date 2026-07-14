@@ -1,9 +1,34 @@
-# DevMagic Install Scripts
-# These scripts can be run with: curl -fsSL https://devmagic.run/install/{script} | bash
-# Query parameters:
-#   - pm: package manager (pnpm, npm, yarn, bun) - defaults to pnpm
+# DevMagic Installer Registry
+#
+# Two kinds of entries:
+#
+#   scripts:   bash installers served as-is from the repo.
+#              Run with: curl -fsSL https://devmagic.run/install/{id} | bash
+#              Query parameters:
+#                - pm: package manager (pnpm, npm, yarn, bun) - defaults to pnpm
+#
+#   templates: file groups from templates/. The endpoint generates a small
+#              installer on the fly that downloads each file to its
+#              destination in the current directory.
+#              Run with: curl -fsSL https://devmagic.run/install/{id} | bash
+#              Query parameters:
+#                - force=1: overwrite existing files (default: skip them)
+#
+# Ids must be unique across both lists.
 
 scripts:
+  - id: devcontainer
+    name: Dev Container
+    description: Alias for the main DevMagic installer — generates a complete dev container setup (devcontainer.json, docker-compose.yml, Dockerfile) from the templates, with your project name and container user baked in
+    scriptPath: setup/devmagic.sh
+    steps:
+      - Download the devcontainer templates
+      - Fill in your project folder name (sanitized) and container user
+      - Write ready-to-use files into .devcontainer/
+    requirements:
+      - curl
+      - Docker + VS Code (to actually use the generated container)
+
   - id: prettier
     name: Prettier
     description: Install and configure Prettier with Husky and lint-staged for automatic code formatting
@@ -20,3 +45,39 @@ scripts:
     requirements:
       - Node.js project with package.json
       - Git repository (for Husky)
+
+templates:
+  - id: editorconfig
+    name: EditorConfig
+    description: Sensible .editorconfig defaults (2-space indent, LF, UTF-8, per-language tweaks for Python, shell, F#, Markdown and more)
+    files:
+      - src: templates/editorconfig/editorconfig
+        dest: .editorconfig
+
+  - id: prettier-config
+    name: Prettier config
+    description: Just the Prettier configuration files (defaults-first .prettierrc plus a .prettierignore for common artifacts) — use the `prettier` script instead for the full setup with Husky and lint-staged
+    files:
+      - src: templates/prettier/prettierrc
+        dest: .prettierrc
+      - src: templates/prettier/prettierignore
+        dest: .prettierignore
+
+  - id: gitignore
+    name: Gitignore (Node)
+    description: A .gitignore for Node/TypeScript projects (dependencies, builds, coverage, env files, pnpm store, editor leftovers)
+    files:
+      - src: templates/gitignore/gitignore
+        dest: .gitignore
+
+  - id: changelog
+    name: Changelog (git-cliff)
+    description: Conventional-commits changelog generation with git-cliff — the cliff.toml config plus a GitHub Actions workflow that keeps CHANGELOG.md updated on every push to main
+    files:
+      - src: templates/changelog/cliff.toml
+        dest: cliff.toml
+      - src: templates/changelog/changelog-workflow.yml
+        dest: .github/workflows/changelog.yml
+    notes:
+      - 'Optional: add package.json scripts: "changelog": "git-cliff -o CHANGELOG.md" and "changelog:unreleased": "git-cliff --unreleased"'
+      - "Local generation needs git-cliff (e.g. pnpm add -D git-cliff); the GitHub workflow needs nothing extra"
