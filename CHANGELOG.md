@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add a generic project-template installer (#83)
 - Add `/install/prettier` endpoint to quickly install prettier+husky+lintstaged (#61)
 - Add aliases to simplify getting a file
 - Create route.ts for a new tool endpoint
