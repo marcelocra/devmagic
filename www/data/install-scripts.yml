@@ -1,15 +1,21 @@
 # DevMagic Installer Registry
 #
-# Two kinds of entries:
+# Two kinds of entries, distinguished by what they install and how much logic
+# that requires (see docs/rfcs/0001-unify-installer-implementation.md for the
+# open question of whether/how to unify these):
 #
-#   scripts:   bash installers served as-is from the repo.
+#   scripts:   a real bash script, already in this repo (setup/*.sh), served
+#              as-is. Use this when installing needs actual logic beyond
+#              copying files verbatim — e.g. install-prettier.sh edits
+#              package.json, installs Husky, and configures lint-staged.
 #              Run with: curl -fsSL https://devmagic.run/install/{id} | bash
 #              Query parameters:
 #                - pm: package manager (pnpm, npm, yarn, bun) - defaults to pnpm
 #
-#   templates: file groups from templates/. The endpoint generates a small
-#              installer on the fly that downloads each file to its
-#              destination in the current directory.
+#   templates: one or more plain files from templates/, with no custom logic.
+#              The endpoint generates a small installer on the fly that
+#              downloads each file (byte for byte, aside from the {{REPO_URL}}
+#              placeholder) to its destination in the current directory.
 #              Run with: curl -fsSL https://devmagic.run/install/{id} | bash
 #              Query parameters:
 #                - force=1: overwrite existing files (default: skip them)
@@ -49,7 +55,7 @@ scripts:
 templates:
   - id: editorconfig
     name: EditorConfig
-    description: Sensible .editorconfig defaults (2-space indent, LF, UTF-8, per-language tweaks for Python, shell, F#, Markdown and more)
+    description: Sensible .editorconfig defaults (2-space indent, LF, UTF-8) with per-language tweaks for Python/shell/nu, Markdown, F#, PHP/Laravel, Rust, Dockerfiles and more
     files:
       - src: templates/editorconfig/editorconfig
         dest: .editorconfig

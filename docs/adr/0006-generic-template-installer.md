@@ -54,4 +54,4 @@ A single generic script that downloads and parses a manifest per group. Rejected
 ## Notes
 
 - Related: [ADR 0005](0005-generate-devcontainer-files-from-templates.md) (template folder and devcontainer generation).
-- Future: refactor `setup/install-prettier.sh` to source its config files from `templates/prettier/` instead of heredocs; add more groups (VS Code settings, license, CI workflows) as needed.
+- Future: refactor `setup/install-prettier.sh` to source its config files from `templates/prettier/` instead of heredocs; add more groups (VS Code settings, license, CI workflows) as needed. Tracked in [RFC 0001 - Unify Installer Implementation](../rfcs/0001-unify-installer-implementation.md).

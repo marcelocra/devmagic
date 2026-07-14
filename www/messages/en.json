@@ -44,7 +44,10 @@
     "quickStartLabel": "Quick start:",
     "quickStartHint1": "install ",
     "quickStartHint2": " and ",
-    "quickStartHint3": ", run the command in your project folder, then choose “Reopen in Container”."
+    "quickStartHint3": ", run the command in your project folder, then choose “Reopen in Container”.",
+    "moreTemplates": "More Templates & Scripts",
+    "moreTemplatesSubtitle": "Beyond the dev container: drop in an .editorconfig, Prettier setup, .gitignore, changelog tooling, and more.",
+    "viewAllTemplates": "Browse the full catalog"
   },
   "features": {
     "title": "Features",
@@ -333,7 +336,8 @@
     "about": "About",
     "legal": "Legal",
     "license": "Apache 2.0 License",
-    "copyright": "© {year} DevMagic. Made with ✨ for developers."
+    "copyright": "© {year} DevMagic. Made with ✨ for developers.",
+    "templatesAndScripts": "Templates & Scripts"
   },
   "languageSwitcher": {
     "label": "Language",

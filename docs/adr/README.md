@@ -10,6 +10,8 @@ An Architecture Decision Record (ADR) captures an important architectural decisi
 - What alternatives were considered
 - What the trade-offs and consequences are
 
+ADRs are short and final — they record the _result_ of a decision, not the discussion that led to it. For the full discussion (options being weighed, open questions, an in-progress design that hasn't been decided yet), see [`../rfcs/`](../rfcs/README.md).
+
 ## Format
 
 We use a simplified version of [Michael Nygard's ADR template](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions), which is the most popular format in open-source projects.

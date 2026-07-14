@@ -7,7 +7,13 @@
 > curl -fsSL https://devmagic.run/install | bash
 > ```
 >
-> _(P.S.: It is always recommended to [see what you are running](https://devmagic.run/install) before doing so.)_
+> _(P.S.: It is always recommended to [see what you are running](https://devmagic.run/install) before doing so. For a hardened `curl` invocation — one that refuses to silently downgrade to plain HTTP or an old TLS version — add `--proto '=https' --tlsv1.2`, the same flags [rustup](https://rustup.rs) and other installers use:_
+>
+> ```sh
+> curl --proto '=https' --tlsv1.2 -fsSL https://devmagic.run/install | bash
+> ```
+>
+> _)_
 
 ## TL;DR
 

@@ -2,9 +2,11 @@ import { Button } from "@/components/button";
 import { CodeBlock } from "@/components/code-block";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { loadInstallScripts, loadInstallTemplates } from "@/lib/install-scripts";
 
 export default async function Home() {
   const t = await getTranslations("home");
+  const catalog = [...loadInstallScripts(), ...loadInstallTemplates()];
 
   return (
     <>
@@ -216,6 +218,30 @@ export default async function Home() {
               {t("getStarted")}
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* More Templates & Scripts */}
+      <section className="container mx-auto px-4 py-16 border-t border-border/50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">{t("moreTemplates")}</h2>
+          <p className="text-muted-foreground mb-8">{t("moreTemplatesSubtitle")}</p>
+
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {catalog.map((item) => (
+              <Link
+                key={item.id}
+                href={`/install-scripts#${item.id}`}
+                className="px-4 py-2 rounded-full border border-border bg-card hover:border-primary hover:text-primary transition-colors text-sm font-medium"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          <Link href="/install-scripts" className="text-primary hover:underline font-medium">
+            {t("viewAllTemplates")} →
+          </Link>
         </div>
       </section>
     </>
