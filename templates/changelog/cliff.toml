@@ -1,5 +1,10 @@
 # git-cliff configuration
 # https://git-cliff.org/docs/configuration
+#
+# DevMagic template. The {{REPO_URL}} placeholder is filled by the installer
+# (https://devmagic.run/install/changelog) with your project's git origin URL.
+# If you copied this file by hand, replace it with your repository URL
+# (e.g. https://github.com/you/your-repo).
 
 [changelog]
 # Changelog header
@@ -16,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 # Template for the changelog body
 body = """
 {%- macro remote_url() -%}
-  https://github.com/marcelocra/devmagic
+  {{REPO_URL}}
 {%- endmacro -%}
 
 {% if version -%}
@@ -36,7 +41,7 @@ body = """
 # Template for the changelog footer
 footer = """
 {%- macro remote_url() -%}
-  https://github.com/marcelocra/devmagic
+  {{REPO_URL}}
 {%- endmacro -%}
 
 {% for release in releases -%}
@@ -63,8 +68,9 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 
-# Skip tags to preserve manually curated history
-skip_tags = "v0\\.1\\.0|v0\\.2\\.0|v0\\.2\\.1"
+# Skip specific tags by regex (e.g. to preserve manually curated history) —
+# uncomment and edit if needed:
+# skip_tags = "v0\\.1\\.0|v0\\.2\\.0"
 
 # Commit parsers for grouping
 commit_parsers = [

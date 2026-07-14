@@ -79,5 +79,6 @@ templates:
       - src: templates/changelog/changelog-workflow.yml
         dest: .github/workflows/changelog.yml
     notes:
+      - "The changelog links use your repository URL, auto-detected from git remote origin — if detection fails, edit the URL placeholder in cliff.toml"
       - 'Optional: add package.json scripts: "changelog": "git-cliff -o CHANGELOG.md" and "changelog:unreleased": "git-cliff --unreleased"'
       - "Local generation needs git-cliff (e.g. pnpm add -D git-cliff); the GitHub workflow needs nothing extra"

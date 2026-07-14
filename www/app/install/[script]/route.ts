@@ -24,11 +24,37 @@ set -e
 
 BASE="${base}"
 FORCE="${force ? "1" : "0"}"
+REPO_URL_PLACEHOLDER="https://github.com/YOUR_ORG/YOUR_REPO"
 
 if ! command -v curl >/dev/null 2>&1; then
     echo "❌ curl is not installed. Please install curl to continue."
     exit 1
 fi
+
+# Detect this project's repository URL, for templates that link back to it
+# (e.g. changelog release links). Falls back to an obvious placeholder.
+REPO_URL=""
+if command -v git >/dev/null 2>&1; then
+    ORIGIN=$(git remote get-url origin 2>/dev/null || true)
+    if [ -n "$ORIGIN" ]; then
+        # Normalize: git@host:owner/repo(.git) → https://host/owner/repo
+        REPO_URL=$(printf '%s' "$ORIGIN" | sed -E 's#^git@([^:]+):#https://\\1/#; s#\\.git$##')
+    fi
+fi
+# Only accept URL-safe characters (the value is used in a sed replacement).
+if ! printf '%s' "$REPO_URL" | grep -Eq '^[A-Za-z0-9./:_-]+$'; then
+    REPO_URL="$REPO_URL_PLACEHOLDER"
+fi
+
+fill_placeholders() {
+    local dest="$1"
+    if grep -q "{{REPO_URL}}" "$dest" 2>/dev/null; then
+        sed -i.bak "s#{{REPO_URL}}#\${REPO_URL}#g" "$dest" && rm -f "$dest.bak"
+        if [ "$REPO_URL" = "$REPO_URL_PLACEHOLDER" ]; then
+            echo "⚠️  Couldn't detect your git remote — edit the repository URL in $dest"
+        fi
+    fi
+}
 
 install_file() {
     local src="$1" dest="$2"
@@ -40,6 +66,7 @@ install_file() {
     dir=$(dirname "$dest")
     [ "$dir" != "." ] && mkdir -p "$dir"
     curl -fsSL "$BASE/$src" -o "$dest"
+    fill_placeholders "$dest"
     echo "✓ $dest"
 }
 

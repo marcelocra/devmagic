@@ -30,12 +30,20 @@ interface InstallRegistryData {
   templates?: InstallTemplate[];
 }
 
+// The registry ships with the build and never changes at runtime, so parse it
+// once per process. (In dev, editing the YAML requires a server restart.)
+// Failed reads are not cached, so a transient error doesn't stick.
+let registryCache: InstallRegistryData | null = null;
+
 function loadRegistry(): InstallRegistryData {
+  if (registryCache) return registryCache;
+
   const installScriptsPath = join(process.cwd(), "data", "install-scripts.yml");
 
   try {
     const content = readFileSync(installScriptsPath, "utf-8");
-    return (yaml.load(content, { schema: yaml.FAILSAFE_SCHEMA }) as InstallRegistryData) ?? {};
+    registryCache = (yaml.load(content, { schema: yaml.FAILSAFE_SCHEMA }) as InstallRegistryData) ?? {};
+    return registryCache;
   } catch {
     return {};
   }

@@ -49,7 +49,7 @@ A single generic script that downloads and parses a manifest per group. Rejected
 
 ### Neutral
 
-- The `{{PROJECT_NAME}}`/`{{USER}}` placeholder filling remains exclusive to the devcontainer flow (`setup/devmagic.sh`); plain template groups are copied verbatim.
+- The `{{PROJECT_NAME}}`/`{{USER}}` placeholder filling remains exclusive to the devcontainer flow (`setup/devmagic.sh`). Plain template groups are copied verbatim, with one light exception: the generated installer fills a `{{REPO_URL}}` placeholder (used by the changelog template's release links) with the project's git origin URL, detected at install time and validated to URL-safe characters, falling back to an obvious `YOUR_ORG/YOUR_REPO` placeholder with a warning.
 
 ## Notes
 
