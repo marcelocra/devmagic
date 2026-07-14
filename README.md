@@ -172,7 +172,7 @@ To use one:
     docker compose -f .devcontainer/docker-compose.yml --profile postgres down
     ```
 
-    Run this from the host at the project root, or from a terminal inside the dev container if you enable the `docker-in-docker` feature in `devcontainer.json` (it ships commented out).
+    Run this from the host at the project root.
 
 3. Connect from the dev container using the service name as hostname (e.g. `postgres:5432`) — both containers share `dev-network`. `docker ps` shows everything running side by side, and stopping a service never affects your dev container.
 

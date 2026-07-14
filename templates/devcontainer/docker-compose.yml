@@ -30,7 +30,16 @@ services:
       # ${HOME}${USERPROFILE} is a cross-platform home path: exactly one of
       # them is set (HOME on Linux/macOS, USERPROFILE on Windows) and the
       # other expands to empty.
-      - ${HOME}${USERPROFILE}/.config/dotfiles:/home/node/.config/dotfiles
+      - ${HOME}${USERPROFILE}/.config/dotfiles:/home/{{REMOTE_USER}}/.config/dotfiles
+
+      # Shell history shared across all containers and WSL. Pairs with
+      # MCRA_HISTORY_DIR in devcontainer.json.
+      # In WSL: ln -s /mnt/c/Users/{username}/OneDrive/shell_histories ~/.shell_histories
+      # In Windows: mklink /J %USERPROFILE%\.shell_histories "%USERPROFILE%\OneDrive\shell_histories"
+      - ${HOME}${USERPROFILE}/.shell_histories:/home/{{REMOTE_USER}}/.shell_histories
+
+      # Share Ollama models with the host (uncomment if you use Ollama).
+      # - ${HOME}${USERPROFILE}/.ollama:/home/{{REMOTE_USER}}/.ollama:cached
 
     # Mount a temporary in-memory filesystem (tmpfs) at /tmp inside the
     # container, with permissions set to allow read/write, execution, and
@@ -41,7 +50,7 @@ services:
       - /tmp:rw,exec,nosuid,nodev,mode=1777
     working_dir: /workspaces/{{PROJECT_NAME}}
     hostname: "{{PROJECT_NAME}}"
-    user: node # Default user of the image built from the Dockerfile.
+    user: "{{REMOTE_USER}}" # Must exist in the image built from the Dockerfile.
     command: sleep infinity
     networks:
       - dev-network
@@ -51,8 +60,7 @@ services:
   #
   # Add any service you need next to the example below. Put it behind a
   # Compose profile so it never starts with the dev container — you bring it
-  # up on demand, from the host or from a terminal inside the dev container
-  # (the latter requires the docker-in-docker feature — see devcontainer.json):
+  # up on demand from the host, at the project root:
   #
   #   docker compose -f .devcontainer/docker-compose.yml --profile postgres up -d
   #   docker compose -f .devcontainer/docker-compose.yml --profile postgres down

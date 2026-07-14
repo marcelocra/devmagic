@@ -75,6 +75,10 @@ if [ "$PROJECT_NAME" != "$FOLDER_NAME" ]; then
     echo
 fi
 
+# Container username, filled into every generated file for consistency. Must
+# exist in the base image used by the Dockerfile (typescript-node ships `node`).
+REMOTE_USER="node"
+
 # --- Download Templates and Generate Files ---
 echo -e "${BLUE}⚙️ Generating DevMagic environment for '${PROJECT_NAME}'...${NC}"
 
@@ -93,8 +97,10 @@ for FILE in "${FILES[@]}"; do
     echo -e "${BLUE}  📥 ${FILE}...${NC}"
 
     if TEMPLATE=$(curl -fsSL "$URL"); then
-        # Fill the placeholder and write the ready-to-use file.
-        printf '%s\n' "$TEMPLATE" | sed "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" > ".devcontainer/${FILE}"
+        # Fill the placeholders and write the ready-to-use file.
+        printf '%s\n' "$TEMPLATE" \
+            | sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" -e "s/{{REMOTE_USER}}/${REMOTE_USER}/g" \
+            > ".devcontainer/${FILE}"
         echo -e "${GREEN}     ✓ .devcontainer/${FILE}${NC}"
     else
         echo -e "${RED}     ✗ Failed to download ${FILE}${NC}"

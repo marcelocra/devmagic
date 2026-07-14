@@ -40,8 +40,10 @@ Generate the devcontainer files from templates at install time, baking every
 shared value in:
 
 1. Templates live in `templates/devcontainer/` (`devcontainer.json`,
-   `docker-compose.yml`, `Dockerfile`) with a single `{{PROJECT_NAME}}`
-   placeholder.
+   `docker-compose.yml`, `Dockerfile`) with two placeholders:
+   `{{PROJECT_NAME}}` (project folder name) and `{{REMOTE_USER}}` (container
+   username, `node` for the current base image — filled everywhere so paths,
+   `remoteUser`, `user:` and the Dockerfile stay consistent).
 2. The installer (`setup/devmagic.sh`, served at `devmagic.run/install`)
    downloads the templates, replaces the placeholder with the project folder
    name (sanitized to Compose naming rules), and writes ready-to-use files

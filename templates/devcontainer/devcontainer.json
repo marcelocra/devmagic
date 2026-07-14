@@ -2,10 +2,10 @@
   // ---------------------------------------------------------------------------
   // Generated from templates/devcontainer/ in the DevMagic repo. The installer
   // (https://devmagic.run/install) fills in your project folder name (sanitized
-  // to Docker Compose naming rules) here and in docker-compose.yml, so the
-  // values that must match across the two files are always generated in sync.
-  // To change a shared value, regenerate with setup/generate.sh (or edit both
-  // files consistently by hand).
+  // to Docker Compose naming rules) and the container username here and in
+  // docker-compose.yml, so the values that must match across the files are
+  // always generated in sync. To change a shared value, regenerate with
+  // setup/generate.sh (or edit all files consistently by hand).
   // ---------------------------------------------------------------------------
 
   // Name shown in the VS Code title bar.
@@ -14,7 +14,9 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
 
-  "remoteUser": "node",
+  // Must exist in the image built from the Dockerfile (the typescript-node
+  // base image ships the `node` user).
+  "remoteUser": "{{REMOTE_USER}}",
 
   // Must match the workspace mount in docker-compose.yml (generated together).
   "workspaceFolder": "/workspaces/{{PROJECT_NAME}}",
@@ -27,42 +29,156 @@
     // the value after the last colon when the variable is unset there.
     "TZ": "${localEnv:TZ:America/Sao_Paulo}",
     "LC_ALL": "${localEnv:LC_ALL:C.UTF-8}",
-    "LANG": "${localEnv:LANG:C.UTF-8}"
+    "LANG": "${localEnv:LANG:C.UTF-8}",
+
+    // Shell history directory. Pair it with the ~/.shell_histories mount in
+    // docker-compose.yml so history persists across containers and WSL
+    // sessions; otherwise history is lost when the container is removed.
+    "MCRA_HISTORY_DIR": "/home/{{REMOTE_USER}}/.shell_histories",
+
+    // Workspace folder for history file naming (auto-set by VS Code).
+    "WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
+
+    // Ollama host URL for local LLM development. (Kept out of ${localEnv} with
+    // a fallback because the :default syntax breaks on values with colons —
+    // see https://github.com/devcontainers/spec/issues/565.)
+    // "OLLAMA_HOST": "http://host.docker.internal:11434",
   },
 
   // Optional extra tooling (oh-my-zsh, fzf, dotfiles shell init). Review the
   // script first at https://devmagic.run/setup, then uncomment to enable:
   // "postCreateCommand": "curl -fsSL https://devmagic.run/setup | bash",
 
+  // Port forwarding for development services.
+  // Ex.: 11434 - Ollama API server for local LLM development.
+  "forwardPorts": [],
+
+  // NOTE: In Compose-based configs the devcontainer `mounts` and `runArgs`
+  // properties are IGNORED — host mounts (dotfiles, shell histories, Ollama
+  // models, ...) and runtime options (tmpfs, hostname) live in
+  // docker-compose.yml under the `dev` service.
+
   // Dev Container Features add tools on top of the image built from the
-  // Dockerfile. Browse the catalog at https://containers.dev/features.
+  // Dockerfile. All the commented options below are from the official
+  // repository (https://github.com/devcontainers/features); the catalog with
+  // third-party features lives at https://containers.dev/features.
   "features": {
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, RockyLinux, and Alpine Linux.
+    // Commented out because the typescript-node base image already ships what
+    // it provides (zsh, oh-my-zsh, non-root user, common utilities).
+    // "ghcr.io/devcontainers/features/common-utils:2": {
+    //   "configureZshAsDefaultShell": "true"
+    // },
+
+    // Alpine, Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apk, apt, yum, dnf, or microdnf package manager installed.
+    "ghcr.io/devcontainers/features/git:1": {},
+
+    // Debian/Ubuntu-based distributions with the apt package manager installed.
+    "ghcr.io/devcontainers/features/git-lfs:1": {
+      // If you don't have git lfs in your regular workflow and in your .gitconfig,
+      // turn this to true or remove it, but BEWARE: this might NOT work properly
+      // if you are using pre/post commit hooks.
+      "autoPull": false
+    },
+
+    // Debian/Ubuntu-based distributions with the apt package manager installed.
     "ghcr.io/devcontainers/features/github-cli:1": {}
 
-    // Uncomment to run containers (including the auxiliary services in
-    // docker-compose.yml) from a terminal inside the dev container:
-    // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // --- Languages and runtimes: uncomment what your project needs. ---
 
-    // If your workflow uses Git LFS:
-    // "ghcr.io/devcontainers/features/git-lfs:1": { "autoPull": false },
+    // Debian/Ubuntu-based distributions with the apt package manager installed.
+    // "ghcr.io/devcontainers/features/dotnet:2": {},
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
+    // "ghcr.io/devcontainers/features/go:1": {},
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
+    // "ghcr.io/devcontainers/features/java:1": {},
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and Rocky Linux distributions with the apt, yum, dnf, or microdnf package manager installed.
+    // Note: RedHat 7 Family (RedHat, CentOS, etc.) must use Node versions less than 18 due to its system libraries and long-term support (LTS) policies.
+    // "ghcr.io/devcontainers/features/node:1": {},  // The typescript-node base image already has Node.js.
+
+    // Debian/Ubuntu-based distributions with the apt package manager installed.
+    // "ghcr.io/devcontainers/features/php:1": {},
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, and RockyLinux distributions with the apt, yum, dnf, or microdnf package manager installed.
+    // "ghcr.io/devcontainers/features/python:1": {},
+
+    // This Feature should work on recent versions of Debian/Ubuntu-based distributions with the apt package manager installed.
+    // "ghcr.io/devcontainers/features/ruby:1": {},
+
+    // Debian/Ubuntu, RedHat Enterprise Linux, Fedora, Alma, RockyLinux and Mariner distributions with the apt, yum, dnf, microdnf and tdnf package manager installed.
+    // Note: Alpine is not supported because the rustup-init binary requires glibc to run, but Alpine Linux does not include glibc by default. Instead, it uses musl libc, which is not binary-compatible with glibc.
+    // "ghcr.io/devcontainers/features/rust:1": {},
+
+    // --- Third-party features work too. Examples from the Rails devcontainer
+    // (https://github.com/rails/devcontainer): ---
+    // "ghcr.io/rails/devcontainer/features/bun:1": {},
+    // "ghcr.io/rails/devcontainer/features/sqlite3:1": {}
   },
 
   "customizations": {
     "vscode": {
       "extensions": [
-        // AI assistants.
+        // AI Assistants
         "anthropic.claude-code",
-        "github.copilot",
         "github.copilot-chat",
+        "github.copilot",
+        "google.gemini-cli-vscode-ide-companion",
+        "openai.chatgpt",
+        "rooveterinaryinc.roo-cline",
 
-        // Git.
+        // Git & GitHub
         "eamodio.gitlens",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
 
-        // Language and formatting basics.
+        // Remote Development
+        "github.codespaces",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-wsl",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "ms-vscode.remote-explorer",
+        "ms-vscode.remote-server",
+
+        // Containers & Docker
+        "docker.docker",
+        "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-docker",
+
+        // Python
+        // "charliermarsh.ruff",
+        // "ms-python.black-formatter",
+        // "ms-python.debugpy",
+        // "ms-python.python",
+        // "ms-python.vscode-pylance",
+        // "ms-python.vscode-python-envs",
+
+        // JavaScript/TypeScript & Web
+        "bradlc.vscode-tailwindcss",
         "dbaeumer.vscode-eslint",
-        "editorconfig.editorconfig",
+        "denoland.vscode-deno",
         "esbenp.prettier-vscode",
-        "redhat.vscode-yaml"
+
+        // Testing
+        "ms-playwright.playwright",
+        // "ms-vscode.extension-test-runner",
+        // "ms-vscode.test-adapter-converter",
+
+        // Editor Enhancements
+        "editorconfig.editorconfig",
+        "github.github-vscode-theme",
+        "marcelocra.vscode-improved",
+        "ms-vscode.vscode-speech-language-pack-pt-br",
+        "ms-vscode.vscode-speech",
+
+        // Other
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools"
+        // "ms-vscode.powershell"
       ]
     }
   }
