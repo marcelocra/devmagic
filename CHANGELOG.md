@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump turbo from 2.9.12 to 2.9.14 (#80)
 - Bump the dev-dependencies group across 1 directory with 3 updates (#74)
 - Bump the dev-dependencies group across 1 directory with 3 updates (#66)
 - Backup roocode config files
