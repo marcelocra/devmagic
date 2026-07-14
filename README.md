@@ -58,6 +58,19 @@ This downloads the DevMagic templates (from [`templates/devcontainer/`](template
 
 Every value that must match across the files (workspace mount path, Compose project name, hostname, image tag) is **generated in sync** from your project folder name — no `.env` files, no placeholders, nothing to keep aligned by hand.
 
+Need different values? The project name and the container username can be overridden (flags > env vars > defaults):
+
+```bash
+# URL query params:
+curl -fsSL "https://devmagic.run/install?name=my-app&user=node" | bash
+
+# Flags:
+curl -fsSL https://devmagic.run/install | bash -s -- --name my-app --user node
+
+# Environment variables:
+curl -fsSL https://devmagic.run/install | DEVMAGIC_PROJECT_NAME=my-app DEVMAGIC_USER=node bash
+```
+
 After running the installer:
 
 1. Open your project in VS Code

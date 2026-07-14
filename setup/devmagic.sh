@@ -8,6 +8,12 @@
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
 #   Specific version: curl -fsSL https://devmagic.run/install@v0.2.1 | bash
 #
+# Overriding the generated values (all optional):
+#   URL query params: curl -fsSL "https://devmagic.run/install?name=my-app&user=node" | bash
+#   Flags:            curl -fsSL https://devmagic.run/install | bash -s -- --name my-app --user node
+#   Env vars:         DEVMAGIC_PROJECT_NAME=my-app DEVMAGIC_USER=node bash devmagic.sh
+# Precedence: flags > env vars > defaults (project folder name / node).
+#
 # Downloads the DevMagic dev container templates (devcontainer.json,
 # docker-compose.yml, Dockerfile), fills in your project name, and writes the
 # result into a `.devcontainer/` folder in the current directory. No
@@ -17,7 +23,26 @@
 set -e
 
 # --- Configuration ---
-VERSION="${1:-main}"  # Default to 'main' branch if no version specified
+VERSION="main"
+NAME_OVERRIDE="${DEVMAGIC_PROJECT_NAME:-}"
+USER_OVERRIDE="${DEVMAGIC_USER:-}"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --name=*) NAME_OVERRIDE="${1#--name=}"; shift ;;
+        --user=*) USER_OVERRIDE="${1#--user=}"; shift ;;
+        --name|--user)
+            if [ $# -lt 2 ]; then
+                echo "❌ Missing value for $1" >&2
+                exit 1
+            fi
+            if [ "$1" = "--name" ]; then NAME_OVERRIDE="$2"; else USER_OVERRIDE="$2"; fi
+            shift 2
+            ;;
+        *) VERSION="$1"; shift ;;  # Positional: git ref/version (defaults to main).
+    esac
+done
+
 REPO="marcelocra/devmagic"
 BASE_URL="https://raw.githubusercontent.com/${REPO}/${VERSION}"
 
@@ -65,23 +90,29 @@ if [ -d ".devcontainer" ]; then
 fi
 
 # --- Project Name ---
-# The folder name is baked into the generated files (workspace mount path,
-# Compose project name, hostname, image tag). Compose project names only
-# allow lowercase letters, digits, dashes and underscores.
-FOLDER_NAME=$(basename "$PWD")
-PROJECT_NAME=$(echo "$FOLDER_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g; s/^[-_]+//')
+# The project name (folder name unless overridden) is baked into the generated
+# files (workspace mount path, Compose project name, hostname, image tag).
+# Compose project names only allow lowercase letters, digits, dashes and
+# underscores.
+RAW_NAME="${NAME_OVERRIDE:-$(basename "$PWD")}"
+PROJECT_NAME=$(echo "$RAW_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g; s/^[-_]+//')
 if [ -z "$PROJECT_NAME" ]; then
     PROJECT_NAME="devmagic"
 fi
-if [ "$PROJECT_NAME" != "$FOLDER_NAME" ]; then
-    echo -e "${YELLOW}ℹ️  Folder name '${FOLDER_NAME}' isn't a valid Compose project name;${NC}"
-    echo -e "${YELLOW}   using '${PROJECT_NAME}' instead (both files stay consistent).${NC}"
+if [ "$PROJECT_NAME" != "$RAW_NAME" ]; then
+    echo -e "${YELLOW}ℹ️  '${RAW_NAME}' isn't a valid Compose project name;${NC}"
+    echo -e "${YELLOW}   using '${PROJECT_NAME}' instead (all files stay consistent).${NC}"
     echo
 fi
 
-# Container username, filled into every generated file for consistency. Must
-# exist in the base image used by the Dockerfile (typescript-node ships `node`).
-CONTAINER_USER="node"
+# Container username (default `node`, override with --user or DEVMAGIC_USER),
+# filled into every generated file for consistency. Must exist in the base
+# image used by the Dockerfile (typescript-node ships `node`).
+CONTAINER_USER="${USER_OVERRIDE:-node}"
+if ! printf '%s' "$CONTAINER_USER" | grep -Eq '^[a-z_][a-z0-9_-]*$'; then
+    echo -e "${RED}❌ Invalid container username: '${CONTAINER_USER}'${NC}"
+    exit 1
+fi
 
 # --- Download Templates and Generate Files ---
 echo -e "${BLUE}⚙️ Generating DevMagic environment for '${PROJECT_NAME}'...${NC}"
