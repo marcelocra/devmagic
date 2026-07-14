@@ -8,33 +8,71 @@ export interface InstallScript {
   description: string;
   scriptPath: string;
   supportsPackageManagers?: boolean;
-  steps: string[];
+  steps?: string[];
   requirements?: string[];
 }
 
-interface InstallScriptsData {
-  scripts: InstallScript[];
+export interface TemplateFile {
+  src: string;
+  dest: string;
 }
 
-/**
- * Load install scripts from www/data/install-scripts.yml
- */
-export function loadInstallScripts(): InstallScript[] {
+export interface InstallTemplate {
+  id: string;
+  name: string;
+  description: string;
+  files: TemplateFile[];
+  notes?: string[];
+}
+
+interface InstallRegistryData {
+  scripts?: InstallScript[];
+  templates?: InstallTemplate[];
+}
+
+// The registry ships with the build and never changes at runtime, so parse it
+// once per process. (In dev, editing the YAML requires a server restart.)
+// Failed reads are not cached, so a transient error doesn't stick.
+let registryCache: InstallRegistryData | null = null;
+
+function loadRegistry(): InstallRegistryData {
+  if (registryCache) return registryCache;
+
   const installScriptsPath = join(process.cwd(), "data", "install-scripts.yml");
 
   try {
     const content = readFileSync(installScriptsPath, "utf-8");
-    const data = yaml.load(content, { schema: yaml.FAILSAFE_SCHEMA }) as InstallScriptsData;
-    return data?.scripts ?? [];
+    registryCache = (yaml.load(content, { schema: yaml.FAILSAFE_SCHEMA }) as InstallRegistryData) ?? {};
+    return registryCache;
   } catch {
-    return [];
+    return {};
   }
+}
+
+/**
+ * Load bash-script installers from www/data/install-scripts.yml
+ */
+export function loadInstallScripts(): InstallScript[] {
+  return loadRegistry().scripts ?? [];
+}
+
+/**
+ * Load template file groups from www/data/install-scripts.yml
+ */
+export function loadInstallTemplates(): InstallTemplate[] {
+  return loadRegistry().templates ?? [];
 }
 
 /**
  * Get a specific install script by ID
  */
 export function getInstallScript(id: string): InstallScript | undefined {
-  const scripts = loadInstallScripts();
-  return scripts.find((script) => script.id === id);
+  return loadInstallScripts().find((script) => script.id === id);
+}
+
+/**
+ * Get a specific install template by ID
+ */
+export function getInstallTemplate(id: string): InstallTemplate | undefined {
+  return loadInstallTemplates().find((template) => template.id === id);
 }

@@ -1,0 +1,96 @@
+# ==============================================================================
+# EditorConfig - Universal Code Style Configuration
+# ==============================================================================
+# This is a base template for EditorConfig settings that balances:
+# - JavaScript/TypeScript community standards (2 spaces for JS/TS/JSON)
+# - Laravel/PHP community standards (4 spaces for PHP)
+# - Language-specific best practices
+#
+# Usage: Use this as a base template across projects. Add language-specific
+#        rules as needed (e.g., Go, Java, etc.) while keeping these defaults.
+# ==============================================================================
+
+root = true
+
+# ==============================================================================
+# Generic Defaults (applies to all files unless overridden)
+# ==============================================================================
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+spelling_languages = en-US,en,pt-BR,pt
+max_line_length = 120
+
+# ==============================================================================
+# Generic Multi-Language Rules
+# ==============================================================================
+
+# Configuration files and data formats (YAML, JSON, TOML, Lua)
+# These typically benefit from shorter line lengths for readability
+[*.{lua,toml,yaml,yml,json,jsonc,json5}]
+max_line_length = 80
+
+# Scripts and system configuration files
+# These languages commonly use 4-space indentation
+[*.{py,sh,zsh,bash,nu,gitconfig,tmux.conf}]
+indent_size = 4
+max_line_length = 80
+
+# ==============================================================================
+# Language-Specific Rules
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Markdown
+# ------------------------------------------------------------------------------
+# Markdown files use 4 spaces for code blocks and lists.
+# Not wrapping lines reduces diffs in version control.
+# Double trailing spaces can be used to create line breaks.
+[*.{md,markdown,mdx,mdc}]
+indent_size = 4
+max_line_length = unset
+trim_trailing_whitespace = false
+
+# ------------------------------------------------------------------------------
+# F# (FSharp)
+# ------------------------------------------------------------------------------
+# F# uses 4-space indentation by default.
+# Stroustrup style simplifies reordering and adding new items.
+# See: https://learn.microsoft.com/en-us/dotnet/fsharp/style-guide/formatting#multiline-bracket-formatting-style
+[*.{fs,fsi,fsx}]
+indent_size = 4
+fsharp_multiline_bracket_style = stroustrup
+
+# ------------------------------------------------------------------------------
+# PHP / Laravel / Blade
+# ------------------------------------------------------------------------------
+# Laravel and PSR-12 standard use 4 spaces for PHP files.
+# Laravel Pint (the official Laravel code style fixer) enforces this.
+# See: https://laravel.com/docs/pint
+[*.php]
+indent_size = 4
+
+# Laravel overrides the Docker Compose 2-space rule only for compose.yaml files.
+[compose.yaml]
+indent_size = 2
+# If not in Laravel, change back to 2.
+
+# ------------------------------------------------------------------------------
+# Rust
+# ------------------------------------------------------------------------------
+# Rust Style Guide standard: 4 spaces per indentation level, 100 character line
+# width. See: https://doc.rust-lang.org/style-guide/
+[*.rs]
+indent_size = 4
+max_line_length = 100
+
+# ------------------------------------------------------------------------------
+# Dockerfile & Containerfile
+# ------------------------------------------------------------------------------
+[{*Dockerfile*,*Containerfile*}]
+indent_size = 4
