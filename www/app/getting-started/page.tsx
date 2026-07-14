@@ -33,12 +33,12 @@ export default function GettingStartedPage() {
               <div>
                 <strong>{t("containerRuntime")}</strong> {t("install")}{" "}
                 <a
-                  href="https://podman-desktop.io"
+                  href="https://www.docker.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  Podman Desktop
+                  Docker
                 </a>{" "}
                 {t("orDocker")}
               </div>
@@ -128,9 +128,10 @@ export default function GettingStartedPage() {
                   </p>
                   <CodeBlock
                     code={`your-project/
-├── .devcontainer/
-│   ├── devcontainer.json
-│   └── docker-compose.yml
+├── .devcontainer/          # generated from templates, ready to use
+│   ├── devcontainer.json   # your project name baked in
+│   ├── docker-compose.yml  # same values, always in sync
+│   └── Dockerfile
 ├── src/
 └── ...`}
                     lang="plaintext"

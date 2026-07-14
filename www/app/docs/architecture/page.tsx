@@ -111,10 +111,7 @@ export default async function ArchitecturePage() {
               {t.rich("dotfilesHostVars", {
                 code: (chunks) => <code className="bg-muted px-1 rounded">{chunks}</code>,
                 link: (chunks) => (
-                  <a
-                    href="https://github.com/devcontainers/spec/issues/565"
-                    className="underline hover:text-foreground"
-                  >
+                  <a href="https://devmagic.run/setup" className="underline hover:text-foreground">
                     {chunks}
                   </a>
                 ),

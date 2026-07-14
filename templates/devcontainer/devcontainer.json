@@ -9,17 +9,17 @@
   // ---------------------------------------------------------------------------
 
   // Name shown in the VS Code title bar.
-  "name": "devmagic",
+  "name": "{{PROJECT_NAME}}",
 
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
 
   // Must exist in the image built from the Dockerfile (the typescript-node
   // base image ships the `node` user).
-  "remoteUser": "node",
+  "remoteUser": "{{USER}}",
 
   // Must match the workspace mount in docker-compose.yml (generated together).
-  "workspaceFolder": "/workspaces/devmagic",
+  "workspaceFolder": "/workspaces/{{PROJECT_NAME}}",
 
   "containerEnv": {
     // Essential locale and timezone settings. Change but DO NOT REMOVE.
@@ -34,7 +34,7 @@
     // Shell history directory. Pair it with the ~/.shell_histories mount in
     // docker-compose.yml so history persists across containers and WSL
     // sessions; otherwise history is lost when the container is removed.
-    "MCRA_HISTORY_DIR": "/home/node/.shell_histories",
+    "MCRA_HISTORY_DIR": "/home/{{USER}}/.shell_histories",
 
     // Workspace folder for history file naming (auto-set by VS Code).
     "WORKSPACE_FOLDER": "${containerWorkspaceFolder}"

@@ -1,17 +1,43 @@
 #!/usr/bin/env bash
-# Container-only bootstrap for devcontainers
-# Extracted from dotfiles setup intent, intentionally minimal and safe.
+# Optional extras for DevMagic dev containers.
+#
+# Served at https://devmagic.run/setup and meant to run as the opt-in
+# postCreateCommand in devcontainer.json (it ships commented out there):
+#
+#   curl -fsSL https://devmagic.run/setup | bash
+#
+# Self-contained on purpose: it must work in a fresh container with no
+# personal dotfiles. If a dotfiles folder is present (DevMagic mounts
+# ~/.config/dotfiles from the host by default), its shell/init.sh is linked
+# into the shell rc files at the end.
 
-LOG_TAG="dotfiles-container"
-source ~/bin/lib.bash && assert_executed || return 1
 set -euo pipefail
 
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.config/dotfiles}"
 USER_BIN_DIR="${USER_BIN_DIR:-$HOME/bin}"
+FZF_REPO="${FORK_FZF_REPO:-https://github.com/marcelocra/fzf.git}"
 
 # -----------------------------------------------------------------------------
 # helpers
 # -----------------------------------------------------------------------------
+
+log_info() { printf '%s\n' "$*"; }
+log_success() { printf '%s\n' "$*"; }
+log_warning() { printf '%s\n' "$*" >&2; }
+
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+# Run a command as root: directly when already root, via sudo otherwise.
+as_root() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    elif command_exists sudo; then
+        sudo "$@"
+    else
+        log_warning "⚠️ Not root and no sudo available; skipping: $*"
+        return 1
+    fi
+}
 
 format_duration() {
     local seconds="$1"
@@ -65,8 +91,8 @@ install_system_packages() {
     log_info "📦 Installing container system packages..."
     export DEBIAN_FRONTEND=noninteractive
 
-    sudo apt-get update -y
-    sudo apt-get install -y \
+    as_root apt-get update -y || return 0
+    as_root apt-get install -y \
         ca-certificates \
         curl \
         git \
@@ -90,15 +116,14 @@ install_oh_my_zsh() {
     fi
     log_info "📦 Installing oh-my-zsh..."
     curl --proto '=https' --tlsv1.2 -fsSL -o- \
-      https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh \
-      | sh -s -- --unattended
+        https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh |
+        sh -s -- --unattended
     log_success "✅ oh-my-zsh installed"
 }
 
 install_fzf() {
     local fzf_dir="$HOME/.fzf"
     local fzf_bin="$USER_BIN_DIR/fzf"
-    local fzf_repo="${FORK_FZF_REPO:-https://github.com/marcelocra/fzf.git}"
 
     if command_exists fzf && [[ -L "$fzf_bin" ]]; then
         log_info "✅ fzf already installed"
@@ -109,7 +134,7 @@ install_fzf() {
     if [[ -d "$fzf_dir" ]]; then
         (cd "$fzf_dir" && git pull) || true
     else
-        git clone --depth 1 "$fzf_repo" "$fzf_dir"
+        git clone --depth 1 "$FZF_REPO" "$fzf_dir"
     fi
 
     "$fzf_dir/install" --bin
@@ -119,8 +144,8 @@ install_fzf() {
 }
 
 link_shell_init() {
-    if [[ ! -d "$DOTFILES_DIR" ]]; then
-        log_warning "DOTFILES_DIR not found ($DOTFILES_DIR), skipping shell links"
+    if [[ ! -f "$DOTFILES_DIR/shell/init.sh" ]]; then
+        log_info "ℹ️ No dotfiles shell init found ($DOTFILES_DIR/shell/init.sh), skipping shell links"
         return 0
     fi
 
@@ -155,7 +180,7 @@ main() {
     load_path
     local total_start=$SECONDS
 
-    log_info "🚀 Starting container bootstrap..."
+    log_info "🚀 Starting container extras setup..."
 
     timed "System packages" install_system_packages
     timed "oh-my-zsh" install_oh_my_zsh
@@ -163,7 +188,7 @@ main() {
     timed "Shell init links" link_shell_init
 
     local total_elapsed=$((SECONDS - total_start))
-    log_success "🎉 Container bootstrap complete in $(format_duration "$total_elapsed")"
+    log_success "🎉 Container extras setup complete in $(format_duration "$total_elapsed")"
 }
 
 main "$@"

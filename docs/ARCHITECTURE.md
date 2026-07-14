@@ -22,17 +22,18 @@ DevMagic deliberately separates **container infrastructure** from **personal env
 ```
 Container Concerns (DevMagic)    ↔️   User Concerns (Dotfiles)
 ──────────────────────────────────────────────────────────────
-devcontainer-setup.sh                 dotfiles/shell/install.sh
-├─ SSH keys setup                     ├─ Homebrew installation
-├─ AI CLI tools                       ├─ fzf, hugo, babashka
-├─ Container-specific config          ├─ Zsh plugins
-└─ Calls dotfiles/shell/install.sh    ├─ VS Code settings symlinks
-                                      └─ Shell configuration
-
-                                      dotfiles/shell/init.sh
+.devcontainer/Dockerfile              dotfiles/shell/install.sh
+├─ Base image (typescript-node)       ├─ Homebrew installation
+└─ System packages (tmux, nvim, ...)  ├─ fzf, hugo, babashka
+                                      ├─ Zsh plugins
+.devcontainer/docker-compose.yml      ├─ VS Code settings symlinks
+├─ Workspace + dotfiles mounts        └─ Shell configuration
+├─ tmpfs /tmp, hostname, network
+└─ Example extra services (profiles)  dotfiles/shell/init.sh
                                       ├─ Runtime shell behavior
-                                      ├─ PATHs, aliases, functions
-                                      └─ Sourced on every shell start
+.devcontainer/devcontainer.json       ├─ PATHs, aliases, functions
+├─ Features, extensions               └─ Sourced on every shell start
+└─ Host env forwarding (localEnv)
 ```
 
 ### Why This Separation?
@@ -61,37 +62,25 @@ The current design is correct:
 - DevMagic = portable dev container infrastructure (works for anyone)
 - Dotfiles = your personal preferences (only applies to you)
 
-The `devcontainer-setup.sh` automatically clones your dotfiles repository during container creation:
+Dotfiles are **bind-mounted from the host** instead of cloned inside the container:
 
-```bash
-# Clone dotfiles if directory doesn't exist
-if [ ! -d "$dotfiles_dir" ]; then
-    git clone --depth=1 --branch "$dotfiles_branch" "$dotfiles_repo" "$dotfiles_dir"
-fi
-
-# Run install script if it exists
-if [ -f "$dotfiles_dir/shell/install.sh" ]; then
-    bash "$dotfiles_dir/shell/install.sh"
-fi
+```yaml
+# .devcontainer/docker-compose.yml (dev service; <project> is filled in by
+# the installer from your project folder name)
+volumes:
+    - ..:/workspaces/<project>
+    - ${HOME}${USERPROFILE}/.config/dotfiles:/home/node/.config/dotfiles
 ```
 
-You can configure which repository to clone via **host environment variables** (no need to edit devcontainer.json):
-
-```bash
-# Add to your ~/.bashrc or ~/.zshrc
-export DEVMAGIC_DOTFILES_REPO="https://github.com/yourusername/dotfiles.git"
-export DEVMAGIC_DOTFILES_BRANCH="main"  # optional
-```
-
-- `DEVMAGIC_DOTFILES_REPO`: Repository URL (default: marcelocra's dotfiles)
-- `DEVMAGIC_DOTFILES_BRANCH`: Branch to clone (default: `main`)
-
-Host environment variables are passed to the container via `${localEnv:VAR}` syntax. Default values are handled in the setup script (not in devcontainer.json) due to a [spec limitation with colons in URLs](https://github.com/devcontainers/spec/issues/565).
+Optionally, the commented `postCreateCommand` in `devcontainer.json`
+(`curl -fsSL https://devmagic.run/setup | bash`) installs extras (oh-my-zsh,
+fzf) and links the mounted dotfiles' `shell/init.sh` into the container's
+`.bashrc`/`.zshrc`.
 
 This means:
 
-- ✅ **Your machine**: Set host env vars once, works for all DevMagic containers
-- ✅ **Someone else using DevMagic**: Gets a working container (can skip dotfiles by setting `DEVMAGIC_DOTFILES_REPO=""`)
+- ✅ **Your machine**: One dotfiles folder shared by the host and every container, always in sync
+- ✅ **Someone else using DevMagic**: Gets a working container (no dotfiles folder → Docker creates an empty one; nothing breaks)
 - ✅ **No coupling**: DevMagic works without dotfiles; dotfiles are optional enhancement
 
 ## Installation Flow
@@ -105,33 +94,30 @@ User runs: curl -fsSL https://devmagic.run/install | bash
 /install endpoint → fetches setup/devmagic.sh from GitHub
     │
     ▼
-devmagic.sh downloads .devcontainer/ files to user's project
+devmagic.sh downloads the templates (templates/devcontainer/), fills in
+the project folder name (sanitized), and writes ready-to-use files into
+.devcontainer/ in the current dir:
+  ├─ devcontainer.json
+  ├─ docker-compose.yml
+  └─ Dockerfile
+(every shared value — mount path, Compose project name, hostname, image
+tag — is baked in consistently; no .env, no placeholders left)
     │
     ▼
-User opens in VS Code Dev Container
+User opens in VS Code and chooses "Reopen in Container"
     │
     ▼
-postCreateCommand: curl -fsSL https://devmagic.run/setup | bash
-    │
-    ▼
-/setup endpoint → fetches setup/devcontainer-setup.sh from GitHub
-    │
-    ▼
-devcontainer-setup.sh:
-  ├─ SSH keys setup (from mounted ~/.ssh-from-host)
-  ├─ AI CLI tools (aider, claude, gemini, copilot)
-  └─ Dotfiles setup:
-        ├─ Clone repo if ~/prj/dotfiles doesn't exist
-        └─ Run ~/prj/dotfiles/shell/install.sh
-              │
-              ▼
-          install.sh (from dotfiles):
-            ├─ Homebrew installation
-            ├─ fzf (from custom fork for security)
-            ├─ Brew packages (hugo, babashka, bat, ripgrep, etc.)
-            ├─ Zsh plugins (from custom forks)
-            ├─ Shell config symlinks (.zshrc, .bashrc)
-            └─ VS Code config symlinks (settings.json, keybindings.json)
+Container starts:
+  ├─ Docker Compose builds the image from the Dockerfile
+  ├─ devcontainer.json forwards host TZ/locale via ${localEnv:*}
+  ├─ ~/.config/dotfiles is mounted from the host (optional)
+  └─ Optional postCreateCommand: curl -fsSL https://devmagic.run/setup | bash
+        │
+        ▼
+    devcontainer-setup.sh (opt-in, commented out by default):
+      ├─ Extra system packages (jq, ripgrep, fd, ...)
+      ├─ oh-my-zsh and fzf
+      └─ Links dotfiles' shell/init.sh into .bashrc/.zshrc
 ```
 
 <details>
@@ -142,29 +128,21 @@ devcontainer-setup.sh:
 ```mermaid
 flowchart TD
     A["User runs: curl devmagic.run/install | bash"] --> B["/install endpoint<br/>fetches setup/devmagic.sh"]
-    B --> C["devmagic.sh downloads<br/>.devcontainer/ files"]
-    C --> D["User opens in<br/>VS Code Dev Container"]
-    D --> E["postCreateCommand:<br/>curl devmagic.run/setup | bash"]
-    E --> F["/setup endpoint<br/>fetches devcontainer-setup.sh"]
-    F --> G["devcontainer-setup.sh"]
+    B --> C["devmagic.sh downloads templates from<br/>templates/devcontainer/"]
+    C --> C2["Fills in the project folder name and writes<br/>devcontainer.json, docker-compose.yml,<br/>Dockerfile into .devcontainer/"]
+    C2 --> D["User opens in VS Code<br/>and reopens in container"]
+    D --> E["Docker Compose builds<br/>the image from the Dockerfile"]
+    E --> F["devcontainer.json forwards host<br/>TZ/locale via localEnv"]
+    F --> G["~/.config/dotfiles mounted<br/>from the host (optional)"]
+    G --> H["Optional postCreateCommand:<br/>curl devmagic.run/setup | bash"]
 
-    G --> H["SSH keys setup"]
-    G --> I["AI CLI tools"]
-    G --> J["Dotfiles setup"]
-
-    J --> K["Clone repo if missing<br/>~/prj/dotfiles"]
-    K --> L["Run install.sh"]
-
-    L --> M["Homebrew installation"]
-    L --> N["fzf from custom fork"]
-    L --> O["Brew packages"]
-    L --> P["Zsh plugins"]
-    L --> Q["Shell config symlinks"]
-    L --> R["VS Code config symlinks"]
+    H --> I["Extra system packages"]
+    H --> J["oh-my-zsh and fzf"]
+    H --> K["Links dotfiles shell/init.sh<br/>into .bashrc/.zshrc"]
 
     style A fill:#e1f5ff
-    style G fill:#fff4e1
-    style L fill:#f0f0f0
+    style E fill:#fff4e1
+    style H fill:#f0f0f0
 ```
 
 </details>
@@ -199,15 +177,15 @@ This allows:
 VS Code settings and keybindings are stored in the dotfiles repo and symlinked:
 
 ```
-Dotfiles: ~/prj/dotfiles/apps/vscode/User/
+Dotfiles: ~/.config/dotfiles/apps/vscode/User/
 ├─ settings.json
 └─ keybindings.json
         │
         ▼ (symlinked by install.sh)
 
 Container: ~/.vscode-server/data/User/
-├─ settings.json → ~/prj/dotfiles/apps/vscode/User/settings.json
-└─ keybindings.json → ~/prj/dotfiles/apps/vscode/User/keybindings.json
+├─ settings.json → ~/.config/dotfiles/apps/vscode/User/settings.json
+└─ keybindings.json → ~/.config/dotfiles/apps/vscode/User/keybindings.json
 ```
 
 The `install.sh` script detects the VS Code environment and symlinks accordingly:
@@ -221,14 +199,14 @@ The `install.sh` script detects the VS Code environment and symlinks accordingly
 ### `setup/devmagic.sh`
 
 - Entry point for `curl https://devmagic.run/install | bash`
-- Downloads `.devcontainer/` files to user's project
-- Creates the initial dev container configuration
+- Downloads the templates from `templates/devcontainer/`, fills in the project folder name (sanitized to Compose naming rules), and writes ready-to-use files into the user's `.devcontainer/`
+- Every value shared between devcontainer.json and docker-compose.yml is baked in consistently — no `.env` files or placeholders left behind (see [ADR 0005](adr/0005-generate-devcontainer-files-from-templates.md))
 
 ### `setup/devcontainer-setup.sh`
 
-- Runs as `postCreateCommand` when container starts
-- Handles container-specific setup (SSH, AI tools)
-- Calls user's dotfiles install script if available
+- Optional `postCreateCommand` (ships commented out in devcontainer.json)
+- Installs extra packages, oh-my-zsh and fzf
+- Links the mounted dotfiles' `shell/init.sh` into `.bashrc`/`.zshrc` if present
 
 ### `dotfiles/shell/install.sh` (in user's dotfiles repo)
 
@@ -265,20 +243,31 @@ DOTFILES_DEBUG=1 ./install.sh
 
 ```
 devmagic/
-├── .devcontainer/           # Dev container config (for DevMagic itself)
+├── templates/
+│   └── devcontainer/        # The source of truth ({{PROJECT_NAME}} placeholder)
+│       ├── devcontainer.json
+│       ├── docker-compose.yml
+│       └── Dockerfile
+├── .devcontainer/           # Filled copy for this repo (project name: devmagic),
+│   │                        # so standalone/maintainer clones work out of the box.
+│   │                        # Regenerate with ./setup/generate.sh after editing
+│   │                        # the templates.
+│   ├── devcontainer.json   # Dev Container definition (Compose based)
+│   ├── docker-compose.yml  # dev service + commented example service
+│   └── Dockerfile          # Dev image (typescript-node + CLI tools)
 ├── setup/
-│   ├── devmagic.sh         # Installation script (adds DevMagic to projects)
-│   └── devcontainer-setup.sh # Container setup (runs on container create)
+│   ├── devmagic.sh         # Installer: downloads templates, fills project name
+│   ├── generate.sh         # Fills templates locally (repo checkouts)
+│   └── devcontainer-setup.sh # Optional container extras (opt-in postCreate)
 ├── www/                     # Website source (devmagic.run)
 │   ├── app/
 │   │   ├── install/route.ts # Serves devmagic.sh
 │   │   └── setup/route.ts   # Serves devcontainer-setup.sh
 │   └── ...
-├── docs/                    # Documentation
-│   └── ARCHITECTURE.md     # This file
-└── docker-compose.yml       # Auxiliary services
+└── docs/                    # Documentation
+    └── ARCHITECTURE.md     # This file
 
-dotfiles/ (separate repo)
+dotfiles/ (separate repo, mounted at ~/.config/dotfiles)
 ├── shell/
 │   ├── init.sh             # Runtime configuration (sourced)
 │   └── install.sh          # One-time setup (run once)

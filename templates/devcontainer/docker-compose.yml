@@ -11,17 +11,17 @@
 # the `build:` block can be unreliable; in that case build the image manually
 # (e.g. `podman build -t localhost/my-dev:latest .devcontainer`) and replace
 # `build:` below with `image: localhost/my-dev:latest`.
-name: "devmagic"
+name: "{{PROJECT_NAME}}"
 
 services:
   dev:
     build:
       context: .
       dockerfile: Dockerfile
-    image: devmagic-dev:devmagic
+    image: devmagic-dev:{{PROJECT_NAME}}
     volumes:
       # Your project, mounted where devcontainer.json expects it.
-      - ..:/workspaces/devmagic
+      - ..:/workspaces/{{PROJECT_NAME}}
 
       # Personal dotfiles from the host (optional). If the folder doesn't
       # exist on the host, Docker creates it empty — harmless, but remove this
@@ -30,16 +30,16 @@ services:
       # ${HOME}${USERPROFILE} is a cross-platform home path: exactly one of
       # them is set (HOME on Linux/macOS, USERPROFILE on Windows) and the
       # other expands to empty.
-      - ${HOME}${USERPROFILE}/.config/dotfiles:/home/node/.config/dotfiles
+      - ${HOME}${USERPROFILE}/.config/dotfiles:/home/{{USER}}/.config/dotfiles
 
       # Shell history shared across all containers and WSL. Pairs with
       # MCRA_HISTORY_DIR in devcontainer.json.
       # In WSL: ln -s /mnt/c/Users/{username}/OneDrive/shell_histories ~/.shell_histories
       # In Windows: mklink /J %USERPROFILE%\.shell_histories "%USERPROFILE%\OneDrive\shell_histories"
-      - ${HOME}${USERPROFILE}/.shell_histories:/home/node/.shell_histories
+      - ${HOME}${USERPROFILE}/.shell_histories:/home/{{USER}}/.shell_histories
 
       # Share Ollama models with the host (uncomment if you use Ollama).
-      # - ${HOME}${USERPROFILE}/.ollama:/home/node/.ollama:cached
+      # - ${HOME}${USERPROFILE}/.ollama:/home/{{USER}}/.ollama:cached
 
     # Mount a temporary in-memory filesystem (tmpfs) at /tmp inside the
     # container, with permissions set to allow read/write, execution, and
@@ -48,9 +48,9 @@ services:
     # container restart.
     tmpfs:
       - /tmp:rw,exec,nosuid,nodev,mode=1777
-    working_dir: /workspaces/devmagic
-    hostname: "devmagic"
-    user: "node" # Must exist in the image built from the Dockerfile.
+    working_dir: /workspaces/{{PROJECT_NAME}}
+    hostname: "{{PROJECT_NAME}}"
+    user: "{{USER}}" # Must exist in the image built from the Dockerfile.
     command: sleep infinity
     networks:
       - dev-network

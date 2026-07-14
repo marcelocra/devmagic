@@ -1,13 +1,48 @@
 #!/bin/bash
+# TODO(agent): rename this file to devcontainer.bash and use bashisms
+# throughout. Not done yet to avoid mixing a file rename with content changes
+# in the same PR, which would make history harder to track.
+#
 # DevMagic - Development environment setup
 # Usage:
 #   Latest version: curl -fsSL https://devmagic.run/install | bash
 #   Specific version: curl -fsSL https://devmagic.run/install@v0.2.1 | bash
+#
+# Overriding the generated values (all optional):
+#   URL query params: curl -fsSL "https://devmagic.run/install?name=my-app&user=node" | bash
+#   Flags:            curl -fsSL https://devmagic.run/install | bash -s -- --name my-app --user node
+#   Env vars:         DEVMAGIC_PROJECT_NAME=my-app DEVMAGIC_USER=node bash devmagic.sh
+# Precedence: flags > env vars > defaults (project folder name / node).
+#
+# Downloads the DevMagic dev container templates (devcontainer.json,
+# docker-compose.yml, Dockerfile), fills in your project name, and writes the
+# result into a `.devcontainer/` folder in the current directory. No
+# placeholders or env files are left behind — the generated files are ready
+# to use and every value that must match across them is baked in consistently.
 
 set -e
 
 # --- Configuration ---
-VERSION="${1:-main}"  # Default to 'main' branch if no version specified
+VERSION="main"
+NAME_OVERRIDE="${DEVMAGIC_PROJECT_NAME:-}"
+USER_OVERRIDE="${DEVMAGIC_USER:-}"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --name=*) NAME_OVERRIDE="${1#--name=}"; shift ;;
+        --user=*) USER_OVERRIDE="${1#--user=}"; shift ;;
+        --name|--user)
+            if [ $# -lt 2 ]; then
+                echo "❌ Missing value for $1" >&2
+                exit 1
+            fi
+            if [ "$1" = "--name" ]; then NAME_OVERRIDE="$2"; else USER_OVERRIDE="$2"; fi
+            shift 2
+            ;;
+        *) VERSION="$1"; shift ;;  # Positional: git ref/version (defaults to main).
+    esac
+done
+
 REPO="marcelocra/devmagic"
 BASE_URL="https://raw.githubusercontent.com/${REPO}/${VERSION}"
 
@@ -54,31 +89,56 @@ if [ -d ".devcontainer" ]; then
     rm -rf .devcontainer
 fi
 
-# --- Download Files ---
-echo -e "${BLUE}⚙️ Downloading DevMagic environment files...${NC}"
+# --- Project Name ---
+# The project name (folder name unless overridden) is baked into the generated
+# files (workspace mount path, Compose project name, hostname, image tag).
+# Compose project names only allow lowercase letters, digits, dashes and
+# underscores.
+RAW_NAME="${NAME_OVERRIDE:-$(basename "$PWD")}"
+PROJECT_NAME=$(echo "$RAW_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g; s/^[-_]+//')
+if [ -z "$PROJECT_NAME" ]; then
+    PROJECT_NAME="devmagic"
+fi
+if [ "$PROJECT_NAME" != "$RAW_NAME" ]; then
+    echo -e "${YELLOW}ℹ️  '${RAW_NAME}' isn't a valid Compose project name;${NC}"
+    echo -e "${YELLOW}   using '${PROJECT_NAME}' instead (all files stay consistent).${NC}"
+    echo
+fi
 
-# Create directory structure
+# Container username (default `node`, override with --user or DEVMAGIC_USER),
+# filled into every generated file for consistency. Must exist in the base
+# image used by the Dockerfile (typescript-node ships `node`).
+CONTAINER_USER="${USER_OVERRIDE:-node}"
+if ! printf '%s' "$CONTAINER_USER" | grep -Eq '^[a-z_][a-z0-9_-]*$'; then
+    echo -e "${RED}❌ Invalid container username: '${CONTAINER_USER}'${NC}"
+    exit 1
+fi
+
+# --- Download Templates and Generate Files ---
+echo -e "${BLUE}⚙️ Generating DevMagic environment for '${PROJECT_NAME}'...${NC}"
+
 mkdir -p .devcontainer
 
-# List of files to download
-declare -A REMOTE_TO_LOCAL_FILES=(
-    [".devcontainer/devcontainer.json"]=".devcontainer/devcontainer.json"
-    # TODO: Test this docker-compose before adding it.
-    # [".devcontainer/docker-compose.yml"]=".devcontainer/docker-compose.yml"
+FILES=(
+    "devcontainer.json"
+    "docker-compose.yml"
+    "Dockerfile"
 )
 
-# Download each file
 FAILED=0
-for REMOTE_PATH in "${!REMOTE_TO_LOCAL_FILES[@]}"; do
-    LOCAL_PATH="${REMOTE_TO_LOCAL_FILES[$REMOTE_PATH]}"
-    URL="${BASE_URL}/${REMOTE_PATH}"
+for FILE in "${FILES[@]}"; do
+    URL="${BASE_URL}/templates/devcontainer/${FILE}"
 
-    echo -e "${BLUE}  📥 Downloading ${REMOTE_PATH}...${NC}"
+    echo -e "${BLUE}  📥 ${FILE}...${NC}"
 
-    if curl -fsSL "$URL" -o "$LOCAL_PATH"; then
-        echo -e "${GREEN}     ✓ ${LOCAL_PATH}${NC}"
+    if TEMPLATE=$(curl -fsSL "$URL"); then
+        # Fill the placeholders and write the ready-to-use file.
+        printf '%s\n' "$TEMPLATE" \
+            | sed -e "s/{{PROJECT_NAME}}/${PROJECT_NAME}/g" -e "s/{{USER}}/${CONTAINER_USER}/g" \
+            > ".devcontainer/${FILE}"
+        echo -e "${GREEN}     ✓ .devcontainer/${FILE}${NC}"
     else
-        echo -e "${RED}     ✗ Failed to download ${REMOTE_PATH}${NC}"
+        echo -e "${RED}     ✗ Failed to download ${FILE}${NC}"
         FAILED=1
     fi
 done
@@ -92,7 +152,7 @@ if [ $FAILED -eq 1 ]; then
 fi
 
 echo
-echo -e "${GREEN}✅ DevMagic environment files downloaded successfully!${NC}"
+echo -e "${GREEN}✅ DevMagic environment generated successfully!${NC}"
 echo
 
 # --- Next Steps ---
@@ -100,7 +160,7 @@ echo -e "${PURPLE}🚀 Your DevMagic environment is ready!${NC}"
 echo
 echo -e "${YELLOW}Next steps:${NC}"
 
-echo "• Review the downloaded files:"
+echo "• Review the generated files:"
 echo -e "  ${GREEN}ls -la .devcontainer/${NC}"
 echo
 
