@@ -1,5 +1,5 @@
 import { Button } from "@/components/button";
-import { CodeBlock } from "@/components/code-block";
+import { InstallCommand } from "@/components/install-command";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { loadInstallScripts, loadInstallTemplates } from "@/lib/install-scripts";
@@ -45,17 +45,10 @@ export default async function Home() {
             </p>
 
             <div className="mb-10">
-              <CodeBlock
-                code="curl -fsSL https://devmagic.run/install | bash"
-                className="max-w-2xl mx-auto"
-                alternatives={[
-                  { label: t("curlLabel"), code: "curl -fsSL https://devmagic.run/install | bash" },
-                  { label: t("wgetLabel"), code: "wget -qO- https://devmagic.run/install | bash" },
-                ]}
-              />
+              <InstallCommand />
               <p className="text-sm text-muted-foreground mt-3">
                 {t("inspectScript")}{" "}
-                <Link href="/install" className="text-primary hover:underline transition-colors">
+                <Link href="/install-scripts" className="text-primary hover:underline transition-colors">
                   {t("inspectScriptLink")}
                 </Link>{" "}
                 {t("inspectScriptEnd")}

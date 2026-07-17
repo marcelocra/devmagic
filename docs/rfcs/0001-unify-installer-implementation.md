@@ -26,7 +26,7 @@ This PR's ADR already flagged the seams:
 
 ## Discussion Log
 
-### 2026-07-14
+## ~2026-07-14 (exact time not recorded; entry written up after the fact)
 
 Marcelo, reviewing the merged PR:
 

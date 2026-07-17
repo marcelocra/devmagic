@@ -18,9 +18,9 @@ Constraints, prior art, related code, related RFCs/ADRs. Enough for someone with
 
 Append-only. Each entry is a dated note, a paste from a conversation, or a summary of a call — whatever actually happened. Don't clean this up into something tidier after the fact; the messy version is the useful one.
 
-### YYYY-MM-DD
+## YYYY-MM-DD HH:MM
 
-What was discussed, considered, or decided in this round. Paste verbatim exchanges when they carry the reasoning (a chat excerpt, a code review comment thread, a summary of a conversation).
+What was discussed, considered, or decided in this round. Paste verbatim exchanges when they carry the reasoning (a chat excerpt, a code review comment thread, a summary of a conversation). Include the time — long sessions produce several entries per day. Prefix approximate/backfilled times with `~`.
 
 ## Options Considered
 
