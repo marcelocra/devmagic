@@ -39,7 +39,7 @@ export function CodeBlock({
   };
 
   return (
-    <div className={`relative group ${className}`}>
+    <div className={`relative group text-left ${className}`}>
       <div className="flex items-center justify-between mb-2">
         {headerLeft
           ? headerLeft

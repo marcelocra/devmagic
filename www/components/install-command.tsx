@@ -63,7 +63,7 @@ export function InstallCommand({ className = "" }: { className?: string }) {
     <div className={className}>
       <CodeBlock
         code={curl}
-        className="max-w-2xl mx-auto"
+        className="w-full"
         headerLeft={targetTabs}
         alternativesPosition="footer"
         alternatives={[
