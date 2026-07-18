@@ -40,29 +40,32 @@ export function InstallCommand({ className = "" }: { className?: string }) {
   const target = TARGETS[selected];
   const { curl, wget } = commandsFor(target);
 
+  const targetTabs = (
+    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Install target">
+      {TARGETS.map((t, i) => (
+        <button
+          key={t.id}
+          type="button"
+          role="tab"
+          aria-selected={selected === i}
+          onClick={() => setSelected(i)}
+          className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+            selected === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
+          }`}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div className={className}>
-      <div className="flex flex-wrap justify-center gap-2 mb-4" role="tablist" aria-label="Install target">
-        {TARGETS.map((t, i) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={selected === i}
-            onClick={() => setSelected(i)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-full border transition-all ${
-              selected === i
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-card text-muted-foreground border-border hover:border-primary hover:text-primary"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
       <CodeBlock
         code={curl}
         className="max-w-2xl mx-auto"
+        headerLeft={targetTabs}
+        alternativesPosition="footer"
         alternatives={[
           { label: "curl", code: curl },
           { label: "wget", code: wget },
