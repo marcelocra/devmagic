@@ -1,10 +1,10 @@
 version: 2
-cooldown:
-  default-days: 14
 updates:
   # Root workspace - includes root package.json with dev tooling
   - package-ecosystem: "npm"
     directory: "/"
+    cooldown:
+      default-days: 14
     schedule:
       interval: "weekly"
       day: "monday"
@@ -31,6 +31,8 @@ updates:
   # Website workspace - Next.js application
   - package-ecosystem: "npm"
     directory: "/www"
+    cooldown:
+      default-days: 14
     schedule:
       interval: "weekly"
       day: "monday"
@@ -71,6 +73,8 @@ updates:
   # GitHub Actions - keep workflow actions up to date
   - package-ecosystem: "github-actions"
     directory: "/"
+    cooldown:
+      default-days: 14
     schedule:
       interval: "monthly"
       day: "monday"
@@ -92,6 +96,8 @@ updates:
   # Dev Containers - monitor Features in main devcontainer configuration
   - package-ecosystem: "devcontainers"
     directory: "/"
+    cooldown:
+      default-days: 14
     schedule:
       interval: "monthly"
       day: "monday"
@@ -108,6 +114,8 @@ updates:
   # Docker - monitor base images in Alpine devcontainer Dockerfile
   - package-ecosystem: "docker"
     directory: "/.devcontainer/devcontainers/alpine"
+    cooldown:
+      default-days: 14
     schedule:
       interval: "monthly"
       day: "monday"
