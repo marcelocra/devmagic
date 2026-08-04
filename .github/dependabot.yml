@@ -1,4 +1,6 @@
 version: 2
+cooldown:
+  default-days: 14
 updates:
   # Root workspace - includes root package.json with dev tooling
   - package-ecosystem: "npm"
