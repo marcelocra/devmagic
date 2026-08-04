@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump lint-staged from 16.2.7 to 17.3.0 (#86)
 - Bump @types/node from 20.19.25 to 26.1.1 in /www (#89)
 - Bump the dev-dependencies group with 2 updates (#85)
 - Bump turbo from 2.9.12 to 2.9.14 (#80)
