@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Add RFC process for design discussions; fix post-#83 review notes (#84)
 - Update VISUAL_IDENTITY.md to reflect current design implementation (#30)
 - Update documentation to clarify handling of environment variables and default values in DevMagic
 - Enhance Copilot instructions with current stack and best practices (#10)
