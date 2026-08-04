@@ -23,8 +23,6 @@
     "inspectScript": "(É recomendado",
     "inspectScriptLink": "inspecionar scripts",
     "inspectScriptEnd": "antes de rodar)",
-    "curlLabel": "curl",
-    "wgetLabel": "wget",
     "getStarted": "Começar Agora",
     "viewOnGitHub": "Ver no GitHub",
     "whyDevMagic": "Por Que DevMagic?",
@@ -44,7 +42,10 @@
     "quickStartLabel": "Início rápido:",
     "quickStartHint1": "instale o ",
     "quickStartHint2": " e o ",
-    "quickStartHint3": ", rode o comando na pasta do seu projeto e escolha “Reopen in Container”."
+    "quickStartHint3": ", rode o comando na pasta do seu projeto e escolha “Reopen in Container”.",
+    "moreTemplates": "Mais Templates e Scripts",
+    "moreTemplatesSubtitle": "Além do dev container: adicione um .editorconfig, configuração do Prettier, .gitignore, ferramentas de changelog e mais.",
+    "viewAllTemplates": "Ver catálogo completo"
   },
   "features": {
     "title": "Recursos",
@@ -333,7 +334,8 @@
     "about": "Sobre",
     "legal": "Legal",
     "license": "Licença Apache 2.0",
-    "copyright": "© {year} DevMagic. Feito com ✨ para devs."
+    "copyright": "© {year} DevMagic. Feito com ✨ para devs.",
+    "templatesAndScripts": "Templates e Scripts"
   },
   "languageSwitcher": {
     "label": "Idioma",

@@ -4,10 +4,10 @@
 > _If you just want to use it, run_:
 >
 > ```sh
-> curl -fsSL https://devmagic.run/install | bash
+> curl --proto '=https' --tlsv1.2 -fsSL https://devmagic.run/install | bash
 > ```
 >
-> _(P.S.: It is always recommended to [see what you are running](https://devmagic.run/install) before doing so.)_
+> _(P.S.: It is always recommended to [see what you are running](https://devmagic.run/install) before doing so. The `--proto '=https' --tlsv1.2` flags refuse to silently downgrade to plain HTTP or an old TLS version — same ones [rustup](https://rustup.rs) and other installers use. Plain `curl -fsSL ... | bash` works too, just without that hardening.)_
 
 ## TL;DR
 
@@ -47,7 +47,7 @@ or use it to **develop DevMagic itself** (including the website hosted at devmag
 The easiest way to use DevMagic is to add it to your existing project:
 
 ```bash
-curl -fsSL https://devmagic.run/install | bash
+curl --proto '=https' --tlsv1.2 -fsSL https://devmagic.run/install | bash
 ```
 
 This downloads the DevMagic templates (from [`templates/devcontainer/`](templates/devcontainer)), fills in your project name, and writes **ready-to-use files** into a `.devcontainer/` folder in the current directory:

@@ -1,6 +1,22 @@
 import { loadInstallScripts, loadInstallTemplates } from "@/lib/install-scripts";
 import Link from "next/link";
 
+// Descriptions in the registry use backticks for inline code (e.g. `prettier`).
+// This renders those as <code> instead of literal backticks; kept intentionally
+// tiny — no markdown parser, no nested formatting, just this one case.
+function withInlineCode(text: string) {
+  const parts = text.split("`");
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <code key={i} className="bg-muted px-1 py-0.5 rounded text-sm">
+        {part}
+      </code>
+    ) : (
+      part
+    ),
+  );
+}
+
 export default function InstallScriptsPage() {
   const scripts = loadInstallScripts();
   const templates = loadInstallTemplates();
@@ -35,9 +51,9 @@ export default function InstallScriptsPage() {
 
         <div className="space-y-6">
           {scripts.map((script) => (
-            <div key={script.id} className="bg-card border border-border rounded-lg p-6">
+            <div key={script.id} id={script.id} className="bg-card border border-border rounded-lg p-6 scroll-mt-24">
               <h3 className="text-2xl font-semibold mb-2">{script.name}</h3>
-              <p className="text-muted-foreground mb-4">{script.description}</p>
+              <p className="text-muted-foreground mb-4">{withInlineCode(script.description)}</p>
 
               {script.requirements && script.requirements.length > 0 && (
                 <div className="bg-muted/50 border-l-4 border-warning rounded p-4 mb-4">
@@ -118,9 +134,13 @@ curl -fsSL https://devmagic.run/install/${script.id}?pm=bun | bash`}
 
         <div className="space-y-6">
           {templates.map((template) => (
-            <div key={template.id} className="bg-card border border-border rounded-lg p-6">
+            <div
+              key={template.id}
+              id={template.id}
+              className="bg-card border border-border rounded-lg p-6 scroll-mt-24"
+            >
               <h3 className="text-2xl font-semibold mb-2">{template.name}</h3>
-              <p className="text-muted-foreground mb-4">{template.description}</p>
+              <p className="text-muted-foreground mb-4">{withInlineCode(template.description)}</p>
 
               <div className="mb-4">
                 <strong className="block mb-2">Files it creates:</strong>

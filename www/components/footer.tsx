@@ -50,6 +50,14 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  href="/install-scripts"
+                  className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
+                >
+                  {t("templatesAndScripts")}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/docs"
                   className="text-muted-foreground hover:text-foreground transition-colors hover:translate-x-1 inline-block"
                 >
