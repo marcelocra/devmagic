@@ -71,6 +71,12 @@ export function InstallCommand({ className = "" }: { className?: string }) {
           { label: "wget", code: wget },
         ]}
       />
+      {target.id === "devcontainer" && (
+        <p className="text-xs text-muted-foreground mt-2">
+          Defaults to the current folder name. Add{" "}
+          <code className="bg-muted px-1 py-0.5 rounded">?name=your-project</code> to the URL to override it.
+        </p>
+      )}
     </div>
   );
 }
