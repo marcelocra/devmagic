@@ -9,8 +9,8 @@
     "git-cliff": "^2.13.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.3.0",
-    "prettier": "3.9.5",
-    "turbo": "^2.10.5"
+    "prettier": "3.9.6",
+    "turbo": "^2.10.6"
   },
   "packageManager": "pnpm@10.0.0",
   "lint-staged": {
