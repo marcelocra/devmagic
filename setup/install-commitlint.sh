@@ -44,6 +44,15 @@ check_prerequisites() {
         exit 1
     fi
 
+    # GitHub reads workflows only from <repo root>/.github/workflows
+    local repo_root
+    repo_root=$(git rev-parse --show-toplevel)
+    if [[ "$repo_root" != "$(pwd -P)" ]]; then
+        echo -e "${RED}❌ Run this installer at the repository root (${repo_root}).${NC}"
+        echo -e "${YELLOW}   GitHub reads workflows only from <root>/.github/workflows.${NC}"
+        exit 1
+    fi
+
     # Verify package manager is installed
     if ! command -v "$PACKAGE_MANAGER" &>/dev/null; then
         echo -e "${RED}❌ ${PACKAGE_MANAGER} is not installed. Please install it first.${NC}"
@@ -91,7 +100,12 @@ get_install_cmd() {
             echo "npm install ${dev_flag} ${packages}"
             ;;
         yarn)
-            echo "yarn add ${dev_flag} ${packages}"
+            # Yarn Classic refuses to add to a workspace root without -W
+            if is_workspace; then
+                echo "yarn add -W ${dev_flag} ${packages}"
+            else
+                echo "yarn add ${dev_flag} ${packages}"
+            fi
             ;;
         bun)
             echo "bun add ${dev_flag} ${packages}"
@@ -188,7 +202,7 @@ create_commitlint_config() {
 
     if [[ -n "$existing" ]]; then
         echo -e "${YELLOW}⚠️  ${existing} already exists, skipping...${NC}"
-    elif grep -q '"type"[[:space:]]*:[[:space:]]*"module"' package.json; then
+    elif node -e 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8")).type === "module" ? 0 : 1)'; then
         # ES module project: a .js file must use export syntax
         cat > commitlint.config.js << 'EOF'
 export default { extends: ['@commitlint/config-conventional'] };
@@ -266,14 +280,19 @@ create_github_workflow() {
         mkdir -p "$workflow_dir"
 
         # Determine the install command for CI
-        local setup_step install_cmd_ci check_cmd
+        local setup_step install_cmd_ci check_cmd node_cache
         # Single quotes on purpose: ${{ ... }} is a GitHub Actions expression, not shell
         # shellcheck disable=SC2016
         local range_args='--from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose'
         check_cmd="$(get_commitlint_cmd) ${range_args}"
+        node_cache=$'\n          cache: "'"${PACKAGE_MANAGER}"'"'
         case "$PACKAGE_MANAGER" in
             pnpm)
                 setup_step='      - uses: pnpm/action-setup@v4'
+                # The action reads the packageManager field; without one it needs a version
+                if ! node -e 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8")).packageManager ? 0 : 1)'; then
+                    setup_step+=$'\n        with:\n          version: '"$(pnpm --version)"
+                fi
                 install_cmd_ci='pnpm install --frozen-lockfile'
                 ;;
             npm)
@@ -286,6 +305,8 @@ create_github_workflow() {
                 ;;
             bun)
                 setup_step='      - uses: oven-sh/setup-bun@v2'
+                # actions/setup-node has no bun cache
+                node_cache=''
                 install_cmd_ci='bun install --frozen-lockfile'
                 ;;
         esac
@@ -304,8 +325,7 @@ jobs:
 ${setup_step}
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "${PACKAGE_MANAGER}"
+          node-version: "20"${node_cache}
       - run: ${install_cmd_ci}
       - run: ${check_cmd}
 EOF
