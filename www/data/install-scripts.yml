@@ -52,6 +52,21 @@ scripts:
       - Node.js project with package.json
       - Git repository (for Husky)
 
+  - id: commitlint
+    name: Commitlint
+    description: Install and configure commitlint with Husky to enforce Conventional Commits on every commit message
+    scriptPath: setup/install-commitlint.sh
+    supportsPackageManagers: true
+    steps:
+      - Install commitlint and the Conventional Commits preset with exact versions
+      - Create commitlint.config.js (ES module or CommonJS, matching your package.json)
+      - Install and initialize Husky (skipped if .husky already exists)
+      - Create a Husky commit-msg hook that runs commitlint
+      - Create GitHub Actions workflow that checks the commits of every pull request
+    requirements:
+      - Node.js project with package.json
+      - Git repository (for Husky)
+
 templates:
   - id: editorconfig
     name: EditorConfig
