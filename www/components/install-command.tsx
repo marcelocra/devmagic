@@ -22,6 +22,7 @@ interface InstallTarget {
 const TARGETS: InstallTarget[] = [
   { id: "devcontainer", label: "Devcontainer", path: "/install" },
   { id: "prettier", label: "Prettier", path: "/install/prettier" },
+  { id: "commitlint", label: "Commitlint", path: "/install/commitlint" },
   { id: "editorconfig", label: "EditorConfig", path: "/install/editorconfig" },
   { id: "gitignore", label: "Gitignore", path: "/install/gitignore" },
   { id: "changelog", label: "Changelog", path: "/install/changelog" },
