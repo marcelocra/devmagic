@@ -185,24 +185,46 @@ install_commitlint() {
     echo
 }
 
+# Runs a JavaScript snippet with node, or with bun on a machine that has only bun
+run_js() {
+    if command -v node &>/dev/null; then
+        node -e "$1"
+    else
+        bun -e "$1"
+    fi
+}
+
+# Exits 0 when package.json has the given top-level key
+package_json_has() {
+    run_js 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8"))["'"$1"'"] === undefined ? 1 : 0)'
+}
+
 create_commitlint_config() {
     echo -e "${BLUE}📝 Step 2/5: Creating commitlint.config.js...${NC}"
 
-    # commitlint reads only one config; skip if any supported config file exists
+    # commitlint reads only one config; skip if any place it searches already has one
+    # (the list is @commitlint/load's searchPlaces, commitlint 21)
     local existing=""
     local candidate
-    for candidate in commitlint.config.js commitlint.config.cjs commitlint.config.mjs commitlint.config.ts \
+    for candidate in commitlint.config.js commitlint.config.cjs commitlint.config.mjs \
+        commitlint.config.ts commitlint.config.cts commitlint.config.mts \
         .commitlintrc .commitlintrc.json .commitlintrc.yaml .commitlintrc.yml \
-        .commitlintrc.js .commitlintrc.cjs .commitlintrc.mjs .commitlintrc.ts; do
+        .commitlintrc.js .commitlintrc.cjs .commitlintrc.mjs \
+        .commitlintrc.ts .commitlintrc.cts .commitlintrc.mts; do
         if [[ -f "$candidate" ]]; then
             existing="$candidate"
             break
         fi
     done
+    if [[ -z "$existing" ]] && package_json_has commitlint; then
+        existing='the "commitlint" field in package.json'
+    elif [[ -z "$existing" ]] && [[ -f package.yaml ]] && grep -Eq '^commitlint[[:space:]]*:' package.yaml; then
+        existing='the "commitlint" field in package.yaml'
+    fi
 
     if [[ -n "$existing" ]]; then
         echo -e "${YELLOW}⚠️  ${existing} already exists, skipping...${NC}"
-    elif node -e 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8")).type === "module" ? 0 : 1)'; then
+    elif run_js 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8")).type === "module" ? 0 : 1)'; then
         # ES module project: a .js file must use export syntax
         cat > commitlint.config.js << 'EOF'
 export default { extends: ['@commitlint/config-conventional'] };
@@ -253,12 +275,18 @@ create_commit_msg_hook() {
     echo -e "${BLUE}🪝 Step 4/5: Creating .husky/commit-msg hook...${NC}"
 
     local hook_file=".husky/commit-msg"
+    local commitlint_cmd
+    commitlint_cmd=$(get_commitlint_cmd)
 
-    if [[ -f "$hook_file" ]]; then
-        echo -e "${YELLOW}⚠️  ${hook_file} already exists, skipping...${NC}"
+    if [[ -f "$hook_file" ]] && grep -q commitlint "$hook_file"; then
+        echo -e "${YELLOW}⚠️  ${hook_file} already runs commitlint, skipping...${NC}"
+    elif [[ -f "$hook_file" ]]; then
+        # Keep the project's own checks and add commitlint after them
+        [[ -s "$hook_file" && "$(tail -c 1 "$hook_file")" != "" ]] && echo >> "$hook_file"
+        echo "${commitlint_cmd} --edit \"\$1\"" >> "$hook_file"
+        chmod +x "$hook_file"
+        echo -e "${GREEN}✓ commitlint added to the existing ${hook_file}${NC}"
     else
-        local commitlint_cmd
-        commitlint_cmd=$(get_commitlint_cmd)
         cat > "$hook_file" << EOF
 ${commitlint_cmd} --edit "\$1"
 EOF
@@ -290,7 +318,7 @@ create_github_workflow() {
             pnpm)
                 setup_step='      - uses: pnpm/action-setup@v4'
                 # The action reads the packageManager field; without one it needs a version
-                if ! node -e 'process.exit(JSON.parse(require("fs").readFileSync("package.json","utf8")).packageManager ? 0 : 1)'; then
+                if ! package_json_has packageManager; then
                     setup_step+=$'\n        with:\n          version: '"$(pnpm --version)"
                 fi
                 install_cmd_ci='pnpm install --frozen-lockfile'
